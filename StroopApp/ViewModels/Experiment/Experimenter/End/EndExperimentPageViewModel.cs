@@ -6,11 +6,14 @@ using StroopApp.Resources;
 using StroopApp.Services.Charts;
 using StroopApp.Services.Exportation;
 using StroopApp.Services.Navigation;
+using StroopApp.Services.Session;
+using StroopApp.Services.Summary;
 using StroopApp.Services.Window;
 using StroopApp.ViewModels.State;
-using StroopApp.ViewModels.Experiment.Experimenter;
 using StroopApp.Views;
+using StroopApp.Views.Configuration;
 using StroopApp.Views.Experiment.Experimenter.End;
+using StroopApp.Views.Home;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -31,8 +34,12 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
         private readonly INavigationService _experimenterNavigationService;
         private readonly IWindowManager _windowManager;
         private readonly ExperimentChartFactory _chartFactory;
+        private readonly IExperimentSessionService _sessionService;
+        private readonly IEnumerable<BlockSummaryFormatter> _summaryFormatters;
+        public IReadOnlyList<BlockSummaryColumn> SummaryColumns { get; }
 
-        [ObservableProperty]
+
+            [ObservableProperty]
         private string _currentParticipant = string.Empty;
 
         [ObservableProperty]
@@ -41,13 +48,17 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
         public EndExperimentPageViewModel(ExperimentSettingsViewModel settings,
                                   IExportationService exportationService,
                                   INavigationService experimenterNavigationService,
-                                  IWindowManager windowManager)
+                                  IWindowManager windowManager,
+                                  IExperimentSessionService sessionService,
+                                  IEnumerable<BlockSummaryFormatter> summaryFormatters)
         {
             Settings = settings;
             _exportationService = exportationService;
             _experimenterNavigationService = experimenterNavigationService;
             _windowManager = windowManager;
             _chartFactory = new ExperimentChartFactory();
+            _sessionService = sessionService;
+            _summaryFormatters = summaryFormatters;
 
             Blocks = Settings.ExperimentContext.Blocks;
             GlobalGraphViewModel = new GlobalGraphViewModel(settings);
@@ -55,7 +66,15 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
             CurrentParticipant = string.Format(Strings.Label_CurrentParticipant, Settings.Participant.Id);
             CurrentProfile = string.Format(Strings.Label_CurrentProfile, Settings.CurrentProfile.ProfileName);
 
+            var formatter = GetFormatter();
+            SummaryColumns = formatter.GetColumns();
+
             UpdateBlock();
+        }
+        private BlockSummaryFormatter GetFormatter()
+        {
+            return _summaryFormatters.FirstOrDefault(f => f.TaskType == Settings.CurrentProfile.TaskType)
+    ?? throw new InvalidOperationException($"Pas de formatter de résumé pour {Settings.CurrentProfile.TaskType}");
         }
 
         private void UpdateBlock()
@@ -69,14 +88,8 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
         {
             try
             {
-                Settings.ExperimentContext.ReactionPoints.Clear();
-                Settings.ExperimentContext.NewColumnSerie();
-                Settings.Block++;
-                Settings.ExperimentContext.IsBlockFinished = false;
-                Settings.ExperimentContext.IsParticipantSelectionEnabled = false;
-                Settings.ExperimentContext.HasUnsavedExports = true;
-
-                _experimenterNavigationService.NavigateTo<ConfigurationPage>();
+                _sessionService.PrepareNextBlock();
+                NavigateToConfigurationPage();
             }
             catch (Exception ex)
             {
@@ -92,9 +105,14 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
                 bool confirmed = await ShowConfirmationDialogAsync(Strings.Title_ConfirmNewExperiment, Strings.Message_ConfirmNewExperiment);
                 if (confirmed)
                 {
-                    Settings.Reset();
-                    _windowManager.CloseParticipantWindow();
-                    _experimenterNavigationService.NavigateTo<ConfigurationPage>();
+                    _sessionService.ResetForNewExperiment();
+
+                    if(Settings.CurrentProfile.TaskType == TaskType.Stroop)
+                        _windowManager.CloseParticipantWindow();
+                    else if (Settings.CurrentProfile.TaskType == TaskType.Simon)
+                        _windowManager.CloseSimonParticipantWindow();
+
+                    NavigateToConfigurationPage();
                 }
             }
             catch (Exception ex)
@@ -124,7 +142,12 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
             {
                 if (await ShowConfirmationDialogAsync(Strings.Title_ConfirmShutDown, Strings.Message_ConfirmExitWithoutExport))
                 {
-                    Application.Current.Shutdown();
+                    _sessionService.ResetForNewExperiment();
+                    if (Settings.CurrentProfile.TaskType == TaskType.Stroop)
+                        _windowManager.CloseParticipantWindow();
+                    else if (Settings.CurrentProfile.TaskType == TaskType.Simon)
+                        _windowManager.CloseSimonParticipantWindow();
+                    _experimenterNavigationService.NavigateTo<HomePage>();
                 }
             }
             catch (Exception ex)
@@ -152,5 +175,14 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
         {
             LiveReactionTimeViewModel.Dispose();
         }
+
+        private void NavigateToConfigurationPage()
+        {
+            if (Settings.CurrentProfile.TaskType == TaskType.Stroop)
+                _experimenterNavigationService.NavigateTo<ConfigurationPage>();
+            else if (Settings.CurrentProfile.TaskType == TaskType.Simon)
+                _experimenterNavigationService.NavigateTo<SimonConfigurationPage>();
+        }
+
     }
 }

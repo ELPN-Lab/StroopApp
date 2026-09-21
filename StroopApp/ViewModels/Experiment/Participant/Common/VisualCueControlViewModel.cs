@@ -1,6 +1,6 @@
 ﻿using StroopApp.Models;
 
-namespace StroopApp.ViewModels.Experiment.Participant.Stroop
+namespace StroopApp.ViewModels.Experiment.Participant.Common
 {
     /// <summary>
     /// ViewModel for displaying visual cues during Stroop test trials.

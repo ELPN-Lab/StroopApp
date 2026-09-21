@@ -23,6 +23,11 @@ namespace StroopApp.Services.Navigation
         /// unexpected behavior.</remarks>
         /// <param name="frame">The frame to set as the current context. This parameter cannot be null.</param>
         void SetFrame(Frame frame);
+
+        Type? CurrentPageType { get; }
+        event Action<Type?> Navigated;
+
+        bool IsCurrentPage<T>() where T : Page;
     }
 
 }

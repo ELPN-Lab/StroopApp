@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ModernWpf.Controls;
-using StroopApp.Core;
 using StroopApp.Models;
 using StroopApp.Resources;
 using StroopApp.Services.KeyMapping;
@@ -17,9 +16,8 @@ namespace StroopApp.ViewModels.Configuration
     /// ViewModel for managing keyboard key mappings for color responses.
     /// Handles key assignment with validation to prevent duplicate mappings.
     /// </summary>
-    public partial class KeyMappingViewModel : ViewModelBase
+    public partial class KeyMappingViewModel : KeyMappingViewModelBase
     {
-        private readonly IKeyMappingService _keyMappingService;
 
         [ObservableProperty]
         private KeyMappings _mappings = new();
@@ -27,22 +25,18 @@ namespace StroopApp.ViewModels.Configuration
         [ObservableProperty]
         private KeyMapping? _editingMapping;
 
-        public KeyMappingViewModel(IKeyMappingService keyMappingService)
+        public KeyMappingViewModel(IKeyMappingService keyMappingService) :base (keyMappingService)
         {
-            _keyMappingService = keyMappingService;
-            _ = LoadMappingsAsync();
+            _ = LoadAsync();
         }
 
-        private async Task LoadMappingsAsync()
+        protected override void ApplyLoaderMappings(ExperimentKeyMappings fullKeyMappings)
         {
-            try
-            {
-                Mappings = await _keyMappingService.LoadKeyMappings();
-            }
-            catch (Exception ex)
-            {
-                await ShowErrorDialogAsync($"{Strings.Error_Title}: {ex.Message}");
-            }
+            Mappings = fullKeyMappings.Stroop;
+        }
+        protected override void PersistMappings(ExperimentKeyMappings fullKeyMappings)
+        {
+            fullKeyMappings.Stroop = Mappings;
         }
 
         private void RefreshMappingsBindings()
@@ -163,7 +157,7 @@ namespace StroopApp.ViewModels.Configuration
                         {
                             EditingMapping.Key = e.Key;
                             RefreshMappingsBindings();
-                            await _keyMappingService.SaveKeyMappings(Mappings);
+                            await SaveAsync();
                             dialog.Hide();
                             e.Handled = true;
                         }

@@ -12,14 +12,14 @@ namespace StroopApp.XUnitTests.TestDummies
 		public bool GenerateVisualCueSequenceCalled { get; private set; }
 		public int LastTrialCount { get; private set; }
 
-		public List<StroopTrial> GenerateTrials(ExperimentSettingsViewModel settings)
+		public List<ITrial> GenerateTrials(ExperimentSettingsViewModel settings)
 		{
 			GenerateTrialsCalled = true;
 
 			if (settings?.CurrentProfile == null)
-				return new List<StroopTrial>();
+				return new List<ITrial>();
 
-			var trials = new List<StroopTrial>();
+			var trials = new List<ITrial>();
 			int trialCount = settings.CurrentProfile.WordCount;
 			LastTrialCount = trialCount;
 

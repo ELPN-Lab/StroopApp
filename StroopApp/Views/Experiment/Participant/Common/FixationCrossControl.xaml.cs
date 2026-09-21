@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace StroopApp.Views.Experiment.Participant.Stroop
+namespace StroopApp.Views.Experiment.Participant.Common
 {
     public partial class FixationCrossControl : UserControl
     {

@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="StroopApp.Views.Configuration.KeyMapping.SimonResponseMappingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:conv="clr-namespace:StroopApp.Converters"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StroopApp.Views.Configuration.KeyMapping"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="600"
+             d:Background="GhostWhite">
+    <UserControl.Resources>
+        <conv:KeyToStringConverter x:Key="KeyToStringConverter" />
+    </UserControl.Resources>
+    <Border Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
+            CornerRadius="8"
+            Padding="16"
+            BorderThickness="0.5"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" >
+        <ui:SimpleStackPanel Spacing="10" VerticalAlignment="Center" >
+            <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_KeyMapping]}"
+                       Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Description_KeyMapping]}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <!--Left Key-->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0"
+                               Text="{Binding Source={StaticResource Loc}, Path=[Label_KeyLeft]}"
+                               Style="{DynamicResource BodyTextBlockStyle}" HorizontalAlignment="Left"
+                               Margin="0,0,0,4" />
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0"
+                                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                 Text="{Binding Mappings.Left.Key, Converter={StaticResource KeyToStringConverter}}"
+                                 IsReadOnly="True"
+                                 IsHitTestVisible="False"
+                                 Focusable="False"
+                                 Width="143"
+                                 Height="16"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,8,0" />
+                        <Button Grid.Column="1"
+                                Command="{Binding OpenKeyMappingEditorCommand}"
+                                CommandParameter="Left"
+                                VerticalAlignment="Center"
+                                Content="{Binding Source={StaticResource Loc}, Path=[Button_Edit]}" />
+                    </Grid>
+                </Grid>
+
+                <!--Right Key-->
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0"
+               Text="{Binding Source={StaticResource Loc}, Path=[Label_KeyRight]}"
+               Style="{DynamicResource BodyTextBlockStyle}" HorizontalAlignment="Left"
+               Margin="0,0,0,4" />
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0"
+                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                 Text="{Binding Mappings.Right.Key, Converter={StaticResource KeyToStringConverter}}"
+                 IsReadOnly="True"
+                 IsHitTestVisible="False"
+                 Focusable="False"
+                 Width="143"
+                 Height="16"
+                 VerticalAlignment="Center"
+                 Margin="0,0,8,0" />
+                        <Button Grid.Column="1"
+                Command="{Binding OpenKeyMappingEditorCommand}"
+                CommandParameter="Right"
+                VerticalAlignment="Center"
+                Content="{Binding Source={StaticResource Loc}, Path=[Button_Edit]}" />
+                    </Grid>
+                </Grid>
+
+            </Grid>
+        </ui:SimpleStackPanel>
+    </Border>
+</UserControl>

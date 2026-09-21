@@ -19,12 +19,12 @@ namespace StroopApp.ViewModels.Experiment.Experimenter
             ? (int)(((double)Settings.ExperimentContext.ReactionPoints.Count / Settings.CurrentProfile.WordCount) * 100)
             : 0;
 
-        public ObservableCollection<StroopTrial?> TrialRecords =>
+        public ObservableCollection<ITrial?> TrialRecords =>
             Settings.ExperimentContext.Blocks.Count > Settings.Block
                 ? Settings.ExperimentContext.Blocks[Settings.Block].TrialRecords
-                : new ObservableCollection<StroopTrial?>();
+                : new ObservableCollection<ITrial?>();
 
-        private ObservableCollection<StroopTrial?>? _hookedTrialRecords;
+        private ObservableCollection<ITrial?>? _hookedTrialRecords;
 
         public ExperimentProgressViewModel(ExperimentSettingsViewModel settings)
         {

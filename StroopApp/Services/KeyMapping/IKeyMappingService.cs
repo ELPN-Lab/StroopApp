@@ -10,11 +10,11 @@ namespace StroopApp.Services.KeyMapping
         /// <summary>
         /// Loads key mappings from storage.
         /// </summary>
-        Task<KeyMappings> LoadKeyMappings();
+        Task<ExperimentKeyMappings> LoadKeyMappings();
 
         /// <summary>
         /// Saves key mappings to storage.
         /// </summary>
-        Task SaveKeyMappings(KeyMappings mappings);
+        Task SaveKeyMappings(ExperimentKeyMappings mappings);
     }
 }

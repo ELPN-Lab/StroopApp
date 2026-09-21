@@ -122,7 +122,7 @@ namespace StroopApp.Services.Trial.UnitTests
             // Assert
             Assert.NotNull(result);
             Assert.Single(result);
-            var trial = result[0];
+            var trial = (StroopTrial)result[0];
             Assert.Equal(1, trial.TrialNumber);
             Assert.Equal(2, trial.Block);
             Assert.Equal("P123", trial.ParticipantId);
@@ -448,7 +448,11 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial => Assert.False(trial.HasVIsualCue));
+            Assert.All(result, iTrial =>
+            {
+                var trial = (StroopTrial)iTrial;
+                Assert.False(trial.HasVIsualCue);
+            });
         }
 
         /// <summary>
@@ -475,7 +479,11 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial => Assert.True(trial.HasVIsualCue));
+            Assert.All(result, itrial =>
+            {
+                var trial = (StroopTrial)itrial;
+                Assert.True(trial.HasVIsualCue);
+            });
         }
 
         /// <summary>
@@ -505,7 +513,11 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial => Assert.Equal(dominantPercent, trial.SwitchPercent));
+            Assert.All(result, itrial =>
+            {
+                var trial = (StroopTrial)itrial;
+                Assert.Equal(dominantPercent, trial.SwitchPercent);
+            });
         }
 
         /// <summary>
@@ -535,7 +547,11 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial => Assert.Equal(congruencePercent, trial.CongruencePercent));
+            Assert.All(result, itrial =>
+            {
+                var trial = (StroopTrial)itrial;
+                Assert.Equal(congruencePercent, trial.CongruencePercent);
+            });
         }
 
         /// <summary>
@@ -562,8 +578,9 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial =>
+            Assert.All(result, itrial =>
             {
+                var trial = (StroopTrial)itrial;
                 Assert.NotNull(trial.Stimulus);
                 Assert.NotNull(trial.Stimulus.Color);
                 Assert.NotNull(trial.Stimulus.InternalText);
@@ -595,8 +612,9 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial =>
+            Assert.All(result, itrial =>
             {
+                var trial = (StroopTrial)itrial;
                 Assert.True(trial.IsCongruent);
                 Assert.Equal(trial.Stimulus.Color, trial.Stimulus.InternalText);
             });
@@ -626,8 +644,9 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial =>
+            Assert.All(result, itrial =>
             {
+                var trial = (StroopTrial)itrial;
                 Assert.False(trial.IsCongruent);
                 Assert.NotEqual(trial.Stimulus.Color, trial.Stimulus.InternalText);
             });
@@ -657,8 +676,9 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial =>
+            Assert.All(result, itrial =>
             {
+                var trial = (StroopTrial)itrial;
                 Assert.True(Enum.IsDefined(typeof(VisualCueType), trial.VisualCue));
             });
         }
@@ -687,7 +707,11 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial => Assert.Equal(VisualCueType.None, trial.VisualCue));
+            Assert.All(result, itrial =>
+            {
+                var trial = (StroopTrial)itrial;
+                Assert.Equal(VisualCueType.None, trial.VisualCue);
+            });
         }
 
         /// <summary>
@@ -715,8 +739,9 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial =>
+            Assert.All(result, itrial =>
             {
+                var trial = (StroopTrial)itrial;
                 Assert.Contains(trial.Stimulus.Color, validColors);
                 Assert.Contains(trial.Stimulus.InternalText, validColors);
             });
@@ -1000,7 +1025,11 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial => Assert.Equal(int.MinValue, trial.SwitchPercent));
+            Assert.All(result, itrial =>
+            {
+                var trial = (StroopTrial)itrial;
+                Assert.Equal(int.MinValue, trial.SwitchPercent);
+            });
         }
 
         /// <summary>
@@ -1027,7 +1056,12 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.All(result, trial => Assert.Equal(int.MaxValue, trial.SwitchPercent));
+            Assert.All(result, itrial =>
+            {
+                var trial = (StroopTrial)itrial;
+                Assert.Equal(int.MaxValue, trial.SwitchPercent);
+            });
+
         }
 
         /// <summary>

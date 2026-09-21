@@ -11,6 +11,9 @@ namespace StroopApp.Services.Navigation.PageFactory
         private readonly IPageFactory _pageFactory;
 
         private Frame? _frame;
+
+        public Type? CurrentPageType { get; private set; } = typeof(Page);
+        public event Action<Type?> Navigated;
         /// <summary>
         /// Initializes NavigationService with a page factory for DI resolution.
         /// The Frame must be set via <see cref="SetFrame"/> before navigation.
@@ -30,6 +33,15 @@ namespace StroopApp.Services.Navigation.PageFactory
             _frame = frame ?? throw new ArgumentNullException(nameof(frame));
         }
 
+        public bool IsCurrentPage<T>() where T : Page
+        {
+            if (typeof(T) == CurrentPageType)
+            {
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Navigates to a page of type T, resolved from the DI container via IPageFactory.
         /// If the page implements INavigationAware, injects this NavigationService automatically.
@@ -45,6 +57,9 @@ namespace StroopApp.Services.Navigation.PageFactory
                 aware.NavigationService = this;
 
             _frame.Navigate(page);
+
+            CurrentPageType = typeof(T);
+            Navigated?.Invoke(typeof(T));
         }
 
         /// <summary>
@@ -58,6 +73,9 @@ namespace StroopApp.Services.Navigation.PageFactory
 
             var page = pageFactory();
             _frame.Navigate(page);
+
+            CurrentPageType = page.GetType();
+            Navigated?.Invoke(page.GetType());
         }
     }
 }

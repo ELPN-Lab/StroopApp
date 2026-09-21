@@ -202,6 +202,9 @@
     <value>Save</value>
   </data>
   <data name="Header_Congruence_Percent" xml:space="preserve">
+    <value>Answer Congruence (%)</value>
+  </data>
+  <data name="Header_AnswerCongruence_Percent1" xml:space="preserve">
     <value>Congruence (%)</value>
   </data>
   <data name="Tooltip_Congruence" xml:space="preserve">
@@ -503,7 +506,7 @@
     <value>Advanced settings</value>
   </data>
   <data name="Button_Quit_Without_Export" xml:space="preserve">
-    <value>Quit application without export</value>
+    <value>Quit the experiment without export</value>
   </data>
   <data name="Label_StopBits" xml:space="preserve">
     <value>Stop bits</value>
@@ -575,7 +578,7 @@
     <value>Exit application</value>
   </data>
   <data name="Message_ConfirmExitWithoutExport" xml:space="preserve">
-    <value>Are you sure you want to exit the application without exporting the results? All non-exported data will be lost.</value>
+    <value>Are you sure you want to exit the experiment without exporting the results? All non-exported data will be lost.</value>
   </data>
   <data name="Error_TrialDurationNotDividingTaskDuration" xml:space="preserve">
     <value>Task duration must be divisible by trial duration.</value>
@@ -599,6 +602,9 @@
     <value>RED</value>
   </data>
   <data name="Page1_Intro" xml:space="preserve">
+    <value>We will now begin a mental task.</value>
+  </data>
+  <data name="Simon_Page1_Intro" xml:space="preserve">
     <value>We will now begin a mental task.</value>
   </data>
   <data name="Page1_Display_NoCue" xml:space="preserve">
@@ -750,5 +756,284 @@
   </data>
   <data name="Header_ProfileName" xml:space="preserve">
     <value>Profile name</value>
+  </data>
+  <data name="Label_KeyLeft" xml:space="preserve">
+    <value>Key associated with left (or Go):</value>
+  </data>
+  <data name="Label_KeyRight" xml:space="preserve">
+    <value>Key associated with right</value>
+  </data>
+  <data name="Title_SimonConfigurationPage" xml:space="preserve">
+    <value>Simon Task</value>
+  </data>
+  <data name="Button_SimonTask" xml:space="preserve">
+    <value>Simon Task</value>
+  </data>
+  <data name="Menu_Home" xml:space="preserve">
+    <value>Return to home page</value>
+  </data>
+  <data name="Message_Leave_Experiment" xml:space="preserve">
+    <value>Are you sure you want to leave the experiment ? No data will be saved or exported</value>
+  </data>
+  <data name="Title_StroopConfigurationPage" xml:space="preserve">
+    <value>Stroop Task</value>
+  </data>
+  <data name="Button_StroopTask" xml:space="preserve">
+    <value>Stroop Task</value>
+  </data>
+  <data name="Simon_Page1_Display" xml:space="preserve">
+    <value>A fixation cross will appear, followed by a color circle.</value>
+  </data>
+  <data name="Simon_Page1_LeftKey" xml:space="preserve">
+    <value>LEFT key : {0}</value>
+  </data>
+  <data name="Simon_Page1_RightKey" xml:space="preserve">
+    <value>RIGHT key : {0}</value>
+  </data>
+  <data name="Simon_Page2_Instructions" xml:space="preserve">
+    <value>Press the key corresponding to the COLOR of the circle, as fast as possible.</value>
+  </data>
+  <data name="Simon_Stimulus_Instruction_Shape" xml:space="preserve">
+    <value>If you see a {0} </value>
+  </data>
+  <data name="Simon_Stimulus_Instruction_Arrow" xml:space="preserve">
+    <value>If you see this arrow</value>
+  </data>
+  <data name="Simon_Stimulus_Instruction_Color" xml:space="preserve">
+    <value>If you see a shape with this color </value>
+  </data>
+  <data name="Simon_LeftKey_Instruction" xml:space="preserve">
+    <value>Click on the {0} key (left)</value>
+  </data>
+  <data name="Simon_GoKey_Instruction" xml:space="preserve">
+    <value>Click on the key ({0} key) </value>
+  </data>
+  <data name="Simon_NoGoKey_Instruction" xml:space="preserve">
+    <value>Don't click on any key.</value>
+  </data>
+  <data name="Simon_RightKey_Instruction" xml:space="preserve">
+    <value>Click on the {0} (right)</value>
+  </data>
+  <data name="Simon_Page1_Display2" xml:space="preserve">
+    <value>You will have to press the "{0}" or "{1}" key, depending on the {2} indicated.</value>
+  </data>
+  <data name="Simon_Page1_Display3" xml:space="preserve">
+    <value>You will have to press the "{0}" key or not, depending on the {1} indicated.</value>
+  </data>
+  <data name="Header_StimulusPosition" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="Header_StimulusColor" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="App_Subtitle" xml:space="preserve">
+    <value>Design of experimental protocols - ELPN Lab</value>
+  </data>
+  <data name="Title_RapidLaunch" xml:space="preserve">
+    <value>Rapid Launch</value>
+  </data>
+  <data name="SimonStimulusPositionMode_Center" xml:space="preserve">
+    <value>Center</value>
+  </data>
+  <data name="SimonStimulusPositionMode_LeftRight" xml:space="preserve">
+    <value>Left / Right</value>
+  </data>
+  <data name="SimonAnswerMode_LeftRight" xml:space="preserve">
+    <value>Two Keys</value>
+  </data>
+  <data name="SimonAnswerMode_GoNoGo" xml:space="preserve">
+    <value>One Key</value>
+  </data>
+  <data name="Header_SimonStimulusPositionMode" xml:space="preserve">
+    <value>Stimulus position</value>
+  </data>
+  <data name="Description_SimonAnswerMode" xml:space="preserve">
+    <value>Choose between a one key (go/no-go) or a two keys (left/right) mode</value>
+  </data>
+  <data name="Header_SimonAnswerMode" xml:space="preserve">
+    <value>Answer mode</value>
+  </data>
+  <data name="Description_SimonStimulusPositionMode" xml:space="preserve">
+    <value>Choose the location where the stimulus can appear (center vs. left/right)</value>
+  </data>
+  <data name="Header_SimonStimulusMode" xml:space="preserve">
+    <value>StimulusType</value>
+  </data>
+  <data name="Description_SimonStimulusMode" xml:space="preserve">
+    <value>Select the stimulus mode (colors / shapes / arrows)</value>
+  </data>
+  <data name="SimonStimulusMode_Color" xml:space="preserve">
+    <value>Colors</value>
+  </data>
+  <data name="SimonStimulusMode_Shape" xml:space="preserve">
+    <value>Shapes</value>
+  </data>
+  <data name="SimonStimulusMode_Arrow" xml:space="preserve">
+    <value>Arrows</value>
+  </data>
+  <data name="Header_SimonReversedMapping" xml:space="preserve">
+    <value>Reversed mapping</value>
+  </data>
+  <data name="Description_SimonReversedMapping" xml:space="preserve">
+    <value>Add a reversed rule vith a shape (before/around) or an internal stimulus feature.</value>
+  </data>
+  <data name="Header_SimonLeftColor" xml:space="preserve">
+    <value>Left command color (/go)</value>
+  </data>
+  <data name="Header_SimonLeftShape" xml:space="preserve">
+    <value>Left command shape (/go)</value>
+  </data>
+  <data name="Header_SimonRightColor" xml:space="preserve">
+    <value>Right command color (/no-go)</value>
+  </data>
+  <data name="Header_SimonRightShape" xml:space="preserve">
+    <value>Right command shape (/no-go)</value>
+  </data>
+  <data name="Header_SimonReversedShape" xml:space="preserve">
+    <value>Reversed Shape</value>
+  </data>
+  <data name="Header_SimonReversedColor" xml:space="preserve">
+    <value>Reversed Color</value>
+  </data>
+  <data name="Header_SimonStandardShape" xml:space="preserve">
+    <value>Standard Shape</value>
+  </data>
+  <data name="Header_SimonStandardColor" xml:space="preserve">
+    <value>Standard Color</value>
+  </data>
+  <data name="SimonStimulusShape_Circle" xml:space="preserve">
+    <value>Circle</value>
+  </data>
+  <data name="SimonStimulusShape_Triangle" xml:space="preserve">
+    <value>Triangle</value>
+  </data>
+  <data name="SimonStimulusShape_Square" xml:space="preserve">
+    <value>Square</value>
+  </data>
+  <data name="SimonReversalCuePresentation_Before" xml:space="preserve">
+    <value>Before (prime)</value>
+  </data>
+  <data name="SimonReversalCuePresentation_Around" xml:space="preserve">
+    <value>Around</value>
+  </data>
+  <data name="SimonReversalCuePresentation_Integrated" xml:space="preserve">
+    <value>Integrated</value>
+  </data>
+  <data name="SimonReversalCuePresentation_None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="StimulusColor_Red" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="StimulusColor_Pink" xml:space="preserve">
+    <value>Pink</value>
+  </data>
+  <data name="StimulusColor_White" xml:space="preserve">
+    <value>White</value>
+  </data>
+  <data name="StimulusColor_Orange" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="StimulusColor_Green" xml:space="preserve">
+    <value>Vert</value>
+  </data>
+  <data name="StimulusColor_Blue" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="ReversedMappingPercent" xml:space="preserve">
+    <value>Reversed Trials (%)</value>
+  </data>
+  <data name="StimulusColor_BlueWong" xml:space="preserve">
+    <value>Blue (Wong)*</value>
+  </data>
+  <data name="StimulusColor_OrangeWong" xml:space="preserve">
+    <value>Orange (Wong)*</value>
+  </data>
+  <data name="Header_ReversedMappingPercent" xml:space="preserve">
+    <value>Reversed Trials (%)</value>
+  </data>
+  <data name="Header_IsAnswerCongruent" xml:space="preserve">
+    <value>Answer Congruence</value>
+  </data>
+  <data name="Header_IsSpatialCongruent" xml:space="preserve">
+    <value>Spatial Congruence</value>
+  </data>
+  <data name="Header_IsReversedMapping" xml:space="preserve">
+    <value>Is Reversed</value>
+  </data>
+  <data name="Header_StimulusShape" xml:space="preserve">
+    <value>Stimulus Shape</value>
+  </data>
+  <data name="Header_StimulusShape1" xml:space="preserve">
+    <value>Stimulus Shape</value>
+  </data>
+  <data name="Header_BaseColor" xml:space="preserve">
+    <value>Stimulus Color</value>
+  </data>
+  <data name="Header_BaseShape" xml:space="preserve">
+    <value>Stimulus Shape</value>
+  </data>
+  <data name="Description_DisabledBaseColor" xml:space="preserve">
+    <value>In Integrated mode, change the color via the sandard and opposite color controls</value>
+  </data>
+  <data name="Description_DisabledBaseShape" xml:space="preserve">
+    <value>In Integrated mode, change the shape via the sandard and opposite shape controls</value>
+  </data>
+  <data name="Simon_FixationCrossPage_1" xml:space="preserve">
+    <value>A fixation cross will appear at the center of the screen. You will have to fix it while it is visible.</value>
+  </data>
+  <data name="Simon_Word_Shape" xml:space="preserve">
+    <value>shape</value>
+  </data>
+  <data name="Simon_Word_Color" xml:space="preserve">
+    <value>color</value>
+  </data>
+  <data name="Simon_PrimePage_Arrow" xml:space="preserve">
+    <value>arrow</value>
+  </data>
+  <data name="Simon_PrimePage_ShapeBefore" xml:space="preserve">
+    <value>Before the shape displays, you will see another shape placed around the fixation cross.</value>
+  </data>
+  <data name="Simon_PrimePage_ArrowAround" xml:space="preserve">
+    <value>While the arrow displays, you will also see another shape placed around.</value>
+  </data>
+  <data name="Simon_PrimePage_ArrowIntegrated" xml:space="preserve">
+    <value>While the arrow displays, you will also have to pay attention to the color.</value>
+  </data>
+  <data name="Simon_PrimePage_ArrowBefore" xml:space="preserve">
+    <value>Before the arrow displays, you will see another shape around the fixation cross.</value>
+  </data>
+  <data name="Simon_PrimePage_ColorBefore" xml:space="preserve">
+    <value>Before the color displays, you will see a shape around the fixation cross.</value>
+  </data>
+  <data name="Simon_PrimePage_ShapeIntegrated" xml:space="preserve">
+    <value>While the shape displays, you will also have to pay attention to the color.</value>
+  </data>
+  <data name="Simon_PrimePage_ShapeAround" xml:space="preserve">
+    <value>While the shape displays, you will also see another shape placed around.</value>
+  </data>
+  <data name="Simon_PrimePage_ColorAround" xml:space="preserve">
+    <value>While the color displays, you will also see another shape placed around.</value>
+  </data>
+  <data name="Simon_PrimePage_ColorIntegrated" xml:space="preserve">
+    <value>While the arrow displays, you will also have to pay attention to the shape.</value>
+  </data>
+  <data name="Simon_PrimePage_StandardCase" xml:space="preserve">
+    <value>If this is the {0} =&gt; NORMAL mode</value>
+  </data>
+  <data name="Simon_PrimePage_StandardCaseDescription" xml:space="preserve">
+    <value>You must indicate the SAME command as the one displayed.</value>
+  </data>
+  <data name="Simon_PrimePage_ReversedCase" xml:space="preserve">
+    <value>If this is the {0} =&gt; REVERSED mode</value>
+  </data>
+  <data name="Simon_PrimePage_ReversedCaseDescription" xml:space="preserve">
+    <value>You must indicate the OPPOSITE command as the one displayed.</value>
+  </data>
+  <data name="Simon_Word_ArrowDirection" xml:space="preserve">
+    <value>arrow direction</value>
+  </data>
+  <data name="Simon_PrimePage_Color" xml:space="preserve">
+    <value>color</value>
   </data>
 </root>

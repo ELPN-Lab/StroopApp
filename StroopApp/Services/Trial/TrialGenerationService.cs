@@ -1,5 +1,4 @@
 ﻿using StroopApp.Models;
-using StroopApp.Resources;
 using StroopApp.Services.Language;
 using StroopApp.ViewModels.State;
 using System.Globalization;
@@ -23,7 +22,7 @@ namespace StroopApp.Services.Trial
 		/// Legacy method for backward compatibility.
 		/// Delegates to the interface-based overload via adapter.
 		/// </summary>
-		public List<StroopTrial> GenerateTrials(ExperimentSettingsViewModel settings)
+		public List<ITrial> GenerateTrials(ExperimentSettingsViewModel settings)
 		{
 			if (settings?.CurrentProfile == null)
 				throw new ArgumentException("Settings and  CurrentProfile cannot be null", nameof(settings));
@@ -36,12 +35,12 @@ namespace StroopApp.Services.Trial
 		/// Generates trials based on minimal configuration interface.
 		/// This is the primary implementation.
 		/// </summary>
-		public List<StroopTrial> GenerateTrials(ITrialConfiguration config)
+		public List<ITrial> GenerateTrials(ITrialConfiguration config)
 		{
 			if (config == null)
 				throw new ArgumentNullException(nameof(config));
 
-			var trials = new List<StroopTrial>();
+			var trials = new List<ITrial>();
 			var wordColors = new[] { "Blue", "Red", "Green", "Yellow" };
 
 			var taskCultureCode = string.IsNullOrWhiteSpace(config.TaskLanguage)
@@ -111,7 +110,13 @@ namespace StroopApp.Services.Trial
 			return trials;
 		}
 
-		public List<VisualCueType> GenerateVisualCueSequence(int count, int switchPercentage)
+        /// <summary>
+        /// Generates a sequence of visual cues (optional).
+        /// </summary>
+        /// <param name="count">Number of cues to generate</param>
+        /// <param name="switchPercentage">Percentage of cue switches</param>
+        /// <returns>Sequence of cues</returns>
+        public List<VisualCueType> GenerateVisualCueSequence(int count, int switchPercentage)
 		{
 			if (count <= 0)
 				throw new ArgumentException("Count of visual cues must be positive", nameof(count));

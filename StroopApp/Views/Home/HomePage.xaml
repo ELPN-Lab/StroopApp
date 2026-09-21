@@ -1,0 +1,48 @@
+﻿<Page x:Class="StroopApp.Views.Home.HomePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.modernwpf.com/2019"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:StroopApp.Views.Home"
+      xmlns:home="clr-namespace:StroopApp.Views.Home"
+      Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+      mc:Ignorable="d" 
+      d:DesignHeight="1080" d:DesignWidth="1920"
+      d:Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+      Title="HomePage">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions >
+            <RowDefinition />
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        
+        <!--Title-->
+        <ui:SimpleStackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Spacing="4" Margin="0,16">
+            <TextBlock Text="StroopApp" Style="{DynamicResource HeaderTextBlockStyle}"/>
+            <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[App_Subtitle]}" FontSize="24" FontWeight="Light"/>
+        </ui:SimpleStackPanel>
+
+
+        <!--FreshStart-->
+        <Border Background="White" CornerRadius="8" Padding="8" Margin="0 8" Grid.Row="2" Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" >
+            <ui:SimpleStackPanel Spacing="8" Margin="8" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_RapidLaunch]}" FontSize="24" FontWeight="Light" />
+                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8" >
+                    <Button x:Name="btnLaunchStroop" Content="{Binding Source={StaticResource Loc}, Path=[Button_StroopTask]}" VerticalAlignment="Bottom" Command="{Binding NavigateToStroopCommand}"/>
+                    <Button x:Name="btnLaunchSimon" Content="{Binding Source={StaticResource Loc}, Path=[Button_SimonTask]}" VerticalAlignment="Bottom" Command="{Binding NavigateToSimonCommand}"/>
+                </ui:SimpleStackPanel>
+            </ui:SimpleStackPanel>
+        </Border>
+    </Grid>
+
+</Page>

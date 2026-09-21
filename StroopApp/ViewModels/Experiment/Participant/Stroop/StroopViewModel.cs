@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using StroopApp.ViewModels.Experiment.Participant.Common;
 namespace StroopApp.ViewModels.Experiment.Participant.Stroop
 {
     /// <summary>
@@ -77,7 +78,7 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                 if (Settings.ExperimentContext.CurrentBlock is null)
                     throw new InvalidOperationException("CurrentBlock is not initialized");
 
-                foreach (var trial in Settings.ExperimentContext.CurrentBlock.TrialRecords)
+                foreach (StroopTrial trial in Settings.ExperimentContext.CurrentBlock.TrialRecords)
                 {
                     if (Settings.ExperimentContext.IsTaskStopped || _cancellationTokenSource.Token.IsCancellationRequested)
                     {
@@ -139,8 +140,9 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                     {
                         _responseTime.Stop();
                         _inputTcs.TrySetCanceled();
+                        trial.IsValidResponse = false;
                         Settings.ExperimentContext.CurrentBlock.TrialTimes.Add(null);
-                        Settings.ExperimentContext.ReactionPoints.Add(new ReactionTimePoint(trial.TrialNumber, double.NaN, null));
+                        Settings.ExperimentContext.ReactionPoints.Add(new ReactionTimePoint(trial.TrialNumber, double.NaN, trial.IsValidResponse));
                     }
 
                     if (Settings.ExperimentContext.IsTaskStopped || _cancellationTokenSource.Token.IsCancellationRequested)
@@ -211,15 +213,15 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
             if (_inputTcs == null || _inputTcs.Task.IsCompleted)
                 return;
 
-            string? answer = key == Settings.KeyMappings.Red.Key ? Settings.KeyMappings.Red.Color
-                           : key == Settings.KeyMappings.Blue.Key ? Settings.KeyMappings.Blue.Color
-                           : key == Settings.KeyMappings.Green.Key ? Settings.KeyMappings.Green.Color
-                           : key == Settings.KeyMappings.Yellow.Key ? Settings.KeyMappings.Yellow.Color
+            string? answer = key == Settings.KeyMappings.Stroop.Red.Key ? Settings.KeyMappings.Stroop.Red.Color
+                           : key == Settings.KeyMappings.Stroop.Blue.Key ? Settings.KeyMappings.Stroop.Blue.Color
+                           : key == Settings.KeyMappings.Stroop.Green.Key ? Settings.KeyMappings.Stroop.Green.Color
+                           : key == Settings.KeyMappings.Stroop.Yellow.Key ? Settings.KeyMappings.Stroop. Yellow.Color
                            : null;
 
             if (answer != null)
             {
-                var trial = Settings.ExperimentContext.CurrentTrial;
+                var trial = Settings.ExperimentContext.CurrentTrial as StroopTrial;
                 if (trial is null)
                     return;
 

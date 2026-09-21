@@ -7,7 +7,11 @@ namespace StroopApp.XUnitTests.TestDummies
     {
         public bool ShowCalled;
         public void ShowParticipantWindow(ExperimentSettingsViewModel settings) => ShowCalled = true;
+        public void ShowSimonParticipantWindow(ExperimentSettingsViewModel settings) => ShowCalled = true;
         public void CloseParticipantWindow()
+        {
+        }
+        public void CloseSimonParticipantWindow()
         {
         }
     }

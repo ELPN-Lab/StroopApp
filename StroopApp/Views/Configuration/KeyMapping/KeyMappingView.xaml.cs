@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace StroopApp.Views.KeyMapping
+namespace StroopApp.Views.Configuration.KeyMapping
 {
     public partial class KeyMappingView : UserControl
     {

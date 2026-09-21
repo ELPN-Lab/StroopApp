@@ -65,7 +65,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             var expectedPath = service.ExportRootDirectory;
             // Act
             var actualPath = service.ExportRootDirectory;
@@ -87,7 +87,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             var initialPath = service.ExportRootDirectory;
             var exportFolderConfigFile = Path.Combine(_testConfigDirectory, "exportFolder.json");
             // Delete config file if it exists to track if it gets written
@@ -119,7 +119,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             var newPath = Path.Combine(Path.GetTempPath(), "NewExportDirectory");
             var exportFolderConfigFile = Path.Combine(_testConfigDirectory, "exportFolder.json");
             // Act
@@ -146,7 +146,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             var emptyPath = string.Empty;
             // Act
             service.ExportRootDirectory = emptyPath;
@@ -169,7 +169,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             var whitespacePath = "   ";
             // Act
             service.ExportRootDirectory = whitespacePath;
@@ -192,7 +192,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             var longPath = Path.Combine(Path.GetTempPath(), new string ('a', 200), new string ('b', 200));
             // Act
             service.ExportRootDirectory = longPath;
@@ -215,7 +215,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             var specialPath = Path.Combine(Path.GetTempPath(), "Export#Data$2024");
             // Act
             service.ExportRootDirectory = specialPath;
@@ -238,7 +238,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             var firstPath = Path.Combine(Path.GetTempPath(), "FirstPath");
             var secondPath = Path.Combine(Path.GetTempPath(), "SecondPath");
             var thirdPath = Path.Combine(Path.GetTempPath(), "ThirdPath");
@@ -270,7 +270,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             service.ExportRootDirectory = string.Empty;
             var newPath = Path.Combine(Path.GetTempPath(), "ValidPath");
             // Act
@@ -294,7 +294,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _testConfigDirectory
             };
-            var service = new ExportationService(settings, _languageServiceMock.Object, config);
+            var service = new ExportationService(settings, _languageServiceMock.Object, config, []);
             var initialPath = Path.Combine(Path.GetTempPath(), "InitialPath");
             service.ExportRootDirectory = initialPath;
             // Act
@@ -317,7 +317,7 @@ namespace StroopApp.Services.Exportation.UnitTests
                 ConfigDirectory = Path.Combine(Path.GetTempPath(), "StroopAppTest")
             };
             // Act & Assert
-            var exception = Assert.Throws<ArgumentNullException>(() => new ExportationService(null!, mockLanguageService.Object, config));
+            var exception = Assert.Throws<ArgumentNullException>(() => new ExportationService(null!, mockLanguageService.Object, config, []));
             Assert.Equal("settings", exception.ParamName);
         }
 
@@ -334,7 +334,7 @@ namespace StroopApp.Services.Exportation.UnitTests
                 ConfigDirectory = Path.Combine(Path.GetTempPath(), "StroopAppTest")
             };
             // Act & Assert
-            var exception = Assert.Throws<ArgumentNullException>(() => new ExportationService(settings, null!, config));
+            var exception = Assert.Throws<ArgumentNullException>(() => new ExportationService(settings, null!, config, []));
             Assert.Equal("languageService", exception.ParamName);
         }
 
@@ -348,7 +348,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             var settings = new ExperimentSettings();
             var mockLanguageService = new Mock<ILanguageService>();
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new ExportationService(settings, mockLanguageService.Object, null!));
+            Assert.Throws<ArgumentNullException>(() => new ExportationService(settings, mockLanguageService.Object, null!, []));
         }
 
         /// <summary>
@@ -369,7 +369,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             };
             var expectedMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             // Act
-            var service = new ExportationService(settings, mockLanguageService.Object, config);
+            var service = new ExportationService(settings, mockLanguageService.Object, config, []);
             // Assert
             Assert.True(Directory.Exists(testConfigDir));
             Assert.Equal(expectedMyDocumentsPath, service.ExportRootDirectory);
@@ -404,7 +404,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _tempConfigDirectory
             };
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var expectedFilePath = Path.Combine(_tempConfigDirectory, "exportFolder.json");
             // Act
             service.SaveExportFolderPath(testPath);
@@ -430,7 +430,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _tempConfigDirectory
             };
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var expectedFilePath = Path.Combine(_tempConfigDirectory, "exportFolder.json");
             // Act
             service.SaveExportFolderPath(testPath!);
@@ -455,7 +455,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _tempConfigDirectory
             };
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var expectedFilePath = Path.Combine(_tempConfigDirectory, "exportFolder.json");
             // Act
             service.SaveExportFolderPath(testPath);
@@ -481,7 +481,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _tempConfigDirectory
             };
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var expectedFilePath = Path.Combine(_tempConfigDirectory, "exportFolder.json");
             // Act
             service.SaveExportFolderPath(testPath);
@@ -507,7 +507,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _tempConfigDirectory
             };
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var expectedFilePath = Path.Combine(_tempConfigDirectory, "exportFolder.json");
             // Act
             service.SaveExportFolderPath(testPath);
@@ -533,7 +533,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _tempConfigDirectory
             };
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var expectedFilePath = Path.Combine(_tempConfigDirectory, "exportFolder.json");
             // Act
             service.SaveExportFolderPath(testPath);
@@ -560,7 +560,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _tempConfigDirectory
             };
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var expectedFilePath = Path.Combine(_tempConfigDirectory, "exportFolder.json");
             // Act
             service.SaveExportFolderPath(firstPath);
@@ -587,7 +587,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = _tempConfigDirectory
             };
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var expectedFilePath = Path.Combine(_tempConfigDirectory, "exportFolder.json");
             // Act
             service.SaveExportFolderPath(testPath);
@@ -634,7 +634,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = testConfigDir
             };
-            var service = new ExportationService(settings, mockLanguageService.Object, config);
+            var service = new ExportationService(settings, mockLanguageService.Object, config, []);
 
             // Act & Assert
             settings.ExportFolderPath = null!;
@@ -670,7 +670,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             {
                 ConfigDirectory = testConfigDir
             };
-            var service = new ExportationService(settings, mockLanguageService.Object, config);
+            var service = new ExportationService(settings, mockLanguageService.Object, config, []);
 
             // Act & Assert
             settings.ExportFolderPath = string.Empty;
@@ -703,7 +703,7 @@ namespace StroopApp.Services.Exportation.UnitTests
         public async Task ExportDataAsync_WhitespaceExportFolderPath_ThrowsInvalidOperationException(string whitespace)
         {
             // Arrange
-            var service = new ExportationService(_settings, _mockLanguageService.Object, _config);
+            var service = new ExportationService(_settings, _mockLanguageService.Object, _config, []);
 
             // Act - On force Whitespace APRES la construction
             _settings.ExportFolderPath = whitespace;
@@ -738,7 +738,7 @@ namespace StroopApp.Services.Exportation.UnitTests
 
             var expectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             // Act
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var result = service.LoadExportFolderPath();
             // Assert
             Assert.Equal(expectedPath, result);
@@ -763,7 +763,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             var expectedPath = @"C:\TestExportFolder";
             File.WriteAllText(exportFolderConfigFile, JsonSerializer.Serialize(expectedPath));
             // Act
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var result = service.LoadExportFolderPath();
             // Assert
             Assert.Equal(expectedPath, result);
@@ -788,7 +788,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             File.WriteAllText(exportFolderConfigFile, "null");
             var expectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             // Act
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var result = service.LoadExportFolderPath();
             // Assert
             Assert.Equal(expectedPath, result);
@@ -817,7 +817,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             try
             {
                 // Act
-                var service = new ExportationService(settings, languageServiceMock.Object, config);
+                var service = new ExportationService(settings, languageServiceMock.Object, config, []);
                 var result = service.LoadExportFolderPath();
                 // Assert
                 Assert.Equal(expectedPath, result);
@@ -852,7 +852,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             var expectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             // Act
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var result = service.LoadExportFolderPath();
 
             // Assert
@@ -878,7 +878,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             var expectedPath = @"C:\Test Folder\Données\Émissions";
             File.WriteAllText(exportFolderConfigFile, JsonSerializer.Serialize(expectedPath));
             // Act
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var result = service.LoadExportFolderPath();
             // Assert
             Assert.Equal(expectedPath, result);
@@ -902,7 +902,7 @@ namespace StroopApp.Services.Exportation.UnitTests
             var exportFolderConfigFile = Path.Combine(_tempConfigDir, "exportFolder.json");
             File.WriteAllText(exportFolderConfigFile, JsonSerializer.Serialize(string.Empty));
             // Act
-            var service = new ExportationService(settings, languageServiceMock.Object, config);
+            var service = new ExportationService(settings, languageServiceMock.Object, config, []);
             var result = service.LoadExportFolderPath();
             // Assert
             Assert.Equal(string.Empty, result);

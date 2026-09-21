@@ -13,9 +13,20 @@ namespace StroopApp.Services.Window
         /// </summary>
         void ShowParticipantWindow(ExperimentSettingsViewModel settings);
 
+        // <summary>
+        /// Shows or activates the participant management window for the simon task.
+        /// </summary>
+        void ShowSimonParticipantWindow(ExperimentSettingsViewModel settings);
+
         /// <summary>
         /// Closes the participant management window.
         /// </summary>
         void CloseParticipantWindow();
+
+        /// <summary>
+        /// Closes the participant simon task management window.
+        /// </summary>
+        void CloseSimonParticipantWindow();
+
     }
 }

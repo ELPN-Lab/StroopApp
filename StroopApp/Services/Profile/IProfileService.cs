@@ -26,7 +26,7 @@ namespace StroopApp.Services.Profile
         /// <summary>
         /// Deletes a profile from the collection.
         /// </summary>
-        void DeleteProfile(ExperimentProfile profile, ObservableCollection<ExperimentProfile> profiles);
+        void DeleteProfile(ExperimentProfile profile);
 
         /// <summary>
         /// Loads the last selected profile ID.

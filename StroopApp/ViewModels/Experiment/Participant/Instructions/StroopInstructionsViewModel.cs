@@ -1,9 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using StroopApp.Core;
+﻿using StroopApp.Core;
 using StroopApp.Services.Navigation;
 using StroopApp.ViewModels.State;
-using StroopApp.Views.Experiment.Participant;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,55 +8,29 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace StroopApp.ViewModels.Experiment.Participant
+namespace StroopApp.ViewModels.Experiment.Participant.Instructions
 {
     /// <summary>
     /// Manages multilingual instruction pages displayed before Stroop test execution.
     /// Generates dynamic instructions based on experiment configuration (congruence, visual cues).
     /// </summary>
-    public partial class InstructionsPageViewModel : ViewModelBase
+    public partial class StroopInstructionsViewModel : InstructionsViewModelBase
     {
-        private readonly ExperimentSettingsViewModel _settings;
-        private readonly INavigationService _participantWindowNavigationService;
-        private const int TotalPages = 3;
+        protected override int TotalPages => 3;
 
-        [ObservableProperty]
-        private int _currentPageIndex;
+        public StroopInstructionsViewModel(
+            ExperimentSettingsViewModel settings,
+            INavigationService participantWindowNavigationService,
+            Func<Page> nextPageFactory) 
+            : base(settings, participantWindowNavigationService, nextPageFactory)
+        { }
 
-        public UIElement CurrentInstruction { get; private set; } = null!;
-
-        public event EventHandler? InstructionChanged;
-
-        public StroopPage? StroopPage { get; private set; }
-
-        public InstructionsPageViewModel(ExperimentSettingsViewModel settings, INavigationService participantWindowNavigationService)
-        {
-            CurrentPageIndex = 0;
-            _settings = settings;
-            _participantWindowNavigationService = participantWindowNavigationService;
-            CurrentInstruction = GenerateInstructionPage(CurrentPageIndex);
-        }
-
-        [RelayCommand]
-        private void Next()
-        {
-            CurrentPageIndex++;
-            if (CurrentPageIndex < TotalPages)
-            {
-                CurrentInstruction = GenerateInstructionPage(CurrentPageIndex);
-                InstructionChanged?.Invoke(this, EventArgs.Empty);
-            }
-            else
-            {
-                StroopPage = new StroopPage(_participantWindowNavigationService, _settings);
-                _participantWindowNavigationService.NavigateTo(() => StroopPage);
-            }
-        }
+        
         /// <summary>
         /// Generates localized instruction content based on page index and experiment configuration.
         /// Handles 6 different instruction cases based on congruence percentage and visual cue presence.
         /// </summary>
-        private UIElement GenerateInstructionPage(int page)
+        protected override UIElement GenerateInstructionPage(int page)
         {
             var originalCulture = Thread.CurrentThread.CurrentCulture;
             var originalUICulture = Thread.CurrentThread.CurrentUICulture;

@@ -2,6 +2,7 @@
 using StroopApp.Models;
 using StroopApp.Services.Language;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Text.Json;
 
 namespace StroopApp.Services.Exportation
@@ -17,6 +18,7 @@ namespace StroopApp.Services.Exportation
         private readonly string _exportFolderConfigFile;
         private string _exportRootDirectory;
         private readonly ILanguageService _languageService;
+        private readonly IEnumerable<TrialExportFormatter> _exportFormatters;
 
         public string ExportRootDirectory
         {
@@ -32,20 +34,25 @@ namespace StroopApp.Services.Exportation
             }
         }
 
-        public ExportationService(ExperimentSettings settings, ILanguageService languageService, AppConfiguration config)
+        public ExportationService(
+            ExperimentSettings settings, 
+            ILanguageService languageService, 
+            AppConfiguration config,
+            IEnumerable<TrialExportFormatter> exportFormatters)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _languageService = languageService ?? throw new ArgumentNullException(nameof(languageService));
+            _exportFormatters = exportFormatters;
+
             ArgumentNullException.ThrowIfNull(config);
             ArgumentException.ThrowIfNullOrWhiteSpace(config.ConfigDirectory);
-
             _configDir = config.ConfigDirectory;
+
 
             if (!string.IsNullOrWhiteSpace(_configDir))
             {
                 Directory.CreateDirectory(_configDir);
             }
-
             _exportFolderConfigFile = Path.Combine(_configDir, "exportFolder.json");
             _exportRootDirectory = LoadExportFolderPath();
             _settings.ExportFolderPath = _exportRootDirectory;
@@ -119,49 +126,33 @@ namespace StroopApp.Services.Exportation
 
             using var wb = new XLWorkbook();
             var ws = wb.Worksheets.Add("Export");
-            ws.Cell(1, 1).Value = _languageService.GetLocalizedString("Header_ParticipantId");
-            ws.Cell(1, 2).Value = _languageService.GetLocalizedString("Header_ProfileName");
-            ws.Cell(1, 3).Value = _languageService.GetLocalizedString("Header_BlockNumber");
-            ws.Cell(1, 4).Value = _languageService.GetLocalizedString("Header_Trials");
-            ws.Cell(1, 5).Value = _languageService.GetLocalizedString("Header_Congruence");
-            ws.Cell(1, 6).Value = _languageService.GetLocalizedString("Header_VisualCue");
-            ws.Cell(1, 7).Value = _languageService.GetLocalizedString("Header_Expected_Answer");
-            ws.Cell(1, 8).Value = _languageService.GetLocalizedString("Header_Given_Answer");
-            ws.Cell(1, 9).Value = _languageService.GetLocalizedString("Header_Response_Validity");
-            ws.Cell(1, 10).Value = _languageService.GetLocalizedString("Header_ResponseTime");
 
+            var formatter = GetFormatter();
+            var headers = formatter.GetColumnHeaders();
+            
+            for (int col = 1; col <= headers.Count; col++)
+                ws.Cell(1, col).Value = headers[col - 1];
+            
             var row = 2;
-            foreach (var block in _settings.ExperimentContext.Blocks)
+            foreach(Block block in _settings.ExperimentContext.Blocks)
             {
-                foreach (var r in block.TrialRecords)
+                foreach(ITrial? trial in block.TrialRecords)
                 {
-                    ws.Cell(row, 1).Value = p.Id;
-                    ws.Cell(row, 2).Value = _settings.CurrentProfile.ProfileName;
-                    ws.Cell(row, 3).Value = block.BlockNumber;
-                    ws.Cell(row, 4).Value = r.TrialNumber;
-                    ws.Cell(row, 5).Value = r.IsCongruent;
-                    ws.Cell(row, 6).Value = r.VisualCue switch
-                    {
-                        VisualCueType.Square => _languageService.GetLocalizedString("Label_Square"),
-                        VisualCueType.Round => _languageService.GetLocalizedString("Label_Circle"),
-                        _ => ""
-                    };
-                    ws.Cell(row, 7).Value = r.ExpectedAnswer;
-                    ws.Cell(row, 8).Value = r.GivenAnswer;
-
-                    var validCell = ws.Cell(row, 9);
-                    if (r.IsValidResponse.HasValue)
-                        validCell.Value = r.IsValidResponse.Value;
-                    else
-                        validCell.Clear();
-
-                    ws.Cell(row, 10).Value = r.ReactionTime;
+                    if (trial is null) continue;
+                    formatter.WriteRow(ws, row, trial, _settings.CurrentProfile.ProfileName, block.BlockNumber);
                     row++;
                 }
             }
+            
 
             await Task.Run(() => wb.SaveAs(filePath));
             return await Task.FromResult(filePath);
+        }
+        private TrialExportFormatter GetFormatter()
+        {
+            var taskType = _settings.CurrentProfile.TaskType;
+            return _exportFormatters.FirstOrDefault(f => f.TaskType == taskType)
+                ?? throw new InvalidOperationException($"Erreur : pas de formatteur pour la tâche {taskType}");
         }
     }
 }

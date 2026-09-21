@@ -11,7 +11,7 @@ namespace StroopApp.XUnitTests.Models
         public void UpdateDerivedValues_IncludesVisualCueInWordDuration_WhenIsVisualCueTrue()
         {
             // Arrange
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 CalculationMode = CalculationMode.WordCount,
                 FixationDuration = 150,
@@ -32,7 +32,7 @@ namespace StroopApp.XUnitTests.Models
         public void UpdateDerivedValues_ComputesWordCount_WhenTaskDurationMode()
         {
             // Arrange
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 CalculationMode = CalculationMode.TaskDuration,
                 Hours = 0,
@@ -53,7 +53,7 @@ namespace StroopApp.XUnitTests.Models
         public void UpdateDerivedValues_ComputesTaskDurationAndTimeComponents_WhenWordCountMode()
         {
             // Arrange
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 CalculationMode = CalculationMode.WordCount,
                 WordCount = 20,
@@ -79,7 +79,7 @@ namespace StroopApp.XUnitTests.Models
         public void CloneProfile_CreatesNewInstance_NotSameReference()
         {
             // Arrange
-            var original = new ExperimentProfile();
+            var original = new StroopProfile();
 
             // Act
             var cloned = original.CloneProfile();
@@ -100,7 +100,7 @@ namespace StroopApp.XUnitTests.Models
         public void CloneProfile_CopiesIdCorrectly_WithVariousGuidValues(string guidValue)
         {
             // Arrange
-            var original = new ExperimentProfile
+            var original = new StroopProfile
             {
                 Id = Guid.Parse(guidValue)
             };
@@ -125,7 +125,7 @@ namespace StroopApp.XUnitTests.Models
         public void CloneProfile_CopiesProfileNameCorrectly_WithVariousStrings(string profileName)
         {
             // Arrange
-            var original = new ExperimentProfile
+            var original = new StroopProfile
             {
                 ProfileName = profileName
             };
@@ -147,7 +147,7 @@ namespace StroopApp.XUnitTests.Models
         public void CloneProfile_CopiesCalculationModeCorrectly_WithBothEnumValues(CalculationMode calculationMode)
         {
             // Arrange
-            var original = new ExperimentProfile
+            var original = new StroopProfile
             {
                 CalculationMode = calculationMode
             };
@@ -168,7 +168,7 @@ namespace StroopApp.XUnitTests.Models
         {
             // Arrange
             var testGuid = Guid.NewGuid();
-            var original = new ExperimentProfile
+            var original = new StroopProfile
             {
                 Id = testGuid,
                 ProfileName = "Test Profile Name",

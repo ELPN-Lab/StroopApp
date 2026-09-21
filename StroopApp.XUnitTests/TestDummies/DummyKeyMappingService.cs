@@ -5,7 +5,7 @@ namespace StroopApp.XUnitTests.TestDummies
 {
 	public class DummyKeyMappingService : IKeyMappingService
 	{
-		public Task<KeyMappings> LoadKeyMappings() => Task.FromResult(new KeyMappings());
-		public Task SaveKeyMappings(KeyMappings mappings) => Task.CompletedTask;
+		public Task<ExperimentKeyMappings> LoadKeyMappings() => Task.FromResult(new ExperimentKeyMappings());
+		public Task SaveKeyMappings(ExperimentKeyMappings mappings) => Task.CompletedTask;
 	}
 }

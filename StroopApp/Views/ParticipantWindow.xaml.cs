@@ -1,7 +1,5 @@
-﻿using StroopApp.Models;
-using StroopApp.Services.Navigation;
+﻿using StroopApp.Services.Navigation;
 using StroopApp.Services.Navigation.PageFactory;
-using StroopApp.ViewModels.Experiment.Participant;
 using StroopApp.ViewModels.State;
 using System.Windows;
 
@@ -11,26 +9,29 @@ namespace StroopApp.Views
     {
         private readonly ExperimentSettingsViewModel _settings;
         private readonly INavigationService _participantNavigationService;
-        private readonly IPageFactory _pageFactory;
+        private readonly Func<ExperimentSettingsViewModel, INavigationService, IDisposable> _viewModelFactory;
 
-        public ParticipantWindow(ExperimentSettingsViewModel settings, IPageFactory pageFactory)
+        public ParticipantWindow(
+            ExperimentSettingsViewModel settings, 
+            IPageFactory pageFactory, 
+            Func<ExperimentSettingsViewModel, INavigationService, IDisposable> viewModelFactory)
         {
             InitializeComponent();
             _settings = settings;
-            _pageFactory = pageFactory;
+            _viewModelFactory = viewModelFactory;
             var navigationService = new NavigationService(pageFactory);
             navigationService.SetFrame(ParticipantFrame);
             _participantNavigationService = navigationService;
-            DataContext = new ParticipantWindowViewModel(settings, _participantNavigationService);
+            DataContext = viewModelFactory(settings, _participantNavigationService);
         }
 
         public void Reset()
         {
-            if (DataContext is ParticipantWindowViewModel oldViewModel)
+            if (DataContext is IDisposable oldViewModel)
             {
                 oldViewModel.Dispose();
             }
-            DataContext = new ParticipantWindowViewModel(_settings, _participantNavigationService);
+            DataContext = _viewModelFactory(_settings, _participantNavigationService);
         }
     }
 

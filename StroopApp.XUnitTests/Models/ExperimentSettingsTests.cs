@@ -12,7 +12,6 @@
             // Arrange & Act
             var settings = new ExperimentSettings();
             // Assert
-            Assert.NotNull(settings.CurrentProfile);
             Assert.NotNull(settings.KeyMappings);
             Assert.NotNull(settings.ExperimentContext);
             Assert.Equal("", settings.ExportFolderPath);
@@ -47,7 +46,7 @@
         {
             // Arrange
             var settings = new ExperimentSettings();
-            var profile = new ExperimentProfile();
+            var profile = new StroopProfile();
             // Act
             settings.CurrentProfile = profile;
             // Assert
@@ -59,7 +58,7 @@
         {
             // Arrange
             var settings = new ExperimentSettings();
-            var mappings = new KeyMappings();
+            var mappings = new ExperimentKeyMappings();
             // Act
             settings.KeyMappings = mappings;
             // Assert
@@ -210,7 +209,7 @@
         public void Reset_DoesNotModifyCurrentProfile()
         {
             // Arrange
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 ProfileName = "TestProfile"
             };
@@ -229,7 +228,7 @@
         public void Reset_DoesNotModifyKeyMappings()
         {
             // Arrange
-            var mappings = new KeyMappings();
+            var mappings = new ExperimentKeyMappings();
             var settings = new ExperimentSettings
             {
                 KeyMappings = mappings

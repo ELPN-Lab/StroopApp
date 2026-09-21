@@ -11,7 +11,7 @@ namespace StroopApp.XUnitTests.TestDummies
 		public void SaveProfiles(ObservableCollection<ExperimentProfile> profiles)
 		{
 		}
-		public void DeleteProfile(ExperimentProfile profile, ObservableCollection<ExperimentProfile> profiles)
+		public void DeleteProfile(ExperimentProfile profile)
 		{
 		}
 		public Guid? LoadLastSelectedProfile() => null;

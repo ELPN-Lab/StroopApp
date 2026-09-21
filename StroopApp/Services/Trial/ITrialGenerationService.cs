@@ -4,7 +4,7 @@ using StroopApp.ViewModels.State;
 namespace StroopApp.Services.Trial
 {
     /// <summary>
-    /// Defines contract for generating Stroop trial sequences with optional visual cues.
+    /// Defines contract for generating trial sequences.
     /// </summary>
     public interface ITrialGenerationService
     {
@@ -13,14 +13,8 @@ namespace StroopApp.Services.Trial
         /// </summary>
         /// <param name="settings">Experiment settings</param>
         /// <returns>List of generated trials</returns>
-        List<StroopTrial> GenerateTrials(ExperimentSettingsViewModel settings);
+        List<ITrial> GenerateTrials(ExperimentSettingsViewModel settings);
 
-        /// <summary>
-        /// Generates a sequence of visual cues (optional).
-        /// </summary>
-        /// <param name="count">Number of cues to generate</param>
-        /// <param name="switchPercentage">Percentage of cue switches</param>
-        /// <returns>Sequence of cues</returns>
-        List<VisualCueType> GenerateVisualCueSequence(int count, int switchPercentage);
+        
     }
 }

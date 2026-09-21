@@ -7,6 +7,27 @@
     <Page.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter" />
+        <converters:BoolToStringConverter x:Key="BoolToStringConverter" />
+        
+        <Style x:Key="CenteredCellStyle" TargetType="TextBlock"
+       BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="TextAlignment"       Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment"   Value="Center" />
+        </Style>
+
+        <Style x:Key="GlyphCellStyle" TargetType="TextBlock"
+       BasedOn="{StaticResource CenteredCellStyle}">
+            <Setter Property="FontSize" Value="32" />
+            <Style.Triggers>
+                <Trigger Property="Text" Value="✅">
+                    <Setter Property="Foreground" Value="Green" />
+                </Trigger>
+                <Trigger Property="Text" Value="❎">
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Page.Resources>
     <Grid x:Name="MainGrid"
           Margin="12">
@@ -63,14 +84,14 @@
                            Text="{Binding Source={StaticResource Loc}, Path=[Label_EndExperiment_BlockSummary]}"
                            Style="{DynamicResource TitleTextBlockStyle}"
                            Margin="0,0,0,12" />
-                <Border Grid.Row="3"
+                <Border Grid.Row="1"
                         Margin="0,12,0,0"
                         Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
                         CornerRadius="8"
                         Padding="8"
                         BorderThickness="0.5"
                         BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
-                    <DataGrid Grid.Row="1"
+                    <DataGrid x:Name="BlockSummaryGrid"
                               ItemsSource="{Binding Blocks}"
                               IsReadOnly="True"
                               HeadersVisibility="Column"
@@ -81,105 +102,6 @@
                                         Value="False" />
                             </Style>
                         </DataGrid.RowStyle>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Header_ExperimentProfile]}"
-                                                Binding="{Binding BlockExperimentProfile}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock"
-                                           BasedOn="{StaticResource {x:Type TextBlock}}">
-                                        <Setter Property="TextAlignment"
-                                                Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Header_BlockNumber]}">
-                                <DataGridTextColumn.Binding>
-                                    <MultiBinding StringFormat="{}{0} {1}">
-                                        <Binding Source="{StaticResource Loc}"
-                                                 Path="[Header_BlockNumber]"
-                                                 Mode="OneWay" />
-                                        <Binding Path="BlockNumber" />
-                                    </MultiBinding>
-                                </DataGridTextColumn.Binding>
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextAlignment"
-                                                Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Header_TrialsPerBlock]}"
-                                                Binding="{Binding TrialsPerBlock}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextAlignment"
-                                                Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Header_Accuracy]}"
-                                                Binding="{Binding Accuracy, StringFormat={}{0:F2}%}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextAlignment"
-                                                Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Header_MeanResponseTime]}"
-                                                Binding="{Binding ResponseTimeMean, StringFormat={}{0:F2} ms}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextAlignment"
-                                                Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Header_Congruence_Percent]}"
-                                                Binding="{Binding CongruencePercent}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextAlignment"
-                                                Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Header_VisualCue]}"
-                                                Binding="{Binding VisualCue}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock"
-                                           BasedOn="{StaticResource {x:Type TextBlock}}">
-                                        <Setter Property="HorizontalAlignment"
-                                                Value="Center" />
-                                        <Setter Property="TextAlignment"
-                                                Value="Center" />
-                                        <Setter Property="FontSize"
-                                                Value="32" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding VisualCue}"
-                                                         Value="✅">
-                                                <Setter Property="Foreground"
-                                                        Value="Green" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding VisualCue}"
-                                                         Value="❎">
-                                                <Setter Property="Foreground"
-                                                        Value="Red" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Header_Switch]}"
-                                                Binding="{Binding SwitchPercent}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextAlignment"
-                                                Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                        </DataGrid.Columns>
                     </DataGrid>
                 </Border>
             </Grid>
@@ -200,7 +122,8 @@
                              Spacing="16"
                              Grid.Row="6"
                              HorizontalAlignment="Center"
-                             Grid.ColumnSpan="3">
+                             Grid.ColumnSpan="3"
+                             >
             <Button Content="{Binding Source={StaticResource Loc}, Path=[Button_Continue]}"
                     Command="{Binding ContinueCommand}" />
             <Button Content="{Binding Source={StaticResource Loc}, Path=[Button_Export]}"

@@ -1,6 +1,6 @@
 using StroopApp.Core;
 
-namespace StroopApp.ViewModels.Experiment.Participant.Stroop
+namespace StroopApp.ViewModels.Experiment.Participant.Common
 {
     /// <summary>
     /// Marker ViewModel for the fixation cross step in a Stroop trial.

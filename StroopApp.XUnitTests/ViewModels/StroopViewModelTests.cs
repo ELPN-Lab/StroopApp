@@ -9,7 +9,7 @@ namespace StroopApp.XUnitTests.ViewModels
 		public void DefaultConstructor_SetsDefaultValues()
 		{
 			// Arrange & Act
-			var profile = new ExperimentProfile();
+			var profile = new StroopProfile();
 
 			// Assert
 			Assert.Equal(50, profile.CongruencePercent);

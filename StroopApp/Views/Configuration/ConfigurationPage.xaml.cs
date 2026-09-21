@@ -1,9 +1,12 @@
-﻿using StroopApp.Services.Exportation;
+﻿using DocumentFormat.OpenXml.Drawing;
+using StroopApp.Models;
+using StroopApp.Services.Exportation;
 using StroopApp.Services.KeyMapping;
 using StroopApp.Services.Language;
 using StroopApp.Services.Navigation;
 using StroopApp.Services.Participant;
 using StroopApp.Services.Profile;
+using StroopApp.Services.Session;
 using StroopApp.Services.Trial;
 using StroopApp.Services.Window;
 using StroopApp.ViewModels.Configuration;
@@ -24,6 +27,7 @@ namespace StroopApp.Views
         private readonly IKeyMappingService _keyMappingService;
         private readonly IExportationService _exportationService;
         private readonly ITrialGenerationService _trialGenerationService;
+        private readonly IExperimentSessionService _sessionService;
 
         public INavigationService NavigationService
         {
@@ -38,7 +42,8 @@ namespace StroopApp.Views
             IParticipantService participantService,
             IKeyMappingService keyMappingService,
             IExportationService exportationService,
-            ITrialGenerationService trialGenerationService)
+            ITrialGenerationService trialGenerationService,
+            IExperimentSessionService sessionService)
         {
             InitializeComponent();
             _settings = settings;
@@ -49,11 +54,12 @@ namespace StroopApp.Views
             _keyMappingService = keyMappingService;
             _exportationService = exportationService;
             _trialGenerationService = trialGenerationService;
+            _sessionService = sessionService;
         }
 
         private void Initialize(INavigationService navigationService)
         {
-            var profileViewModel = new ProfileManagementViewModel(_profileService);
+            var profileViewModel = new ProfileManagementViewModel(_profileService, TaskType.Stroop);
             var participantViewModel = new ParticipantManagementViewModel(_participantService, _settings.ExperimentContext.IsParticipantSelectionEnabled);
             var keyMappingViewModel = new KeyMappingViewModel(_keyMappingService);
             var exportFolderSelectorViewModel = new ExportFolderSelectorViewModel(_settings, _exportationService);
@@ -67,7 +73,8 @@ namespace StroopApp.Views
                 navigationService,
                 _windowManager,
                 _trialGenerationService,
-                _languageService);
+                _languageService,
+                _sessionService);
         }
     }
 }

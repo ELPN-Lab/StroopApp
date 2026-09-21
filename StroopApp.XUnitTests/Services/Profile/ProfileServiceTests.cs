@@ -1,12 +1,13 @@
-﻿using System;
+﻿using StroopApp.Models;
+using StroopApp.Models.Simon;
+using StroopApp.Services.Profile;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-
-using StroopApp.Models;
-using StroopApp.Services.Profile;
 using Xunit;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace StroopApp.Services.Profile.UnitTests
 {
@@ -192,7 +193,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_NewProfileWithEmptyGuid_GeneratesNewGuidAndInsertsProfile()
         {
             // Arrange
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.Empty,
                 ProfileName = "Test Profile",
@@ -232,7 +233,7 @@ namespace StroopApp.Services.Profile.UnitTests
         {
             // Arrange
             var specificGuid = Guid.NewGuid();
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = specificGuid,
                 ProfileName = "Specific GUID Profile",
@@ -271,7 +272,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_ExistingProfile_UpdatesAllProperties()
         {
             // Arrange
-            var existingProfile = new ExperimentProfile
+            var existingProfile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Original Name",
@@ -293,7 +294,7 @@ namespace StroopApp.Services.Profile.UnitTests
 
             _profileService.UpsertProfile(existingProfile);
 
-            var updatedProfile = new ExperimentProfile
+            var updatedProfile = new StroopProfile
             {
                 Id = existingProfile.Id,
                 ProfileName = "Updated Name",
@@ -349,7 +350,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_NewProfileWithExistingProfiles_AddsWithoutAffectingOthers()
         {
             // Arrange
-            var existingProfile = new ExperimentProfile
+            var existingProfile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Existing Profile",
@@ -359,7 +360,7 @@ namespace StroopApp.Services.Profile.UnitTests
 
             _profileService.UpsertProfile(existingProfile);
 
-            var newProfile = new ExperimentProfile
+            var newProfile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "New Profile",
@@ -386,7 +387,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_UpdateWithMultipleProfiles_UpdatesOnlyMatchingProfile()
         {
             // Arrange
-            var profile1 = new ExperimentProfile
+            var profile1 = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Profile 1",
@@ -394,7 +395,7 @@ namespace StroopApp.Services.Profile.UnitTests
                 CalculationMode = CalculationMode.WordCount
             };
 
-            var profile2 = new ExperimentProfile
+            var profile2 = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Profile 2",
@@ -405,7 +406,7 @@ namespace StroopApp.Services.Profile.UnitTests
             _profileService.UpsertProfile(profile1);
             _profileService.UpsertProfile(profile2);
 
-            var updatedProfile2 = new ExperimentProfile
+            var updatedProfile2 = new StroopProfile
             {
                 Id = profile2.Id,
                 ProfileName = "Updated Profile 2",
@@ -441,7 +442,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_UpdateWithNullableProperty_HandlesNullCorrectly()
         {
             // Arrange
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Test",
@@ -452,7 +453,7 @@ namespace StroopApp.Services.Profile.UnitTests
 
             _profileService.UpsertProfile(profile);
 
-            var updatedProfile = new ExperimentProfile
+            var updatedProfile = new StroopProfile
             {
                 Id = profile.Id,
                 ProfileName = "Test Updated",
@@ -479,7 +480,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_WithBoundaryIntegerValues_PersistsCorrectly()
         {
             // Arrange
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Boundary Test",
@@ -518,7 +519,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_WithEmptyStringTaskLanguage_PersistsCorrectly()
         {
             // Arrange
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Empty Language Test",
@@ -545,7 +546,7 @@ namespace StroopApp.Services.Profile.UnitTests
         {
             // Arrange
             var longString = new string('A', 10000);
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = longString,
@@ -573,7 +574,7 @@ namespace StroopApp.Services.Profile.UnitTests
         {
             // Arrange
             var specialString = "Test\n\r\t\"'<>&\\Profile";
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = specialString,
@@ -599,7 +600,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_NullProfile_ThrowsArgumentNullException()
         {
             // Arrange
-            ExperimentProfile? profile = null;
+            StroopProfile? profile = null;
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _profileService.UpsertProfile(profile!));
@@ -614,7 +615,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_UpdateExistingProfile_CallsUpdateDerivedValues()
         {
             // Arrange
-            var existingProfile = new ExperimentProfile
+            var existingProfile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Test",
@@ -627,7 +628,7 @@ namespace StroopApp.Services.Profile.UnitTests
 
             _profileService.UpsertProfile(existingProfile);
 
-            var updatedProfile = new ExperimentProfile
+            var updatedProfile = new StroopProfile
             {
                 Id = existingProfile.Id,
                 ProfileName = "Test",
@@ -650,6 +651,46 @@ namespace StroopApp.Services.Profile.UnitTests
             Assert.Equal(16000, savedProfile.TaskDuration);
         }
 
+
+        /// <summary>
+        /// Adds a profile in a service and verify in a new one that the file has been written in disk
+        /// Input : StroopProfile and a double service
+        /// Expect : Profile persisted in the disk with properties
+        /// </summary>
+        [Fact]
+        public void UpsertProfile_NewProfile_PersistsToDisk()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            var config = new AppConfiguration { ConfigDirectory = tempDir };
+            var service1 = new ProfileService(config);
+            var profile = new StroopProfile
+            {
+                Id = Guid.NewGuid(),
+                ProfileName = "Test Profile",
+            };
+            var expectedPath = Path.Combine(tempDir, "profiles.json");
+
+            try
+            {
+                // Act
+                service1.UpsertProfile(profile);
+                var service2 = new ProfileService(config);
+                var loadedProfiles = service2.LoadProfiles();
+
+                // Assert
+                Assert.Contains(loadedProfiles, p => p.Id == profile.Id);
+            }
+            finally
+            {
+                // Cleanup
+                if (Directory.Exists(tempDir))
+                {
+                    Directory.Delete(tempDir, true);
+                }
+            }
+        }
+
         /// <summary>
         /// Tests that UpsertProfile handles all CalculationMode enum values correctly.
         /// Input: Profiles with different CalculationMode values.
@@ -661,7 +702,7 @@ namespace StroopApp.Services.Profile.UnitTests
         public void UpsertProfile_WithDifferentCalculationModes_PersistsCorrectly(CalculationMode mode)
         {
             // Arrange
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = $"Test {mode}",
@@ -679,6 +720,8 @@ namespace StroopApp.Services.Profile.UnitTests
             Assert.NotNull(result);
             Assert.Equal(mode, result.First().CalculationMode);
         }
+
+
 
         /// <summary>
         /// Tests that SaveProfiles throws ArgumentNullException when profiles parameter is null.
@@ -752,7 +795,7 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Test Profile",
@@ -771,7 +814,7 @@ namespace StroopApp.Services.Profile.UnitTests
                 // Assert
                 Assert.True(File.Exists(expectedPath));
                 var content = File.ReadAllText(expectedPath);
-                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<ExperimentProfile>>(content);
+                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<StroopProfile>>(content);
                 Assert.NotNull(deserializedProfiles);
                 Assert.Single(deserializedProfiles);
                 Assert.Equal(profile.Id, deserializedProfiles[0].Id);
@@ -798,19 +841,19 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile1 = new ExperimentProfile
+            var profile1 = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Profile 1",
                 FixationDuration = 100
             };
-            var profile2 = new ExperimentProfile
+            var profile2 = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Profile 2",
                 FixationDuration = 200
             };
-            var profile3 = new ExperimentProfile
+            var profile3 = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Profile 3",
@@ -827,7 +870,7 @@ namespace StroopApp.Services.Profile.UnitTests
                 // Assert
                 Assert.True(File.Exists(expectedPath));
                 var content = File.ReadAllText(expectedPath);
-                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<ExperimentProfile>>(content);
+                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<StroopProfile>>(content);
                 Assert.NotNull(deserializedProfiles);
                 Assert.Equal(3, deserializedProfiles.Count);
                 Assert.Equal(profile1.Id, deserializedProfiles[0].Id);
@@ -888,7 +931,7 @@ namespace StroopApp.Services.Profile.UnitTests
             var service = new ProfileService(config);
             var expectedPath = Path.Combine(tempDir, "profiles.json");
             File.WriteAllText(expectedPath, "old content");
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "New Profile"
@@ -903,7 +946,7 @@ namespace StroopApp.Services.Profile.UnitTests
                 // Assert
                 var content = File.ReadAllText(expectedPath);
                 Assert.DoesNotContain("old content", content);
-                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<ExperimentProfile>>(content);
+                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<StroopProfile>>(content);
                 Assert.NotNull(deserializedProfiles);
                 Assert.Single(deserializedProfiles);
                 Assert.Equal(profile.Id, deserializedProfiles[0].Id);
@@ -928,7 +971,7 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Test"
@@ -968,36 +1011,30 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profileToDelete = new ExperimentProfile
+            var profileToDelete = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Profile to Delete"
             };
-            var otherProfile = new ExperimentProfile
+            var otherProfile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Other Profile"
             };
-            var profiles = new ObservableCollection<ExperimentProfile> { profileToDelete, otherProfile };
+            service.SaveProfiles([profileToDelete, otherProfile]);
+            // var profiles = new ObservableCollection<ExperimentProfile> { profileToDelete, otherProfile };
             var profilesPath = Path.Combine(tempDir, "profiles.json");
 
             try
             {
                 // Act
-                service.DeleteProfile(profileToDelete, profiles);
+                service.DeleteProfile(profileToDelete);
 
                 // Assert
-                Assert.Single(profiles);
-                Assert.DoesNotContain(profileToDelete, profiles);
-                Assert.Contains(otherProfile, profiles);
-
-                // Verify SaveProfiles was called by checking file content
-                Assert.True(File.Exists(profilesPath));
-                var content = File.ReadAllText(profilesPath);
-                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<ExperimentProfile>>(content);
-                Assert.NotNull(deserializedProfiles);
-                Assert.Single(deserializedProfiles);
-                Assert.Equal(otherProfile.Id, deserializedProfiles[0].Id);
+                var profiles = service.LoadProfiles();
+                Assert.DoesNotContain(profiles, p => p.Id == profileToDelete.Id);
+                Assert.Contains(profiles, p => p.Id == otherProfile.Id);
+                
             }
             finally
             {
@@ -1021,30 +1058,31 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var existingProfile = new ExperimentProfile
+            var existingProfile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Existing Profile"
             };
-            var nonExistentProfile = new ExperimentProfile
+            var nonExistentProfile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Non-Existent Profile"
             };
-            var profiles = new ObservableCollection<ExperimentProfile> { existingProfile };
+            service.SaveProfiles([existingProfile]);
+
+            // var profiles = new ObservableCollection<ExperimentProfile> { existingProfile };
             var profilesPath = Path.Combine(tempDir, "profiles.json");
 
             try
             {
                 // Act
-                service.DeleteProfile(nonExistentProfile, profiles);
+                service.DeleteProfile(nonExistentProfile);
 
                 // Assert
+                var profiles = service.LoadProfiles();
                 Assert.Single(profiles);
-                Assert.Contains(existingProfile, profiles);
-
-                // Verify SaveProfiles was not called (file should not exist)
-                Assert.False(File.Exists(profilesPath));
+                Assert.Contains(profiles, p => p.Id == existingProfile.Id);
+                Assert.DoesNotContain(profiles, p => p.Id == nonExistentProfile.Id); 
             }
             finally
             {
@@ -1068,57 +1106,24 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Test Profile"
             };
-            var profiles = new ObservableCollection<ExperimentProfile>();
+            // var profiles = new ObservableCollection<ExperimentProfile>();
             var profilesPath = Path.Combine(tempDir, "profiles.json");
 
             try
             {
                 // Act
-                service.DeleteProfile(profile, profiles);
+                service.DeleteProfile(profile);
 
                 // Assert
-                Assert.Empty(profiles);
+                Assert.Empty(service.LoadProfiles());
 
                 // Verify SaveProfiles was not called (file should not exist)
                 Assert.False(File.Exists(profilesPath));
-            }
-            finally
-            {
-                // Cleanup
-                if (Directory.Exists(tempDir))
-                {
-                    Directory.Delete(tempDir, true);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Tests that DeleteProfile throws ArgumentNullException when profiles collection is null.
-        /// Input: Null profiles collection.
-        /// Expected: ArgumentNullException is thrown.
-        /// </summary>
-        [Fact]
-        public void DeleteProfile_NullProfilesCollection_ThrowsArgumentNullException()
-        {
-            // Arrange
-            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            var config = new AppConfiguration { ConfigDirectory = tempDir };
-            var service = new ProfileService(config);
-            var profile = new ExperimentProfile
-            {
-                Id = Guid.NewGuid(),
-                ProfileName = "Test Profile"
-            };
-
-            try
-            {
-                // Act & Assert
-                Assert.Throws<ArgumentNullException>(() => service.DeleteProfile(profile, null!));
             }
             finally
             {
@@ -1142,25 +1147,22 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var existingProfile = new ExperimentProfile
+            var existingProfile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Existing Profile"
             };
-            var profiles = new ObservableCollection<ExperimentProfile> { existingProfile };
+            service.SaveProfiles([existingProfile]);
             var profilesPath = Path.Combine(tempDir, "profiles.json");
 
             try
             {
                 // Act
-                service.DeleteProfile(null!, profiles);
+                service.DeleteProfile(null!);
 
                 // Assert
-                Assert.Single(profiles);
-                Assert.Contains(existingProfile, profiles);
-
-                // Verify SaveProfiles was not called
-                Assert.False(File.Exists(profilesPath));
+                var profiles = service.LoadProfiles();
+                Assert.Contains(profiles, p=>p.Id == existingProfile.Id);
             }
             finally
             {
@@ -1184,39 +1186,41 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile1 = new ExperimentProfile
+            var profile1 = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Profile 1"
             };
-            var profile2 = new ExperimentProfile
+            var profile2 = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Profile 2"
             };
-            var profile3 = new ExperimentProfile
+            var profile3 = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Profile 3"
             };
-            var profiles = new ObservableCollection<ExperimentProfile> { profile1, profile2, profile3 };
+            service.SaveProfiles([profile1, profile2, profile3]);
+            // var profiles = new ObservableCollection<ExperimentProfile> { profile1, profile2, profile3 };
             var profilesPath = Path.Combine(tempDir, "profiles.json");
 
             try
             {
                 // Act
-                service.DeleteProfile(profile2, profiles);
+                service.DeleteProfile(profile2);
 
                 // Assert
+                var profiles = service.LoadProfiles();
                 Assert.Equal(2, profiles.Count);
-                Assert.Contains(profile1, profiles);
-                Assert.DoesNotContain(profile2, profiles);
-                Assert.Contains(profile3, profiles);
+                Assert.Contains(profiles, p => p.Id == profile1.Id);
+                Assert.DoesNotContain(profiles, p => p.Id == profile2.Id);
+                Assert.Contains(profiles, p=> p.Id == profile3.Id);
 
                 // Verify SaveProfiles was called by checking file content
                 Assert.True(File.Exists(profilesPath));
                 var content = File.ReadAllText(profilesPath);
-                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<ExperimentProfile>>(content);
+                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<StroopProfile>>(content);
                 Assert.NotNull(deserializedProfiles);
                 Assert.Equal(2, deserializedProfiles.Count);
             }
@@ -1242,26 +1246,28 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Only Profile"
             };
-            var profiles = new ObservableCollection<ExperimentProfile> { profile };
+            service.SaveProfiles([profile]);
+            // var profiles = new ObservableCollection<ExperimentProfile> { profile };
             var profilesPath = Path.Combine(tempDir, "profiles.json");
 
             try
             {
                 // Act
-                service.DeleteProfile(profile, profiles);
+                service.DeleteProfile(profile);
 
                 // Assert
+                var profiles = service.LoadProfiles();
                 Assert.Empty(profiles);
 
                 // Verify SaveProfiles was called with empty collection
                 Assert.True(File.Exists(profilesPath));
                 var content = File.ReadAllText(profilesPath);
-                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<ExperimentProfile>>(content);
+                var deserializedProfiles = JsonSerializer.Deserialize<ObservableCollection<StroopProfile>>(content);
                 Assert.NotNull(deserializedProfiles);
                 Assert.Empty(deserializedProfiles);
             }
@@ -1274,6 +1280,56 @@ namespace StroopApp.Services.Profile.UnitTests
                 }
             }
         }
+
+        /// <summary>
+        /// Ensures that the deletion of one TaskType profile does not erases the other types.
+        /// Input : Collection with one StroopProfile and one SimonProfile, the StroopProfile is deleted
+        /// Expected : StroopProfile removed, SimonProfile preserved 
+        /// </summary>
+        [Fact]
+        public void DeleteProfile_StroopProfile_DoesNotRemoveSimonProfile()
+        {
+            // Arrange
+            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            var config = new AppConfiguration { ConfigDirectory = tempDir };
+            var service = new ProfileService(config);
+            var profile1 = new StroopProfile
+            {
+                Id = Guid.NewGuid(),
+                ProfileName = "Only Profile"
+            };
+            var profile2 = new SimonProfile
+            {
+                Id = Guid.NewGuid(),
+                ProfileName = "Only Profile"
+            };
+            service.SaveProfiles([profile1, profile2]);
+            // var profiles = new ObservableCollection<ExperimentProfile> { profile };
+            var profilesPath = Path.Combine(tempDir, "profiles.json");
+
+
+            try
+            {
+                // Act
+                service.DeleteProfile(profile1);
+
+                // Assert
+                var profiles = service.LoadProfiles();
+                Assert.DoesNotContain(profiles, p => p.Id == profile1.Id);
+                Assert.Contains(profiles, p => p.Id == profile2.Id);
+                Assert.IsType<SimonProfile>(profiles.Single(p => p.Id == profile2.Id));
+            }
+            finally
+            {
+                // Cleanup
+                if (Directory.Exists(tempDir))
+                {
+                    Directory.Delete(tempDir, true);
+                }
+            }
+        }
+
+
 
         /// <summary>
         /// Tests that LoadLastSelectedProfile returns null when the lastProfile.json file does not exist.
@@ -1771,7 +1827,7 @@ namespace StroopApp.Services.Profile.UnitTests
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
             var profileId = Guid.NewGuid();
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = profileId,
                 ProfileName = "Test Profile"
@@ -1812,7 +1868,7 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.Empty,
                 ProfileName = "Empty GUID Profile"
@@ -1852,7 +1908,7 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Test Profile"
@@ -1897,13 +1953,13 @@ namespace StroopApp.Services.Profile.UnitTests
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
             var firstProfileId = Guid.NewGuid();
-            var firstProfile = new ExperimentProfile
+            var firstProfile = new StroopProfile
             {
                 Id = firstProfileId,
                 ProfileName = "First Profile"
             };
             var secondProfileId = Guid.NewGuid();
-            var secondProfile = new ExperimentProfile
+            var secondProfile = new StroopProfile
             {
                 Id = secondProfileId,
                 ProfileName = "Second Profile"
@@ -1948,7 +2004,7 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Test Profile"
@@ -1988,7 +2044,7 @@ namespace StroopApp.Services.Profile.UnitTests
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var config = new AppConfiguration { ConfigDirectory = tempDir };
             var service = new ProfileService(config);
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 Id = Guid.NewGuid(),
                 ProfileName = "Test Profile Name",

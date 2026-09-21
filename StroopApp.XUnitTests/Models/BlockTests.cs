@@ -10,7 +10,7 @@ namespace StroopApp.Models.UnitTests
     {
         private Block CreateBlock()
         {
-            return new Block("TestProfile", blockNumber: 1, congruencePercent: null, switchPercent: null, hasVisualCue: false);
+            return new Block(new StroopProfile { ProfileName = "TestProfile" }, blockNumber: 1);
         }
 
         /// <summary>

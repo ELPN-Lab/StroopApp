@@ -6,6 +6,7 @@ using StroopApp.ViewModels.Configuration;
 using StroopApp.ViewModels.Configuration.Participant;
 using StroopApp.ViewModels.Configuration.Profile;
 using StroopApp.ViewModels.State;
+using StroopApp.Services.Session;
 
 namespace StroopApp.XUnitTests.ViewModels.Configuration
 {
@@ -23,8 +24,9 @@ namespace StroopApp.XUnitTests.ViewModels.Configuration
             INavigationService experimenterNavigationService,
             IWindowManager windowManager,
             ITrialGenerationService trialGenerationService,
-            ILanguageService languageService
-        ) : base(settings, profileViewModel, participantViewModel, keyMappingViewModel, exportFolderSelectorViewModel, experimenterNavigationService, windowManager, trialGenerationService, languageService)
+            ILanguageService languageService,
+            IExperimentSessionService sessionService
+        ) : base(settings, profileViewModel, participantViewModel, keyMappingViewModel, exportFolderSelectorViewModel, experimenterNavigationService, windowManager, trialGenerationService, languageService, sessionService)
         { }
 
         protected override Task ShowErrorDialogAsync(string message)

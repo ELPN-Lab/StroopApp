@@ -1,8 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using StroopApp.Models;
+using StroopApp.Models.Simon;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
-
-using StroopApp.Models;
 
 namespace StroopApp.Services.Profile
 {
@@ -33,8 +33,31 @@ namespace StroopApp.Services.Profile
 				return new ObservableCollection<ExperimentProfile>();
 
 			var json = File.ReadAllText(_profilesPath);
-			return JsonSerializer.Deserialize<ObservableCollection<ExperimentProfile>>(json)
-				   ?? new ObservableCollection<ExperimentProfile>();
+            var doc = JsonDocument.Parse(json);
+			var profiles = new ObservableCollection<ExperimentProfile>();
+
+			foreach (var element in doc.RootElement.EnumerateArray())
+			{
+                // if the TaskType attribute didn't exist, it was necessarily a Stroop task
+                TaskType taskType = element.TryGetProperty("TaskType", out var taskTypeElement)
+					? (TaskType)taskTypeElement.GetInt32() : TaskType.Stroop;
+
+				var rawText = element.GetRawText();
+				
+				ExperimentProfile profile = taskType switch
+				{
+					TaskType.Stroop => JsonSerializer.Deserialize<StroopProfile>(rawText)!,
+					_ => JsonSerializer.Deserialize<SimonProfile>(rawText)!,
+				};
+				profiles.Add(profile);
+			}
+
+			bool needsMigration = doc.RootElement.EnumerateArray().Any(e => !e.TryGetProperty("TaskType", out _));
+			if (needsMigration)
+				SaveProfiles(profiles);
+
+			return profiles;
+
 		}
 
         /// <summary>
@@ -49,7 +72,9 @@ namespace StroopApp.Services.Profile
                 Directory.CreateDirectory(_configDir);
             }
 
-            var json = JsonSerializer.Serialize(profiles, new JsonSerializerOptions { WriteIndented = true });
+			var elements = profiles.Select(p => JsonSerializer.SerializeToElement(p, p.GetType()));
+
+            var json = JsonSerializer.Serialize(elements, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(_profilesPath, json);
         }
 
@@ -63,7 +88,6 @@ namespace StroopApp.Services.Profile
             var allProfiles = LoadProfiles();
 			var existing = allProfiles.FirstOrDefault(p => p.Id == profile.Id);
 
-
 			if (existing == null)
 			{
 				if (profile.Id == Guid.Empty)
@@ -72,24 +96,7 @@ namespace StroopApp.Services.Profile
 			}
 			else
 			{
-
-				existing.ProfileName = profile.ProfileName;
-				existing.Hours = profile.Hours;
-				existing.Minutes = profile.Minutes;
-				existing.Seconds = profile.Seconds;
-				existing.WordDuration = profile.WordDuration;
-				existing.FixationDuration = profile.FixationDuration;
-				existing.VisualCueDuration = profile.VisualCueDuration;
-				existing.HasVisualCue = profile.HasVisualCue;
-				existing.GroupSize = profile.GroupSize;
-				existing.TaskDuration = profile.TaskDuration;
-				existing.WordCount = profile.WordCount;
-				existing.MaxReactionTime = profile.MaxReactionTime;
-				existing.CalculationMode = profile.CalculationMode;
-				existing.DominantPercent = profile.DominantPercent;
-				existing.CongruencePercent = profile.CongruencePercent;
-				existing.SwitchPercent = profile.SwitchPercent;
-				existing.TaskLanguage = profile.TaskLanguage;
+				existing.UpdateFrom(profile);
 				existing.UpdateDerivedValues();
 			}
 
@@ -100,13 +107,15 @@ namespace StroopApp.Services.Profile
         /// <summary>
         /// Deletes a profile from the collection and persists changes.
         /// </summary>
-        public void DeleteProfile(ExperimentProfile profile, ObservableCollection<ExperimentProfile> profiles)
+        public void DeleteProfile(ExperimentProfile profile)
 		{
+			ObservableCollection<ExperimentProfile> profiles = LoadProfiles();
             ArgumentNullException.ThrowIfNull(profiles);
             if (profile == null) return;
-            if (profiles.Contains(profile))
+			ExperimentProfile? existingProfile = profiles.FirstOrDefault(p => p.Id == profile.Id);
+			if (existingProfile is not null)
 			{
-				profiles.Remove(profile);
+				profiles.Remove(existingProfile);
 				SaveProfiles(profiles);
 			}
 		}

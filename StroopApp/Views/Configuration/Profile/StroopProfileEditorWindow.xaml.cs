@@ -2,11 +2,11 @@
 using System.ComponentModel;
 using System.Windows;
 
-namespace StroopApp.Views
+namespace StroopApp.Views.Configuration.Profile
 {
-    public partial class ProfileEditorWindow : Window
+    public partial class StroopProfileEditorWindow : Window
     {
-        public ProfileEditorWindow(ProfileEditorViewModel viewModel)
+        public StroopProfileEditorWindow(StroopProfileEditorViewModel viewModel)
         {
             InitializeComponent();
             DataContext = viewModel;

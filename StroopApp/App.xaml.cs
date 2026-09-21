@@ -7,11 +7,15 @@ using StroopApp.Services.Language;
 using StroopApp.Services.Navigation.PageFactory;
 using StroopApp.Services.Participant;
 using StroopApp.Services.Profile;
+using StroopApp.Services.Session;
+using StroopApp.Services.Summary;
 using StroopApp.Services.Trial;
 using StroopApp.Services.Window;
 using StroopApp.ViewModels.State;
 using StroopApp.Views;
+using StroopApp.Views.Configuration;
 using StroopApp.Views.Experiment.Experimenter;
+using StroopApp.Views.Home;
 using System.IO;
 using System.Windows;
 
@@ -35,10 +39,10 @@ namespace StroopApp
 
             LanguageService = ServiceProvider.GetRequiredService<ILanguageService>();
             WindowManager = ServiceProvider.GetRequiredService<IWindowManager>();
-
+            var sessionService = ServiceProvider.GetRequiredService<IExperimentSessionService>();
             var pageFactory = ServiceProvider.GetRequiredService<IPageFactory>();
 
-            var expWin = new ExperimentWindow(pageFactory, LanguageService);
+            var expWin = new ExperimentWindow(pageFactory, LanguageService, sessionService);
             expWin.Show();
         }
 
@@ -72,10 +76,19 @@ namespace StroopApp
             services.AddSingleton<IProfileService, ProfileService>();
             services.AddSingleton<IParticipantService, ParticipantService>();
             services.AddSingleton<IKeyMappingService, KeyMappingService>();
+            services.AddSingleton<TrialExportFormatter,StroopTrialExportFormatter>();
+            services.AddSingleton<TrialExportFormatter,SimonTrialExportFormatter>();
             services.AddSingleton<IExportationService, ExportationService>();
+            services.AddSingleton<BlockSummaryFormatter, StroopBlockSummaryFormatter>();
+            services.AddSingleton<BlockSummaryFormatter, SimonBlockSummaryFormatter>();
             services.AddTransient<ITrialGenerationService, TrialGenerationService>();
+            services.AddTransient<ISimonTrialGenerationService, SimonTrialGenerationService>();
+            services.AddSingleton<IExperimentSessionService, ExperimentSessionService>();
+            
 
+            services.AddTransient<HomePage>();
             services.AddTransient<ConfigurationPage>();
+            services.AddTransient<SimonConfigurationPage>();
             services.AddTransient<EndExperimentPage>();
             services.AddTransient<ExperimentDashBoardPage>();
         }

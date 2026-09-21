@@ -21,19 +21,19 @@ namespace StroopApp.Services.KeyMapping
         /// <summary>
         /// Loads key mappings from configuration file, or returns default mappings if not found.
         /// </summary>
-        public async Task<KeyMappings> LoadKeyMappings()
+        public async Task<ExperimentKeyMappings> LoadKeyMappings()
 		{
 			if (!File.Exists(_keyMappingPath))
-				return new KeyMappings();
+				return new ExperimentKeyMappings();
 
 			var json = await File.ReadAllTextAsync(_keyMappingPath);
-			return JsonSerializer.Deserialize<KeyMappings>(json)
-				   ?? new KeyMappings();
+			return JsonSerializer.Deserialize<ExperimentKeyMappings>(json)
+				   ?? new ExperimentKeyMappings();
 		}
         /// <summary>
         /// Saves key mappings to configuration file.
         /// </summary>
-        public async Task SaveKeyMappings(KeyMappings keyMappings)
+        public async Task SaveKeyMappings(ExperimentKeyMappings keyMappings)
 		{
 			Directory.CreateDirectory(_configDir);
 			var json = JsonSerializer.Serialize(keyMappings, new JsonSerializerOptions { WriteIndented = true });

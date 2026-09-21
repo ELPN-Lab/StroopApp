@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="StroopApp.Views.Experiment.Participant.Common.VisualCueControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:common="clr-namespace:StroopApp.Views.Experiment.Participant.Common"
+             Height="Auto" Width="Auto">
+    <Grid Width="150" Height="150">
+        <Path Stretch="Uniform" Fill="Transparent"
+              Stroke="White" StrokeThickness="6"
+              Data="{Binding CueGeometry, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+        <common:FixationCrossControl HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>

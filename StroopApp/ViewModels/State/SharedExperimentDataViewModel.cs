@@ -34,7 +34,7 @@ namespace StroopApp.ViewModels.State
         }
 
         [ObservableProperty] private Block? _currentBlock;
-        [ObservableProperty] private StroopTrial? _currentTrial;
+        [ObservableProperty] private ITrial? _currentTrial;
         [ObservableProperty] private bool _isBlockFinished;
         [ObservableProperty] private bool _isTaskStopped;
         [ObservableProperty] private bool _isParticipantSelectionEnabled;
@@ -57,7 +57,7 @@ namespace StroopApp.ViewModels.State
         }
 
         partial void OnCurrentBlockChanged(Block? value) => _model.CurrentBlock = value;
-        partial void OnCurrentTrialChanged(StroopTrial? value) => _model.CurrentTrial = value;
+        partial void OnCurrentTrialChanged(ITrial? value) => _model.CurrentTrial = value;
         partial void OnIsBlockFinishedChanged(bool value) => _model.IsBlockFinished = value;
         partial void OnIsTaskStoppedChanged(bool value) => _model.IsTaskStopped = value;
         partial void OnIsParticipantSelectionEnabledChanged(bool value) => _model.IsParticipantSelectionEnabled = value;
@@ -73,12 +73,7 @@ namespace StroopApp.ViewModels.State
         {
             if (settings == null) throw new ArgumentNullException(nameof(settings));
 
-            CurrentBlock = new Block(
-                settings.CurrentProfile.ProfileName,
-                settings.Block,
-                settings.CurrentProfile.CongruencePercent,
-                settings.CurrentProfile.SwitchPercent,
-                settings.CurrentProfile.HasVisualCue);
+            CurrentBlock = new Block(settings.CurrentProfile.CloneProfile(), settings.Block);
 
             Blocks.Add(CurrentBlock);
 

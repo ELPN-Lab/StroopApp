@@ -24,13 +24,13 @@
             set => _participantContext.Participant = value;
         }
 
-        public ExperimentProfile CurrentProfile
+        public ExperimentProfile? CurrentProfile
         {
             get => _configuration.Profile;
             set => _configuration.Profile = value;
         }
 
-        public KeyMappings KeyMappings
+        public ExperimentKeyMappings KeyMappings
         {
             get => _configuration.KeyMappings;
             set => _configuration.KeyMappings = value;

@@ -20,7 +20,7 @@ namespace StroopApp.ViewModels.State
         private ExperimentProfile _currentProfile = null!;
 
         [ObservableProperty]
-        private KeyMappings _keyMappings = null!;
+        private ExperimentKeyMappings _keyMappings = null!;
 
         [ObservableProperty]
         private string _exportFolderPath = string.Empty;
@@ -40,7 +40,7 @@ namespace StroopApp.ViewModels.State
         partial void OnBlockChanged(int value) => _model.Block = value;
         partial void OnParticipantChanged(Participant value) => _model.Participant = value;
         partial void OnCurrentProfileChanged(ExperimentProfile value) => _model.CurrentProfile = value;
-        partial void OnKeyMappingsChanged(KeyMappings value) => _model.KeyMappings = value;
+        partial void OnKeyMappingsChanged(ExperimentKeyMappings value) => _model.KeyMappings = value;
         partial void OnExportFolderPathChanged(string value) => _model.ExportFolderPath = value;
 
         public void Reset()

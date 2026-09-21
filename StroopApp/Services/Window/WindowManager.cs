@@ -1,7 +1,10 @@
-﻿using StroopApp.Models;
-using StroopApp.Services.Navigation.PageFactory;
+﻿using StroopApp.Services.Navigation.PageFactory;
+using StroopApp.ViewModels.Experiment.Participant;
+using StroopApp.ViewModels.Experiment.Participant.Instructions;
 using StroopApp.ViewModels.State;
 using StroopApp.Views;
+using StroopApp.Views.Experiment.Participant;
+using StroopApp.Views.Experiment.Participant.Simon;
 
 namespace StroopApp.Services.Window
 {
@@ -12,6 +15,7 @@ namespace StroopApp.Services.Window
     public class WindowManager : IWindowManager
     {
         private ParticipantWindow? _participantWindow;
+        private ParticipantWindow? _simonParticipantWindow;
         private readonly IPageFactory _pageFactory;
 
         public WindowManager(IPageFactory pageFactory)
@@ -29,7 +33,9 @@ namespace StroopApp.Services.Window
 
             if (_participantWindow == null)
             {
-                _participantWindow = new ParticipantWindow(settings, _pageFactory);
+                _participantWindow = new ParticipantWindow(settings, _pageFactory,
+                    (s, nav) => new ParticipantWindowViewModel(s, nav,
+                    () => new InstructionsPage(new StroopInstructionsViewModel(s, nav, () => new StroopPage(s, nav)))));
                 _participantWindow.Closed += (_, _) => _participantWindow = null;
                 _participantWindow.Show();
             }
@@ -41,6 +47,26 @@ namespace StroopApp.Services.Window
             }
         }
 
+        public void ShowSimonParticipantWindow(ExperimentSettingsViewModel settings)
+        {
+            ArgumentNullException.ThrowIfNull(settings);
+
+            if (_simonParticipantWindow is null)
+            {
+                _simonParticipantWindow = new ParticipantWindow(settings, _pageFactory,
+                    (s, nav) => new ParticipantWindowViewModel(s, nav,
+                    () => new InstructionsPage(new SimonInstructionsViewModel(s, nav, () => new SimonPage(s, nav)))));
+                _simonParticipantWindow.Closed += (_, _) => _simonParticipantWindow = null;
+                _simonParticipantWindow.Show();
+            }
+            else
+            {
+                _simonParticipantWindow.Reset();
+                _simonParticipantWindow.Activate();
+            }
+            ;
+        }
+
         /// <summary>
         /// Closes the participant management window if open.
         /// </summary>
@@ -48,6 +74,12 @@ namespace StroopApp.Services.Window
         {
             _participantWindow?.Close();
             _participantWindow = null;
+        }
+
+        public void CloseSimonParticipantWindow()
+        {
+            _simonParticipantWindow?.Close();
+            _simonParticipantWindow = null;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace StroopApp.Views.Participant
+namespace StroopApp.Views.Configuration.Participant
 {
     public partial class ParticipantManagementView : UserControl
     {

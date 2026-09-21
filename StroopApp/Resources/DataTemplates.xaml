@@ -1,21 +1,30 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:stroopVm="clr-namespace:StroopApp.ViewModels.Experiment.Participant.Stroop"
-                    xmlns:stroopViews="clr-namespace:StroopApp.Views.Experiment.Participant.Stroop"
-                    xmlns:configVmProfile="clr-namespace:StroopApp.ViewModels.Configuration.Profile"
-                    xmlns:configVmParticipant="clr-namespace:StroopApp.ViewModels.Configuration.Participant"
+                    xmlns:conv="clr-namespace:StroopApp.Converters"
                     xmlns:configVm="clr-namespace:StroopApp.ViewModels.Configuration"
-                    xmlns:profileViews="clr-namespace:StroopApp.Views.Profile"
-                    xmlns:participantViews="clr-namespace:StroopApp.Views.Participant"
-                    xmlns:keyMappingViews="clr-namespace:StroopApp.Views.KeyMapping"
-                    xmlns:configViews="clr-namespace:StroopApp.Views.Configuration"
+                    xmlns:configVmParticipant="clr-namespace:StroopApp.ViewModels.Configuration.Participant"
+                    xmlns:configVmProfile="clr-namespace:StroopApp.ViewModels.Configuration.Profile"
                     xmlns:experimenterVm="clr-namespace:StroopApp.ViewModels.Experiment.Experimenter"
+                    xmlns:commonParticipantExperimentVm="clr-namespace:StroopApp.ViewModels.Experiment.Participant.Common"
+                    xmlns:simonVm="clr-namespace:StroopApp.ViewModels.Experiment.Participant.Simon"
+                    xmlns:stroopVm="clr-namespace:StroopApp.ViewModels.Experiment.Participant.Stroop"
+                    xmlns:configViews="clr-namespace:StroopApp.Views.Configuration"
+                    xmlns:keyMappingViews="clr-namespace:StroopApp.Views.Configuration.KeyMapping"
+                    xmlns:participantViews="clr-namespace:StroopApp.Views.Configuration.Participant"
                     xmlns:experimenterViews="clr-namespace:StroopApp.Views.Experiment.Experimenter"
-                    xmlns:graphViews="clr-namespace:StroopApp.Views.Experiment.Experimenter.Graphs">
+                    xmlns:graphViews="clr-namespace:StroopApp.Views.Experiment.Experimenter.Graphs"
+                    xmlns:commonParticipantExperimentViews="clr-namespace:StroopApp.Views.Experiment.Participant.Common"
+                    xmlns:simonViews="clr-namespace:StroopApp.Views.Experiment.Participant.Simon"
+                    xmlns:stroopViews="clr-namespace:StroopApp.Views.Experiment.Participant.Stroop"
+                    xmlns:profileViews="clr-namespace:StroopApp.Views.Profile">
+    
+    <conv:VisualCueTypeToGeometryConverter x:Key="VisualCueTypeToGeometry"/>
+    <conv:SimonShapeToGeometryConverter x:Key="SimonShapeToGeometryConverter"/>
+
 
     <!-- FixationCrossViewModel -->
-    <DataTemplate DataType="{x:Type stroopVm:FixationCrossViewModel}">
-        <stroopViews:FixationCrossControl />
+    <DataTemplate DataType="{x:Type commonParticipantExperimentVm:FixationCrossViewModel}">
+        <commonParticipantExperimentViews:FixationCrossControl />
     </DataTemplate>
 
     <!-- WordControlViewModel-->
@@ -24,8 +33,8 @@
     </DataTemplate>
 
     <!-- VisualCueControlViewModel -->
-    <DataTemplate DataType="{x:Type stroopVm:VisualCueControlViewModel}">
-        <stroopViews:VisualCueControl />
+    <DataTemplate DataType="{x:Type commonParticipantExperimentVm:VisualCueControlViewModel}">
+        <commonParticipantExperimentViews:VisualCueControl CueGeometry="{Binding VisualCue, Converter={StaticResource VisualCueTypeToGeometry}}" />
     </DataTemplate>
 
     <!-- ProfileManagementViewModel -->
@@ -41,6 +50,17 @@
     <!-- KeyMappingViewModel -->
     <DataTemplate DataType="{x:Type configVm:KeyMappingViewModel}">
         <keyMappingViews:KeyMappingView />
+    </DataTemplate>
+
+    <!-- SimonResponseMappingViewModel -->
+    <DataTemplate DataType="{x:Type configVm:SimonResponseMappingViewModel}">
+        <keyMappingViews:SimonResponseMappingView />
+    </DataTemplate>
+    
+    <!-- SimonPrimeViewModel -->
+    <DataTemplate DataType="{x:Type simonVm:SimonPrimeViewModel}">
+        <commonParticipantExperimentViews:VisualCueControl
+            CueGeometry="{Binding CueShape, Converter={StaticResource SimonShapeToGeometryConverter}}"/>
     </DataTemplate>
 
     <!-- ExportFolderSelectorViewModel -->
@@ -71,6 +91,16 @@
     <!-- LiveReactionTimeViewModel -->
     <DataTemplate DataType="{x:Type experimenterVm:LiveReactionTimeViewModel}">
         <graphViews:LiveReactionTimeView />
+    </DataTemplate>
+
+    <!--SimonConfigurationPageViewModel-->
+    <DataTemplate DataType="{x:Type configVm:SimonConfigurationPageViewModel}">
+        <configViews:SimonConfigurationPage/>
+    </DataTemplate>
+
+    <!-- SimonStimulusViewModel -->
+    <DataTemplate DataType="{x:Type simonVm:SimonStimulusViewModel}">
+        <simonViews:SimonStimulusControl />
     </DataTemplate>
 
 </ResourceDictionary>

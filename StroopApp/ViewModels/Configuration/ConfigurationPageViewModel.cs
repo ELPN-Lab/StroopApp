@@ -3,6 +3,7 @@ using StroopApp.Core;
 using StroopApp.Resources;
 using StroopApp.Services.Language;
 using StroopApp.Services.Navigation;
+using StroopApp.Services.Session;
 using StroopApp.Services.Trial;
 using StroopApp.Services.Window;
 using StroopApp.ViewModels.Configuration.Participant;
@@ -27,6 +28,8 @@ namespace StroopApp.ViewModels.Configuration
         private readonly IWindowManager _windowManager;
         private readonly ILanguageService _languageService;
         private readonly ITrialGenerationService _trialGenerationService;
+        private readonly IExperimentSessionService _sessionService;
+
 
         private readonly ExperimentSettingsViewModel _settings;
 
@@ -38,7 +41,8 @@ namespace StroopApp.ViewModels.Configuration
                                   INavigationService experimenterNavigationService,
                                   IWindowManager windowManager,
                                   ITrialGenerationService trialGenerationService,
-                                  ILanguageService languageService)
+                                  ILanguageService languageService,
+                                  IExperimentSessionService sessionService)
         {
             ProfileViewModel = profileViewModel;
             ParticipantViewModel = participantViewModel;
@@ -49,6 +53,7 @@ namespace StroopApp.ViewModels.Configuration
             _trialGenerationService = trialGenerationService;
             _languageService = languageService;
             _settings = settings;
+            _sessionService = sessionService;
         }
 
         [RelayCommand]
@@ -58,7 +63,7 @@ namespace StroopApp.ViewModels.Configuration
             {
                 _settings.CurrentProfile = ProfileViewModel.CurrentProfile;
                 _settings.Participant = ParticipantViewModel.SelectedParticipant;
-                _settings.KeyMappings = KeyMappingViewModel.Mappings;
+                _settings.KeyMappings.Stroop = KeyMappingViewModel.Mappings;
 
                 if (_settings.CurrentProfile == null)
                 {
@@ -72,23 +77,8 @@ namespace StroopApp.ViewModels.Configuration
                     return;
                 }
 
-                _settings.ExperimentContext.IsTaskStopped = false;
-                _settings.ExperimentContext.IsBlockFinished = false;
-                _settings.ExperimentContext.NewColumnSerie();
-                _settings.ExperimentContext.AddNewSerie(_settings);
-
-                if (_settings.ExperimentContext.CurrentBlock is null)
-                    throw new InvalidOperationException("CurrentBlock was not initialized after AddNewSerie");
-
-                var trials = _trialGenerationService.GenerateTrials(_settings);
-
-                foreach (var trial in trials)
-                {
-                    _settings.ExperimentContext.CurrentBlock.TrialRecords.Add(trial);
-                }
-
+                _sessionService.StartBlock(_trialGenerationService);
                 _experimenterNavigationService.NavigateTo<ExperimentDashBoardPage>();
-
                 _windowManager.ShowParticipantWindow(_settings);
             }
             catch (Exception ex)

@@ -5,8 +5,9 @@ using StroopApp.ViewModels.Configuration;
 using StroopApp.ViewModels.Configuration.Participant;
 using StroopApp.ViewModels.Configuration.Profile;
 using StroopApp.ViewModels.State;
+using StroopApp.Views.Home;
 using StroopApp.XUnitTests.TestDummies;
-
+using System.Windows.Controls;
 using Xunit;
 
 namespace StroopApp.XUnitTests.ViewModels.Configuration
@@ -27,7 +28,7 @@ namespace StroopApp.XUnitTests.ViewModels.Configuration
 			var dummyTrialGenerationService = new DummyTrialGenerationService();
 			var dummyLanguageService = new DummyLanguageService();
 
-            var profileViewModel = new ProfileManagementViewModel(dummyProfileService);
+            var profileViewModel = new ProfileManagementViewModel(dummyProfileService,TaskType.Stroop);
 			// No CurrentProfile set intentionally
 
 			var participantViewModel = new ParticipantManagementViewModel(dummyParticipantService, false);
@@ -37,6 +38,7 @@ namespace StroopApp.XUnitTests.ViewModels.Configuration
 
 			var dummyExportationService = new DummyExportationService();
 			var exportFolderSelectorViewModel = new ExportFolderSelectorViewModel(settings, dummyExportationService);
+			var dummySessionService = new DummyExperimentSessionService();
 
 			var viewModel = new TestableConfigurationPageViewModel(
 				settings,
@@ -47,7 +49,8 @@ namespace StroopApp.XUnitTests.ViewModels.Configuration
 				dummyNavigationService,
 				dummyWindowManager,
 				dummyTrialGenerationService, 
-				dummyLanguageService);
+				dummyLanguageService,
+				dummySessionService);
 
 			// Act
 			viewModel.LaunchExperimentCommand.Execute(null);
@@ -75,8 +78,8 @@ namespace StroopApp.XUnitTests.ViewModels.Configuration
 			var dummyTrialGenerationService = new DummyTrialGenerationService();
 			var dummyLanguageService = new DummyLanguageService();
 
-            var profileViewModel = new ProfileManagementViewModel(dummyProfileService);
-			var dummyProfile = new ExperimentProfile { ProfileName = "TestProfile" };
+            var profileViewModel = new ProfileManagementViewModel(dummyProfileService, TaskType.Stroop);
+			var dummyProfile = new StroopProfile { ProfileName = "TestProfile" };
 			profileViewModel.CurrentProfile = dummyProfile;
 
 			var participantViewModel = new ParticipantManagementViewModel(dummyParticipantService, false);
@@ -84,6 +87,7 @@ namespace StroopApp.XUnitTests.ViewModels.Configuration
 			var keyMappingViewModel = new KeyMappingViewModel(dummyKeyMappingService);
 
 			var dummyExportationService = new DummyExportationService();
+			var dummyExperimentSessionService = new DummyExperimentSessionService();
 			var exportFolderSelectorViewModel = new ExportFolderSelectorViewModel(settings, dummyExportationService);
 
 			var viewModel = new TestableConfigurationPageViewModel(
@@ -95,7 +99,8 @@ namespace StroopApp.XUnitTests.ViewModels.Configuration
 				dummyNavigationService,
 				dummyWindowManager,
 				dummyTrialGenerationService, 
-				dummyLanguageService);
+				dummyLanguageService,
+				dummyExperimentSessionService);
 
 			// Act
 			viewModel.LaunchExperimentCommand.Execute(null);
@@ -113,7 +118,16 @@ namespace StroopApp.XUnitTests.ViewModels.Configuration
 		{
 			public int NavigationCount { get; private set; }
 
-			public void NavigateTo(Func<System.Windows.Controls.Page> pageFactory)
+            public Type? CurrentPageType => typeof(HomePage) ;
+
+            public event Action<Type?> Navigated;
+
+            public bool IsCurrentPage<T>() where T : Page
+            {
+				return typeof(T) == CurrentPageType;
+            }
+
+            public void NavigateTo(Func<System.Windows.Controls.Page> pageFactory)
 			{
 				NavigationCount++;
 			}

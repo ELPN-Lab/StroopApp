@@ -2,6 +2,7 @@
 using StroopApp.ViewModels.State;
 using StroopApp.Views.Experiment.Participant;
 using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace StroopApp.ViewModels.Experiment.Participant
 {
@@ -10,14 +11,17 @@ namespace StroopApp.ViewModels.Experiment.Participant
         private readonly ExperimentSettingsViewModel _settings;
         private readonly INavigationService _participantWindowNavigationService;
 
-        public ParticipantWindowViewModel(ExperimentSettingsViewModel settings, INavigationService participantWindowNavigationService)
+        public ParticipantWindowViewModel(
+            ExperimentSettingsViewModel settings, 
+            INavigationService participantWindowNavigationService,
+            Func<Page> initialPageFactory)
         {
             _settings = settings;
             _participantWindowNavigationService = participantWindowNavigationService;
 
             _settings.ExperimentContext.PropertyChanged += ExperimentContext_PropertyChanged;
 
-            _participantWindowNavigationService.NavigateTo(() => new InstructionsPage(_settings, _participantWindowNavigationService));
+            _participantWindowNavigationService.NavigateTo(initialPageFactory);
         }
 
         private void ExperimentContext_PropertyChanged(object? sender, PropertyChangedEventArgs e)

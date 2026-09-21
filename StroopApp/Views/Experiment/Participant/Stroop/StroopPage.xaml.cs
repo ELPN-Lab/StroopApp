@@ -11,7 +11,7 @@ namespace StroopApp.Views.Experiment.Participant
     {
         private readonly StroopViewModel _viewModel;
 
-        public StroopPage(INavigationService participantWindowNavigationService, ExperimentSettingsViewModel settings)
+        public StroopPage(ExperimentSettingsViewModel settings, INavigationService participantWindowNavigationService)
         {
             InitializeComponent();
             _viewModel = new StroopViewModel(settings, participantWindowNavigationService);

@@ -11,6 +11,8 @@ using StroopApp.Views;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using DocumentFormat.OpenXml.Wordprocessing;
+using StroopApp.Views.Configuration;
 
 namespace StroopApp.ViewModels.Experiment.Experimenter.End
 {
@@ -175,7 +177,7 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
                 _settings.Reset();
                 _setDialogResult(true);
                 _closeWindow();
-                _navigationService.NavigateTo<ConfigurationPage>();
+                NavigateToConfigurationPage();
             }
             catch (Exception ex)
             {
@@ -206,6 +208,14 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
             {
                 await ShowErrorDialogAsync($"{Strings.Error_Title}: {ex.Message}");
             }
+        }
+
+        private void NavigateToConfigurationPage()
+        {
+            if (_settings.CurrentProfile.TaskType == TaskType.Stroop)
+                _navigationService.NavigateTo<ConfigurationPage>();
+            else if (_settings.CurrentProfile.TaskType == TaskType.Simon)
+                _navigationService.NavigateTo<SimonConfigurationPage>();
         }
     }
 }

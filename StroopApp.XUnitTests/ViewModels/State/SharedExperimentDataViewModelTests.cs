@@ -21,7 +21,7 @@ namespace StroopApp.ViewModels.State.UnitTests
 
         private Block CreateBlock()
         {
-            return new Block("TestProfile", blockNumber: 1, congruencePercent: null, switchPercent: null, hasVisualCue: false);
+            return new Block(new StroopProfile { ProfileName = "TestProfile" }, blockNumber: 1);
         }
 
         /// <summary>
@@ -565,7 +565,7 @@ namespace StroopApp.ViewModels.State.UnitTests
             var model = new SharedExperimentData();
             var viewModel = new SharedExperimentDataViewModel(model);
 
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 WordCount = 10,
                 ProfileName = "TestProfile",
@@ -607,7 +607,7 @@ namespace StroopApp.ViewModels.State.UnitTests
             var model = new SharedExperimentData();
             var viewModel = new SharedExperimentDataViewModel(model);
 
-            var profile = new ExperimentProfile
+            var profile = new StroopProfile
             {
                 WordCount = 15,
                 ProfileName = "TestProfile",
@@ -627,11 +627,12 @@ namespace StroopApp.ViewModels.State.UnitTests
             // Assert
             Assert.Single(viewModel.Blocks);
             var addedBlock = viewModel.Blocks[0];
-            Assert.Equal("TestProfile", addedBlock.BlockExperimentProfile);
+            Assert.Equal("TestProfile", addedBlock.Profile.ProfileName);
             Assert.Equal(3, addedBlock.BlockNumber);
-            Assert.Equal(70, addedBlock.CongruencePercent);
-            Assert.Equal(40, addedBlock.SwitchPercent);
-            Assert.Equal("✅", addedBlock.VisualCue);
+            Assert.Equal(70, addedBlock.Profile.CongruencePercent);
+            Assert.Equal(40, addedBlock.Profile.SwitchPercent);
+            Assert.True(addedBlock.Profile.HasVisualCue);
+            Assert.NotSame(profile, addedBlock.Profile);
         }
 
         /// <summary>
@@ -853,9 +854,15 @@ namespace StroopApp.ViewModels.State.UnitTests
         {
             // Arrange
             var model = new SharedExperimentData();
-            var block1 = new Block("TestProfile", blockNumber: 1, congruencePercent: 50, switchPercent: 30, hasVisualCue: true);
-            var trial1 = new StroopTrial();
+            var block1 = new Block(new StroopProfile
+            {
+                ProfileName = "TestProfile",
+                CongruencePercent = 50,
+                SwitchPercent= 30,
+                HasVisualCue = true,
+            }, blockNumber: 1);
 
+            var trial1 = new StroopTrial();
             model.CurrentBlock = block1;
             model.CurrentTrial = trial1;
             model.IsBlockFinished = true;
@@ -864,8 +871,15 @@ namespace StroopApp.ViewModels.State.UnitTests
             model.HasUnsavedExports = true;
 
             var viewModel = new SharedExperimentDataViewModel(model);
-
-            var block2 = new Block("TestProfile", blockNumber: 2, congruencePercent: 70, switchPercent: 40, hasVisualCue: false);
+            var block2 = new Block(
+                new StroopProfile
+                {
+                    ProfileName = "TestProfile",
+                    CongruencePercent = 70,
+                    SwitchPercent = 40,
+                    HasVisualCue = false,
+                },
+                blockNumber : 2);
             var trial2 = new StroopTrial();
 
             model.CurrentBlock = block2;

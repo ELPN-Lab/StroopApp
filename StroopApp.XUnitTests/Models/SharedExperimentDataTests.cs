@@ -14,7 +14,7 @@
                 Id = "42"
             },
             ExperimentContext = new SharedExperimentData(),
-            CurrentProfile = new ExperimentProfile
+            CurrentProfile = new StroopProfile
             {
                 HasVisualCue = true
             }

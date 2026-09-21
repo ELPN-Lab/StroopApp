@@ -4,7 +4,7 @@
     /// Represents a single trial in a Stroop task, containing stimulus data, participant responses,
     /// reaction time, and trial metadata such as block and trial number.
     /// </summary>
-    public class StroopTrial
+    public class StroopTrial : ITrial
     {
         public string ParticipantId { get; set; } = string.Empty;
         public bool IsCongruent { get; set; }
