@@ -68,7 +68,7 @@ namespace StroopApp.Services.Trial
 
 			List<VisualCueType>? visualCueSequence = null;
 			if (config.HasVisualCue)
-				visualCueSequence = GenerateVisualCueSequence(total, config.DominantPercent);
+				visualCueSequence = GenerateVisualCueSequence(total, config.SwitchPercent, config.DominantPercent);
 
 			for (int i = 0; i < total; i++)
 			{
@@ -78,8 +78,9 @@ namespace StroopApp.Services.Trial
 					Block = config.Block,
 					ParticipantId = config.ParticipantId,
 					HasVIsualCue = config.HasVisualCue,
-					SwitchPercent = config.DominantPercent,
+					SwitchPercent = config.SwitchPercent,
 					CongruencePercent = config.CongruencePercent,
+					DominancePercent = config.DominantPercent,
 				};
 
 				bool isCongruent = congruenceFlags[i];
@@ -111,37 +112,71 @@ namespace StroopApp.Services.Trial
 		}
 
         /// <summary>
-        /// Generates a sequence of visual cues (optional).
+        /// Generates a sequence of visual cues with an exact round cue count and an exact switch count.
+        /// When both constraints cannot hold together, the round cue count wins and the switch count is clamped to the nearest feasible value.
         /// </summary>
         /// <param name="count">Number of cues to generate</param>
-        /// <param name="switchPercentage">Percentage of cue switches</param>
+        /// <param name="switchPercentage">Percentage of the count - 1 transitions where the cue changes, null for a free shuffle</param>
+        /// <param name="dominantPercentage">Percentage of round cues</param>
         /// <returns>Sequence of cues</returns>
-        public List<VisualCueType> GenerateVisualCueSequence(int count, int switchPercentage)
+        public List<VisualCueType> GenerateVisualCueSequence(int count, int? switchPercentage, int dominantPercentage)
 		{
 			if (count <= 0)
 				throw new ArgumentException("Count of visual cues must be positive", nameof(count));
 
-			int switchCount = (count - 1) * switchPercentage / 100;
-			int noSwitchCount = (count - 1) - switchCount;
+			int roundCount = count * Math.Clamp(dominantPercentage, 0, 100) / 100;
+			int squareCount = count - roundCount;
 
-			var switches = new List<bool>();
-			switches.AddRange(Enumerable.Repeat(true, switchCount));
-			switches.AddRange(Enumerable.Repeat(false, noSwitchCount));
-			switches = switches.OrderBy(_ => _random.Next()).ToList();
-
-			var sequence = new List<VisualCueType>();
-			var current = _random.Next(0, 2) == 0 ? VisualCueType.Round : VisualCueType.Square;
-			sequence.Add(current);
-
-			foreach (var isSwitch in switches)
+			if (switchPercentage == null)
 			{
-				if (isSwitch)
-					current = current == VisualCueType.Round ? VisualCueType.Square : VisualCueType.Round;
+				return Enumerable.Repeat(VisualCueType.Round, roundCount)
+					.Concat(Enumerable.Repeat(VisualCueType.Square, squareCount))
+					.OrderBy(_ => _random.Next())
+					.ToList();
+			}
 
-				sequence.Add(current);
+			int minSwitches = roundCount > 0 && squareCount > 0 ? 1 : 0;
+			int maxSwitches = roundCount == squareCount ? 2 * roundCount - 1 : 2 * Math.Min(roundCount, squareCount);
+			int switchCount = Math.Clamp((count - 1) * Math.Clamp(switchPercentage.Value, 0, 100) / 100, minSwitches, maxSwitches);
+
+			int runCount = switchCount + 1;
+			int firstCueRuns = (runCount + 1) / 2;
+			int secondCueRuns = runCount / 2;
+			bool roundCanStart = roundCount >= firstCueRuns && squareCount >= secondCueRuns;
+			bool squareCanStart = squareCount >= firstCueRuns && roundCount >= secondCueRuns;
+			bool roundStarts = roundCanStart && (!squareCanStart || _random.Next(2) == 0);
+
+			var firstCue = roundStarts ? VisualCueType.Round : VisualCueType.Square;
+			var secondCue = roundStarts ? VisualCueType.Square : VisualCueType.Round;
+			var firstCueLengths = SplitIntoRuns(roundStarts ? roundCount : squareCount, firstCueRuns);
+			var secondCueLengths = SplitIntoRuns(roundStarts ? squareCount : roundCount, secondCueRuns);
+
+			var sequence = new List<VisualCueType>(count);
+			for (int run = 0; run < runCount; run++)
+			{
+				if (run % 2 == 0)
+					sequence.AddRange(Enumerable.Repeat(firstCue, firstCueLengths[run / 2]));
+				else
+					sequence.AddRange(Enumerable.Repeat(secondCue, secondCueLengths[run / 2]));
 			}
 
 			return sequence;
+		}
+
+		private List<int> SplitIntoRuns(int total, int runCount)
+		{
+			if (runCount == 0)
+				return new List<int>();
+
+			var bounds = Enumerable.Range(1, total - 1)
+				.OrderBy(_ => _random.Next())
+				.Take(runCount - 1)
+				.Append(0)
+				.Append(total)
+				.OrderBy(b => b)
+				.ToList();
+
+			return bounds.Zip(bounds.Skip(1), (start, end) => end - start).ToList();
 		}
 	}
 }

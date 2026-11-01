@@ -32,6 +32,8 @@ namespace StroopApp.Services.Trial
 
         public int DominantPercent => _settings.CurrentProfile.DominantPercent;
 
+        public int? SwitchPercent => _settings.CurrentProfile.SwitchPercent;
+
         public bool HasVisualCue => _settings.CurrentProfile.HasVisualCue;
 
         public string TaskLanguage => _settings.CurrentProfile.TaskLanguage;
