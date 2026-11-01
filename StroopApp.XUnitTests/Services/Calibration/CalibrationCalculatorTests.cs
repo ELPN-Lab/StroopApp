@@ -469,5 +469,86 @@ namespace StroopApp.XUnitTests.Services.Calibration
 
             Assert.Equal(accuracy, CalibrationCalculator.Probability(time, 1075, parameters), 1e-9);
         }
+
+        /// <summary>
+        /// The same weights always give the same presentation time.
+        /// </summary>
+        [Fact]
+        public void SelectNextPresentationTime_SameInput_ReturnsSameTime()
+        {
+            var parameters = new CalibrationParameters();
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+            var logWeights = CalibrationCalculator.CreatePrior(grid, 800, parameters);
+
+            var first = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
+            var second = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
+
+            Assert.Equal(first, second);
+        }
+
+        /// <summary>
+        /// The chosen time is one of the grid candidates rounded to the ms, so within the bounds.
+        /// </summary>
+        [Theory]
+        [InlineData(140.0)]
+        [InlineData(800.0)]
+        [InlineData(5000.0)]
+        public void SelectNextPresentationTime_AnyPrior_ReturnsRoundedGridCandidate(double startingPoint)
+        {
+            var parameters = new CalibrationParameters();
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+            var logWeights = CalibrationCalculator.CreatePrior(grid, startingPoint, parameters);
+
+            var time = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
+
+            Assert.Contains(time, grid.Select(candidate => (int)Math.Round(candidate)));
+            Assert.InRange(time, parameters.LowerBound, parameters.UpperBound);
+        }
+
+        /// <summary>
+        /// When all the weight is on one candidate, every time gives the same expected entropy, so the shortest wins.
+        /// </summary>
+        [Fact]
+        public void SelectNextPresentationTime_AllCandidatesTied_ReturnsShortestTime()
+        {
+            var parameters = new CalibrationParameters();
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+            var logWeights = Enumerable.Repeat(double.NegativeInfinity, grid.Length).ToArray();
+            logWeights[100] = 0;
+
+            var time = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
+
+            Assert.Equal(parameters.LowerBound, time);
+        }
+
+        /// <summary>
+        /// On the default prior centered on 800 ms, the chosen time lies within the prior's 90 % interval.
+        /// </summary>
+        [Fact]
+        public void SelectNextPresentationTime_DefaultPrior_IsWithinNinetyPercentInterval()
+        {
+            var parameters = new CalibrationParameters();
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+            var logWeights = CalibrationCalculator.CreatePrior(grid, 800, parameters);
+
+            var time = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
+
+            Assert.InRange(time, CalibrationCalculator.Quantile(logWeights, grid, 0.05), CalibrationCalculator.Quantile(logWeights, grid, 0.95));
+        }
+
+        /// <summary>
+        /// A lower estimate leads to a shorter chosen time.
+        /// </summary>
+        [Fact]
+        public void SelectNextPresentationTime_LowerEstimate_ReturnsShorterTime()
+        {
+            var parameters = new CalibrationParameters();
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+
+            var fast = CalibrationCalculator.SelectNextPresentationTime(CalibrationCalculator.CreatePrior(grid, 400, parameters), grid, parameters);
+            var slow = CalibrationCalculator.SelectNextPresentationTime(CalibrationCalculator.CreatePrior(grid, 2000, parameters), grid, parameters);
+
+            Assert.True(fast < slow);
+        }
     }
 }

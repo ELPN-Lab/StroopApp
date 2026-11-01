@@ -8,6 +8,7 @@ namespace StroopApp.Services.Calibration
     public static class CalibrationCalculator
     {
         private const double GridStep = 0.005;
+        private const double TieTolerance = 1e-12;
 
         /// <summary>
         /// Probability of a correct answer at the given presentation time, the threshold being the time that reaches the target accuracy.
@@ -15,8 +16,7 @@ namespace StroopApp.Services.Calibration
         public static double Probability(double presentationTime, double threshold, CalibrationParameters parameters)
         {
             double alpha = threshold / ThresholdFactor(parameters.TargetAccuracy, parameters);
-            double range = 1 - parameters.Gamma - parameters.Delta;
-            return parameters.Gamma + range * (1 - Math.Exp(-Math.Pow(presentationTime / alpha, parameters.Beta)));
+            return Weibull(presentationTime, alpha, parameters);
         }
 
         /// <summary>
@@ -93,6 +93,29 @@ namespace StroopApp.Services.Calibration
         }
 
         /// <summary>
+        /// QUEST+ choice: the candidate presentation time in ms that minimizes the expected entropy after the answer; ties go to the shortest time.
+        /// </summary>
+        public static int SelectNextPresentationTime(double[] logWeights, double[] grid, CalibrationParameters parameters)
+        {
+            double[] weights = logWeights.Select(Math.Exp).ToArray();
+            double factor = ThresholdFactor(parameters.TargetAccuracy, parameters);
+
+            int bestTime = 0;
+            double bestEntropy = double.MaxValue;
+            foreach (int candidate in grid.Select(time => (int)Math.Round(time)).Distinct())
+            {
+                double entropy = ExpectedEntropy(weights, grid, candidate, factor, parameters);
+                if (entropy < bestEntropy - TieTolerance)
+                {
+                    bestEntropy = entropy;
+                    bestTime = candidate;
+                }
+            }
+
+            return bestTime;
+        }
+
+        /// <summary>
         /// Threshold in ms below which lies the given probability of the weights; each candidate's weight is centered on it and the distribution is interpolated linearly in log10.
         /// </summary>
         public static double Quantile(double[] logWeights, double[] grid, double probability)
@@ -164,6 +187,43 @@ namespace StroopApp.Services.Calibration
             double max = logWeights.Max();
             double logSum = max + Math.Log(logWeights.Sum(logWeight => Math.Exp(logWeight - max)));
             return logWeights.Select(logWeight => logWeight - logSum).ToArray();
+        }
+
+        private static double Weibull(double presentationTime, double alpha, CalibrationParameters parameters)
+        {
+            double range = 1 - parameters.Gamma - parameters.Delta;
+            return parameters.Gamma + range * (1 - Math.Exp(-Math.Pow(presentationTime / alpha, parameters.Beta)));
+        }
+
+        private static double ExpectedEntropy(double[] weights, double[] grid, int presentationTime, double factor, CalibrationParameters parameters)
+        {
+            var afterCorrect = new double[weights.Length];
+            var afterError = new double[weights.Length];
+            for (int i = 0; i < weights.Length; i++)
+            {
+                double probability = Weibull(presentationTime, grid[i] / factor, parameters);
+                afterCorrect[i] = weights[i] * probability;
+                afterError[i] = weights[i] * (1 - probability);
+            }
+
+            double correctProbability = afterCorrect.Sum();
+            double errorProbability = afterError.Sum();
+            return correctProbability * Entropy(afterCorrect, correctProbability) + errorProbability * Entropy(afterError, errorProbability);
+        }
+
+        private static double Entropy(double[] unnormalizedWeights, double total)
+        {
+            double entropy = 0;
+            foreach (double weight in unnormalizedWeights)
+            {
+                if (weight <= 0)
+                    continue;
+
+                double probability = weight / total;
+                entropy -= probability * Math.Log(probability);
+            }
+
+            return entropy;
         }
     }
 }
