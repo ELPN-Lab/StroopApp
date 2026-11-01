@@ -101,5 +101,92 @@ namespace StroopApp.XUnitTests.Services.Calibration
 
             Assert.True(higher > lower);
         }
+
+        /// <summary>
+        /// With enough correct answers, the starting point is the mean plus the sample standard deviation.
+        /// </summary>
+        [Fact]
+        public void ComputeStartingPoint_EnoughCorrectAnswers_ReturnsMeanPlusSampleStandardDeviation()
+        {
+            var parameters = new CalibrationParameters();
+            var reactionTimes = new List<double> { 400, 500, 600, 700, 800 };
+
+            var startingPoint = CalibrationCalculator.ComputeStartingPoint(reactionTimes, parameters);
+
+            Assert.Equal(600 + Math.Sqrt(25000), startingPoint, Tolerance);
+        }
+
+        /// <summary>
+        /// Identical reaction times give a zero standard deviation, so the starting point is their value.
+        /// </summary>
+        [Fact]
+        public void ComputeStartingPoint_IdenticalReactionTimes_ReturnsMean()
+        {
+            var parameters = new CalibrationParameters();
+            var reactionTimes = new List<double> { 900, 900, 900, 900, 900 };
+
+            var startingPoint = CalibrationCalculator.ComputeStartingPoint(reactionTimes, parameters);
+
+            Assert.Equal(900, startingPoint, Tolerance);
+        }
+
+        /// <summary>
+        /// Below the minimum number of correct answers, the starting point is the starting time.
+        /// </summary>
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(4)]
+        public void ComputeStartingPoint_TooFewCorrectAnswers_ReturnsStartingTime(int count)
+        {
+            var parameters = new CalibrationParameters { StartingTime = 3000 };
+            var reactionTimes = Enumerable.Repeat(500.0, count).ToList();
+
+            var startingPoint = CalibrationCalculator.ComputeStartingPoint(reactionTimes, parameters);
+
+            Assert.Equal(3000, startingPoint);
+        }
+
+        /// <summary>
+        /// The minimum number of correct answers comes from the parameters.
+        /// </summary>
+        [Fact]
+        public void ComputeStartingPoint_CustomMinimum_UsesParameter()
+        {
+            var parameters = new CalibrationParameters { MinCorrectPhase1Trials = 3 };
+            var reactionTimes = new List<double> { 500, 600, 700 };
+
+            var startingPoint = CalibrationCalculator.ComputeStartingPoint(reactionTimes, parameters);
+
+            Assert.Equal(700, startingPoint, Tolerance);
+        }
+
+        /// <summary>
+        /// A starting point below the lower bound is raised to the lower bound.
+        /// </summary>
+        [Fact]
+        public void ComputeStartingPoint_BelowLowerBound_ReturnsLowerBound()
+        {
+            var parameters = new CalibrationParameters();
+            var reactionTimes = new List<double> { 100, 100, 100, 100, 100 };
+
+            var startingPoint = CalibrationCalculator.ComputeStartingPoint(reactionTimes, parameters);
+
+            Assert.Equal(parameters.LowerBound, startingPoint);
+        }
+
+        /// <summary>
+        /// A starting point above the upper bound is lowered to the upper bound.
+        /// </summary>
+        [Fact]
+        public void ComputeStartingPoint_AboveUpperBound_ReturnsUpperBound()
+        {
+            var parameters = new CalibrationParameters();
+            var reactionTimes = new List<double> { 4000, 4500, 5000, 5500, 6000 };
+
+            var startingPoint = CalibrationCalculator.ComputeStartingPoint(reactionTimes, parameters);
+
+            Assert.Equal(parameters.UpperBound, startingPoint);
+        }
     }
 }

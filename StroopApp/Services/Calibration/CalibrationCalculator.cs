@@ -25,5 +25,18 @@ namespace StroopApp.Services.Calibration
             double fraction = (accuracy - parameters.Gamma) / (1 - parameters.Gamma - parameters.Delta);
             return Math.Pow(-Math.Log(1 - fraction), 1 / parameters.Beta);
         }
+
+        /// <summary>
+        /// Phase 2 starting point: mean plus sample standard deviation of the correct phase 1 reaction times, or the starting time when there are too few, clamped to the bounds.
+        /// </summary>
+        public static double ComputeStartingPoint(IReadOnlyList<double> correctReactionTimes, CalibrationParameters parameters)
+        {
+            if (correctReactionTimes.Count < parameters.MinCorrectPhase1Trials)
+                return parameters.StartingTime;
+
+            double mean = correctReactionTimes.Average();
+            double variance = correctReactionTimes.Sum(time => (time - mean) * (time - mean)) / (correctReactionTimes.Count - 1);
+            return Math.Clamp(mean + Math.Sqrt(variance), parameters.LowerBound, parameters.UpperBound);
+        }
     }
 }
