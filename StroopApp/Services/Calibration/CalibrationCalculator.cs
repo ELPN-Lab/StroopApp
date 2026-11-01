@@ -7,6 +7,8 @@ namespace StroopApp.Services.Calibration
     /// </summary>
     public static class CalibrationCalculator
     {
+        private const double GridStep = 0.005;
+
         /// <summary>
         /// Probability of a correct answer at the given presentation time, the threshold being the time that reaches the target accuracy.
         /// </summary>
@@ -37,6 +39,64 @@ namespace StroopApp.Services.Calibration
             double mean = correctReactionTimes.Average();
             double variance = correctReactionTimes.Sum(time => (time - mean) * (time - mean)) / (correctReactionTimes.Count - 1);
             return Math.Clamp(mean + Math.Sqrt(variance), parameters.LowerBound, parameters.UpperBound);
+        }
+
+        /// <summary>
+        /// Candidate thresholds in ms, evenly spaced in log10 from the lower bound to the upper bound included.
+        /// </summary>
+        public static double[] CreateGrid(CalibrationParameters parameters)
+        {
+            double logLower = Math.Log10(parameters.LowerBound);
+            double logUpper = Math.Log10(parameters.UpperBound);
+            int intervals = (int)Math.Ceiling((logUpper - logLower) / GridStep);
+            double step = (logUpper - logLower) / intervals;
+
+            var grid = new double[intervals + 1];
+            for (int i = 0; i <= intervals; i++)
+                grid[i] = Math.Pow(10, logLower + i * step);
+
+            grid[0] = parameters.LowerBound;
+            grid[intervals] = parameters.UpperBound;
+            return grid;
+        }
+
+        /// <summary>
+        /// Normalized log weights of a Gaussian prior in log10, centered on the starting point.
+        /// </summary>
+        public static double[] CreatePrior(double[] grid, double startingPoint, CalibrationParameters parameters)
+        {
+            double sigma = Math.Log10(parameters.PriorWidthFactor);
+            double center = Math.Log10(startingPoint);
+
+            var logWeights = grid.Select(threshold =>
+            {
+                double distance = (Math.Log10(threshold) - center) / sigma;
+                return -0.5 * distance * distance;
+            }).ToArray();
+
+            return Normalize(logWeights);
+        }
+
+        /// <summary>
+        /// Normalized log weights after one phase 2 trial; the input array is left unchanged.
+        /// </summary>
+        public static double[] Update(double[] logWeights, double[] grid, int presentationTime, bool isCorrect, CalibrationParameters parameters)
+        {
+            var updated = new double[logWeights.Length];
+            for (int i = 0; i < logWeights.Length; i++)
+            {
+                double probability = Probability(presentationTime, grid[i], parameters);
+                updated[i] = logWeights[i] + Math.Log(isCorrect ? probability : 1 - probability);
+            }
+
+            return Normalize(updated);
+        }
+
+        private static double[] Normalize(double[] logWeights)
+        {
+            double max = logWeights.Max();
+            double logSum = max + Math.Log(logWeights.Sum(logWeight => Math.Exp(logWeight - max)));
+            return logWeights.Select(logWeight => logWeight - logSum).ToArray();
         }
     }
 }
