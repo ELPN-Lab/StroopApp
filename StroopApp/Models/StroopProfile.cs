@@ -1,10 +1,26 @@
-﻿namespace StroopApp.Models
+﻿using StroopApp.Models.Calibration;
+
+namespace StroopApp.Models
 {
     public class StroopProfile : ExperimentProfile
     {
         public StroopProfile() : base()
         {
             TaskType = TaskType.Stroop;
+        }
+
+        public bool IsCalibration { get; set; }
+
+        public CalibrationParameters CalibrationParameters { get; set; } = new();
+
+        public override void UpdateFrom(ExperimentProfile profile)
+        {
+            base.UpdateFrom(profile);
+            if (profile is StroopProfile stroopProfile)
+            {
+                IsCalibration = stroopProfile.IsCalibration;
+                CalibrationParameters = stroopProfile.CalibrationParameters.Clone();
+            }
         }
 
         public override StroopProfile CloneProfile()
@@ -29,7 +45,9 @@
                 DominantPercent = this.DominantPercent,
                 CongruencePercent = this.CongruencePercent,
                 SwitchPercent = this.SwitchPercent,
-                TaskLanguage = this.TaskLanguage
+                TaskLanguage = this.TaskLanguage,
+                IsCalibration = this.IsCalibration,
+                CalibrationParameters = this.CalibrationParameters.Clone()
             };
         }
     }
