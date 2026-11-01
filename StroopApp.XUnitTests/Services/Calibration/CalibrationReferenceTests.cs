@@ -18,12 +18,13 @@ namespace StroopApp.XUnitTests.Services.Calibration
             var grid = CalibrationCalculator.CreateGrid(parameters);
             var candidates = CalibrationCalculator.CreateCandidates(grid);
             var probabilityTable = CalibrationCalculator.CreateProbabilityTable(grid, candidates, parameters);
+            var entropyTable = CalibrationCalculator.CreateEntropyTable(probabilityTable);
             var logWeights = CalibrationCalculator.CreatePrior(grid, startingPoint, parameters);
             var times = new List<int>();
 
             foreach (bool isCorrect in answers)
             {
-                int time = CalibrationCalculator.SelectNextPresentationTime(logWeights, candidates, probabilityTable);
+                int time = CalibrationCalculator.SelectNextPresentationTime(logWeights, candidates, probabilityTable, entropyTable);
                 times.Add(time);
                 logWeights = CalibrationCalculator.Update(logWeights, grid, time, isCorrect, parameters);
             }

@@ -25,7 +25,8 @@ namespace StroopApp.XUnitTests.Services.Calibration
         {
             var candidates = CalibrationCalculator.CreateCandidates(grid);
             var probabilityTable = CalibrationCalculator.CreateProbabilityTable(grid, candidates, parameters);
-            return CalibrationCalculator.SelectNextPresentationTime(logWeights, candidates, probabilityTable);
+            var entropyTable = CalibrationCalculator.CreateEntropyTable(probabilityTable);
+            return CalibrationCalculator.SelectNextPresentationTime(logWeights, candidates, probabilityTable, entropyTable);
         }
 
         /// <summary>
@@ -61,6 +62,28 @@ namespace StroopApp.XUnitTests.Services.Calibration
             Assert.Equal(grid.Length, table.GetLength(1));
             foreach (var (candidate, i) in new[] { (0, 0), (50, 200), (200, 50), (candidates.Length - 1, grid.Length - 1) })
                 Assert.Equal(CalibrationCalculator.Probability(candidates[candidate], grid[i], parameters), table[candidate, i], Tolerance);
+        }
+
+        /// <summary>
+        /// Each entropy table entry equals -p ln p - (1 - p) ln(1 - p) for the matching probability.
+        /// </summary>
+        [Fact]
+        public void CreateEntropyTable_Default_MatchesBinaryEntropy()
+        {
+            var parameters = new CalibrationParameters();
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+            var candidates = CalibrationCalculator.CreateCandidates(grid);
+            var probabilityTable = CalibrationCalculator.CreateProbabilityTable(grid, candidates, parameters);
+
+            var entropyTable = CalibrationCalculator.CreateEntropyTable(probabilityTable);
+
+            Assert.Equal(probabilityTable.GetLength(0), entropyTable.GetLength(0));
+            Assert.Equal(probabilityTable.GetLength(1), entropyTable.GetLength(1));
+            foreach (var (candidate, i) in new[] { (0, 0), (50, 200), (200, 50), (candidates.Length - 1, grid.Length - 1) })
+            {
+                double p = probabilityTable[candidate, i];
+                Assert.Equal(-p * Math.Log(p) - (1 - p) * Math.Log(1 - p), entropyTable[candidate, i], Tolerance);
+            }
         }
 
         /// <summary>

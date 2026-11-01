@@ -12,6 +12,12 @@ namespace StroopApp.XUnitTests.Services.Calibration
     {
         private const int RunsPerCase = 50;
 
+        private static readonly CalibrationParameters Parameters = new();
+        private static readonly double[] Grid = CalibrationCalculator.CreateGrid(Parameters);
+        private static readonly int[] Candidates = CalibrationCalculator.CreateCandidates(Grid);
+        private static readonly double[,] ProbabilityTable = CalibrationCalculator.CreateProbabilityTable(Grid, Candidates, Parameters);
+        private static readonly double[,] EntropyTable = CalibrationCalculator.CreateEntropyTable(ProbabilityTable);
+
         private readonly ITestOutputHelper _output;
 
         public CalibrationSimulationTests(ITestOutputHelper output)
@@ -23,31 +29,27 @@ namespace StroopApp.XUnitTests.Services.Calibration
 
         private static SimulationResult Simulate(double trueThreshold, double trueBeta, double startingPoint, int seed)
         {
-            var parameters = new CalibrationParameters();
             var participant = new CalibrationParameters { Beta = trueBeta };
             var random = new Random(seed);
-            var grid = CalibrationCalculator.CreateGrid(parameters);
-            var candidates = CalibrationCalculator.CreateCandidates(grid);
-            var probabilityTable = CalibrationCalculator.CreateProbabilityTable(grid, candidates, parameters);
-            var logWeights = CalibrationCalculator.CreatePrior(grid, Math.Clamp(startingPoint, parameters.LowerBound, parameters.UpperBound), parameters);
+            var logWeights = CalibrationCalculator.CreatePrior(Grid, Math.Clamp(startingPoint, Parameters.LowerBound, Parameters.UpperBound), Parameters);
 
             int trialCount = 0;
             double t5, t50, t95, r;
             do
             {
-                int time = CalibrationCalculator.SelectNextPresentationTime(logWeights, candidates, probabilityTable);
+                int time = CalibrationCalculator.SelectNextPresentationTime(logWeights, Candidates, ProbabilityTable, EntropyTable);
                 bool isCorrect = random.NextDouble() < CalibrationCalculator.Probability(time, trueThreshold, participant);
-                logWeights = CalibrationCalculator.Update(logWeights, grid, time, isCorrect, parameters);
+                logWeights = CalibrationCalculator.Update(logWeights, Grid, time, isCorrect, Parameters);
                 trialCount++;
 
-                t5 = CalibrationCalculator.Quantile(logWeights, grid, 0.05);
-                t50 = CalibrationCalculator.Quantile(logWeights, grid, 0.5);
-                t95 = CalibrationCalculator.Quantile(logWeights, grid, 0.95);
+                t5 = CalibrationCalculator.Quantile(logWeights, Grid, 0.05);
+                t50 = CalibrationCalculator.Quantile(logWeights, Grid, 0.5);
+                t95 = CalibrationCalculator.Quantile(logWeights, Grid, 0.95);
                 r = CalibrationCalculator.ComputeR(t5, t50, t95);
             }
-            while (!CalibrationCalculator.ShouldStop(trialCount, r, parameters));
+            while (!CalibrationCalculator.ShouldStop(trialCount, r, Parameters));
 
-            return new SimulationResult(t5, t50, t95, r, trialCount, r <= parameters.ConvergedThreshold);
+            return new SimulationResult(t5, t50, t95, r, trialCount, r <= Parameters.ConvergedThreshold);
         }
 
         private static SimulationResult[] SimulateMany(double trueThreshold, double trueBeta, double startingPoint, int runs, int baseSeed)

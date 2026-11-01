@@ -114,20 +114,43 @@ namespace StroopApp.Services.Calibration
         }
 
         /// <summary>
-        /// QUEST+ choice: the candidate presentation time in ms that minimizes the expected entropy after the answer; ties go to the shortest time.
+        /// Entropy of the answer (correct or not) for each entry of the probability table, computed once per calibration.
         /// </summary>
-        public static int SelectNextPresentationTime(double[] logWeights, int[] candidates, double[,] probabilityTable)
+        public static double[,] CreateEntropyTable(double[,] probabilityTable)
+        {
+            var table = new double[probabilityTable.GetLength(0), probabilityTable.GetLength(1)];
+            for (int candidate = 0; candidate < table.GetLength(0); candidate++)
+            {
+                for (int i = 0; i < table.GetLength(1); i++)
+                    table[candidate, i] = BinaryEntropy(probabilityTable[candidate, i]);
+            }
+
+            return table;
+        }
+
+        /// <summary>
+        /// QUEST+ choice: the candidate presentation time in ms whose answer brings the most information, which minimizes the expected entropy after the answer; ties go to the shortest time.
+        /// </summary>
+        public static int SelectNextPresentationTime(double[] logWeights, int[] candidates, double[,] probabilityTable, double[,] entropyTable)
         {
             double[] weights = logWeights.Select(Math.Exp).ToArray();
 
             int bestTime = 0;
-            double bestEntropy = double.MaxValue;
+            double bestInformation = double.MinValue;
             for (int candidate = 0; candidate < candidates.Length; candidate++)
             {
-                double entropy = ExpectedEntropy(weights, probabilityTable, candidate);
-                if (entropy < bestEntropy - TieTolerance)
+                double correctProbability = 0;
+                double expectedAnswerEntropy = 0;
+                for (int i = 0; i < weights.Length; i++)
                 {
-                    bestEntropy = entropy;
+                    correctProbability += weights[i] * probabilityTable[candidate, i];
+                    expectedAnswerEntropy += weights[i] * entropyTable[candidate, i];
+                }
+
+                double information = BinaryEntropy(correctProbability) - expectedAnswerEntropy;
+                if (information > bestInformation + TieTolerance)
+                {
+                    bestInformation = information;
                     bestTime = candidates[candidate];
                 }
             }
@@ -215,35 +238,9 @@ namespace StroopApp.Services.Calibration
             return parameters.Gamma + range * (1 - Math.Exp(-Math.Pow(presentationTime / alpha, parameters.Beta)));
         }
 
-        private static double ExpectedEntropy(double[] weights, double[,] probabilityTable, int candidate)
+        private static double BinaryEntropy(double probability)
         {
-            var afterCorrect = new double[weights.Length];
-            var afterError = new double[weights.Length];
-            for (int i = 0; i < weights.Length; i++)
-            {
-                double probability = probabilityTable[candidate, i];
-                afterCorrect[i] = weights[i] * probability;
-                afterError[i] = weights[i] * (1 - probability);
-            }
-
-            double correctProbability = afterCorrect.Sum();
-            double errorProbability = afterError.Sum();
-            return correctProbability * Entropy(afterCorrect, correctProbability) + errorProbability * Entropy(afterError, errorProbability);
-        }
-
-        private static double Entropy(double[] unnormalizedWeights, double total)
-        {
-            double entropy = 0;
-            foreach (double weight in unnormalizedWeights)
-            {
-                if (weight <= 0)
-                    continue;
-
-                double probability = weight / total;
-                entropy -= probability * Math.Log(probability);
-            }
-
-            return entropy;
+            return -probability * Math.Log(probability) - (1 - probability) * Math.Log(1 - probability);
         }
     }
 }
