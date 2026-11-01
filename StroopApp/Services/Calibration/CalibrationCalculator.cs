@@ -92,6 +92,73 @@ namespace StroopApp.Services.Calibration
             return Normalize(updated);
         }
 
+        /// <summary>
+        /// Threshold in ms below which lies the given probability of the weights; each candidate's weight is centered on it and the distribution is interpolated linearly in log10.
+        /// </summary>
+        public static double Quantile(double[] logWeights, double[] grid, double probability)
+        {
+            double cumulative = 0;
+            double previousMiddle = 0;
+            double previousLogTime = 0;
+
+            for (int i = 0; i < grid.Length; i++)
+            {
+                double weight = Math.Exp(logWeights[i]);
+                double middle = cumulative + weight / 2;
+                cumulative += weight;
+                double logTime = Math.Log10(grid[i]);
+
+                if (middle >= probability)
+                {
+                    if (i == 0)
+                        return grid[0];
+
+                    double fraction = (probability - previousMiddle) / (middle - previousMiddle);
+                    return Math.Pow(10, previousLogTime + fraction * (logTime - previousLogTime));
+                }
+
+                previousMiddle = middle;
+                previousLogTime = logTime;
+            }
+
+            return grid[^1];
+        }
+
+        /// <summary>
+        /// Relative width of the credible interval: (t95 - t5) / t50.
+        /// </summary>
+        public static double ComputeR(double t5, double t50, double t95) => (t95 - t5) / t50;
+
+        /// <summary>
+        /// Convergence status for the given R.
+        /// </summary>
+        public static CalibrationStatus GetStatus(double r, CalibrationParameters parameters)
+        {
+            if (r <= parameters.ConvergedThreshold)
+                return CalibrationStatus.Converged;
+            if (r <= parameters.NearlyConvergedThreshold)
+                return CalibrationStatus.NearlyConverged;
+            return CalibrationStatus.NotConverged;
+        }
+
+        /// <summary>
+        /// Whether phase 2 stops: maximum reached, or minimum reached with a converged R.
+        /// </summary>
+        public static bool ShouldStop(int phase2TrialCount, double r, CalibrationParameters parameters)
+        {
+            return phase2TrialCount >= parameters.MaxPhase2TrialCount
+                || (phase2TrialCount >= parameters.MinPhase2TrialCount && r <= parameters.ConvergedThreshold);
+        }
+
+        /// <summary>
+        /// Presentation time that reaches the given accuracy, read on the curve of the estimated threshold.
+        /// </summary>
+        public static double PresentationTimeAtAccuracy(double t50, double accuracy, CalibrationParameters parameters)
+        {
+            double alpha = t50 / ThresholdFactor(parameters.TargetAccuracy, parameters);
+            return alpha * ThresholdFactor(accuracy, parameters);
+        }
+
         private static double[] Normalize(double[] logWeights)
         {
             double max = logWeights.Max();

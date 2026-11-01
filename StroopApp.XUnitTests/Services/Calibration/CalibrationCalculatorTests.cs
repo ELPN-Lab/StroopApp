@@ -334,5 +334,140 @@ namespace StroopApp.XUnitTests.Services.Calibration
             Assert.All(logWeights, logWeight => Assert.False(double.IsNaN(logWeight) || double.IsPositiveInfinity(logWeight)));
             Assert.Equal(1, TotalWeight(logWeights), 1e-9);
         }
+
+        /// <summary>
+        /// When all the weight is on one candidate, the median is that candidate.
+        /// </summary>
+        [Fact]
+        public void Quantile_AllWeightOnOnePoint_MedianIsThatPoint()
+        {
+            var parameters = new CalibrationParameters();
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+            var logWeights = Enumerable.Repeat(double.NegativeInfinity, grid.Length).ToArray();
+            logWeights[100] = 0;
+
+            var median = CalibrationCalculator.Quantile(logWeights, grid, 0.5);
+
+            Assert.Equal(grid[100], median, 1e-9);
+        }
+
+        /// <summary>
+        /// With uniform weights, quantiles follow the grid linearly in log10.
+        /// </summary>
+        [Theory]
+        [InlineData(0.05)]
+        [InlineData(0.5)]
+        [InlineData(0.95)]
+        public void Quantile_UniformWeights_IsLinearInLog(double probability)
+        {
+            var parameters = new CalibrationParameters();
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+            var logWeights = Enumerable.Repeat(-Math.Log(grid.Length), grid.Length).ToArray();
+            double position = (probability * grid.Length - 0.5) / (grid.Length - 1);
+            double expected = Math.Pow(10, Math.Log10(140) + position * (Math.Log10(5000) - Math.Log10(140)));
+
+            var quantile = CalibrationCalculator.Quantile(logWeights, grid, probability);
+
+            Assert.Equal(expected, quantile, 1e-6);
+        }
+
+        /// <summary>
+        /// On a prior narrow enough not to be cut by the bounds, the median is the center and the 5 % and 95 % quantiles sit 1.645 standard deviations away in log10.
+        /// </summary>
+        [Fact]
+        public void Quantile_NarrowPrior_MatchesGaussianQuantiles()
+        {
+            var parameters = new CalibrationParameters { PriorWidthFactor = 1.2 };
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+            var logWeights = CalibrationCalculator.CreatePrior(grid, grid[150], parameters);
+            double sigma = Math.Log10(parameters.PriorWidthFactor);
+
+            var t5 = CalibrationCalculator.Quantile(logWeights, grid, 0.05);
+            var t50 = CalibrationCalculator.Quantile(logWeights, grid, 0.5);
+            var t95 = CalibrationCalculator.Quantile(logWeights, grid, 0.95);
+
+            Assert.Equal(grid[150], t50, 1e-6);
+            Assert.Equal(1.645 * sigma, Math.Log10(t95) - Math.Log10(t50), 1e-2);
+            Assert.Equal(1.645 * sigma, Math.Log10(t50) - Math.Log10(t5), 1e-2);
+        }
+
+        /// <summary>
+        /// Thomas's examples: R values and their status.
+        /// </summary>
+        [Theory]
+        [InlineData(228.0, 250.0, 273.0, 0.18, CalibrationStatus.Converged)]
+        [InlineData(205.0, 250.0, 300.0, 0.38, CalibrationStatus.NearlyConverged)]
+        [InlineData(170.0, 250.0, 340.0, 0.68, CalibrationStatus.NotConverged)]
+        public void ComputeR_ThomasExamples_MatchExpectedValueAndStatus(double t5, double t50, double t95, double expectedR, CalibrationStatus expectedStatus)
+        {
+            var parameters = new CalibrationParameters();
+
+            var r = CalibrationCalculator.ComputeR(t5, t50, t95);
+
+            Assert.Equal(expectedR, r, Tolerance);
+            Assert.Equal(expectedStatus, CalibrationCalculator.GetStatus(r, parameters));
+        }
+
+        /// <summary>
+        /// Status limits are inclusive: 0.20 is converged and 0.40 is nearly converged.
+        /// </summary>
+        [Theory]
+        [InlineData(0.0, CalibrationStatus.Converged)]
+        [InlineData(0.20, CalibrationStatus.Converged)]
+        [InlineData(0.2000001, CalibrationStatus.NearlyConverged)]
+        [InlineData(0.40, CalibrationStatus.NearlyConverged)]
+        [InlineData(0.4000001, CalibrationStatus.NotConverged)]
+        public void GetStatus_Limits_AreInclusive(double r, CalibrationStatus expectedStatus)
+        {
+            var parameters = new CalibrationParameters();
+
+            Assert.Equal(expectedStatus, CalibrationCalculator.GetStatus(r, parameters));
+        }
+
+        /// <summary>
+        /// Phase 2 stops from 40 trials with a converged R, or at 100 trials whatever R.
+        /// </summary>
+        [Theory]
+        [InlineData(39, 0.10, false)]
+        [InlineData(40, 0.10, true)]
+        [InlineData(40, 0.20, true)]
+        [InlineData(40, 0.21, false)]
+        [InlineData(99, 0.90, false)]
+        [InlineData(100, 0.90, true)]
+        public void ShouldStop_TrialCountAndR_FollowsStopRule(int phase2TrialCount, double r, bool expected)
+        {
+            var parameters = new CalibrationParameters();
+
+            Assert.Equal(expected, CalibrationCalculator.ShouldStop(phase2TrialCount, r, parameters));
+        }
+
+        /// <summary>
+        /// At the target accuracy, the time read on the curve is the estimated threshold.
+        /// </summary>
+        [Fact]
+        public void PresentationTimeAtAccuracy_TargetAccuracy_ReturnsThreshold()
+        {
+            var parameters = new CalibrationParameters();
+
+            var time = CalibrationCalculator.PresentationTimeAtAccuracy(1075, parameters.TargetAccuracy, parameters);
+
+            Assert.Equal(1075, time, 1e-9);
+        }
+
+        /// <summary>
+        /// The time read for an accuracy gives back that accuracy on the curve.
+        /// </summary>
+        [Theory]
+        [InlineData(0.50)]
+        [InlineData(0.70)]
+        [InlineData(0.95)]
+        public void PresentationTimeAtAccuracy_RoundTripsThroughProbability(double accuracy)
+        {
+            var parameters = new CalibrationParameters();
+
+            var time = CalibrationCalculator.PresentationTimeAtAccuracy(1075, accuracy, parameters);
+
+            Assert.Equal(accuracy, CalibrationCalculator.Probability(time, 1075, parameters), 1e-9);
+        }
     }
 }
