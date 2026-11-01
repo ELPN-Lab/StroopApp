@@ -21,6 +21,48 @@ namespace StroopApp.XUnitTests.Services.Calibration
             return logWeights.Sum(Math.Exp);
         }
 
+        private static int SelectNextPresentationTime(double[] logWeights, double[] grid, CalibrationParameters parameters)
+        {
+            var candidates = CalibrationCalculator.CreateCandidates(grid);
+            var probabilityTable = CalibrationCalculator.CreateProbabilityTable(grid, candidates, parameters);
+            return CalibrationCalculator.SelectNextPresentationTime(logWeights, candidates, probabilityTable);
+        }
+
+        /// <summary>
+        /// Candidates are the grid rounded to the ms, distinct and ascending, from 140 ms to 5000 ms.
+        /// </summary>
+        [Fact]
+        public void CreateCandidates_DefaultGrid_RoundsDistinctAscending()
+        {
+            var grid = CalibrationCalculator.CreateGrid(new CalibrationParameters());
+
+            var candidates = CalibrationCalculator.CreateCandidates(grid);
+
+            Assert.Equal(140, candidates[0]);
+            Assert.Equal(5000, candidates[^1]);
+            Assert.Equal(candidates.Distinct().Count(), candidates.Length);
+            Assert.Equal(candidates.OrderBy(time => time), candidates);
+            Assert.All(candidates, time => Assert.Contains(time, grid.Select(candidate => (int)Math.Round(candidate))));
+        }
+
+        /// <summary>
+        /// Each table entry equals the probability of a correct answer for that candidate time and threshold.
+        /// </summary>
+        [Fact]
+        public void CreateProbabilityTable_Default_MatchesProbability()
+        {
+            var parameters = new CalibrationParameters();
+            var grid = CalibrationCalculator.CreateGrid(parameters);
+            var candidates = CalibrationCalculator.CreateCandidates(grid);
+
+            var table = CalibrationCalculator.CreateProbabilityTable(grid, candidates, parameters);
+
+            Assert.Equal(candidates.Length, table.GetLength(0));
+            Assert.Equal(grid.Length, table.GetLength(1));
+            foreach (var (candidate, i) in new[] { (0, 0), (50, 200), (200, 50), (candidates.Length - 1, grid.Length - 1) })
+                Assert.Equal(CalibrationCalculator.Probability(candidates[candidate], grid[i], parameters), table[candidate, i], Tolerance);
+        }
+
         /// <summary>
         /// At the threshold, the probability of a correct answer equals the target accuracy.
         /// </summary>
@@ -480,8 +522,8 @@ namespace StroopApp.XUnitTests.Services.Calibration
             var grid = CalibrationCalculator.CreateGrid(parameters);
             var logWeights = CalibrationCalculator.CreatePrior(grid, 800, parameters);
 
-            var first = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
-            var second = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
+            var first = SelectNextPresentationTime(logWeights, grid, parameters);
+            var second = SelectNextPresentationTime(logWeights, grid, parameters);
 
             Assert.Equal(first, second);
         }
@@ -499,7 +541,7 @@ namespace StroopApp.XUnitTests.Services.Calibration
             var grid = CalibrationCalculator.CreateGrid(parameters);
             var logWeights = CalibrationCalculator.CreatePrior(grid, startingPoint, parameters);
 
-            var time = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
+            var time = SelectNextPresentationTime(logWeights, grid, parameters);
 
             Assert.Contains(time, grid.Select(candidate => (int)Math.Round(candidate)));
             Assert.InRange(time, parameters.LowerBound, parameters.UpperBound);
@@ -516,7 +558,7 @@ namespace StroopApp.XUnitTests.Services.Calibration
             var logWeights = Enumerable.Repeat(double.NegativeInfinity, grid.Length).ToArray();
             logWeights[100] = 0;
 
-            var time = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
+            var time = SelectNextPresentationTime(logWeights, grid, parameters);
 
             Assert.Equal(parameters.LowerBound, time);
         }
@@ -531,7 +573,7 @@ namespace StroopApp.XUnitTests.Services.Calibration
             var grid = CalibrationCalculator.CreateGrid(parameters);
             var logWeights = CalibrationCalculator.CreatePrior(grid, 800, parameters);
 
-            var time = CalibrationCalculator.SelectNextPresentationTime(logWeights, grid, parameters);
+            var time = SelectNextPresentationTime(logWeights, grid, parameters);
 
             Assert.InRange(time, CalibrationCalculator.Quantile(logWeights, grid, 0.05), CalibrationCalculator.Quantile(logWeights, grid, 0.95));
         }
@@ -545,8 +587,8 @@ namespace StroopApp.XUnitTests.Services.Calibration
             var parameters = new CalibrationParameters();
             var grid = CalibrationCalculator.CreateGrid(parameters);
 
-            var fast = CalibrationCalculator.SelectNextPresentationTime(CalibrationCalculator.CreatePrior(grid, 400, parameters), grid, parameters);
-            var slow = CalibrationCalculator.SelectNextPresentationTime(CalibrationCalculator.CreatePrior(grid, 2000, parameters), grid, parameters);
+            var fast = SelectNextPresentationTime(CalibrationCalculator.CreatePrior(grid, 400, parameters), grid, parameters);
+            var slow = SelectNextPresentationTime(CalibrationCalculator.CreatePrior(grid, 2000, parameters), grid, parameters);
 
             Assert.True(fast < slow);
         }

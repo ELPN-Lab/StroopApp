@@ -93,22 +93,42 @@ namespace StroopApp.Services.Calibration
         }
 
         /// <summary>
+        /// Candidate presentation times in ms: the grid rounded to the ms, without duplicates, in ascending order.
+        /// </summary>
+        public static int[] CreateCandidates(double[] grid) => grid.Select(time => (int)Math.Round(time)).Distinct().ToArray();
+
+        /// <summary>
+        /// Probability of a correct answer for each candidate time (rows) and each candidate threshold (columns), computed once per calibration.
+        /// </summary>
+        public static double[,] CreateProbabilityTable(double[] grid, int[] candidates, CalibrationParameters parameters)
+        {
+            double factor = ThresholdFactor(parameters.TargetAccuracy, parameters);
+            var table = new double[candidates.Length, grid.Length];
+            for (int candidate = 0; candidate < candidates.Length; candidate++)
+            {
+                for (int i = 0; i < grid.Length; i++)
+                    table[candidate, i] = Weibull(candidates[candidate], grid[i] / factor, parameters);
+            }
+
+            return table;
+        }
+
+        /// <summary>
         /// QUEST+ choice: the candidate presentation time in ms that minimizes the expected entropy after the answer; ties go to the shortest time.
         /// </summary>
-        public static int SelectNextPresentationTime(double[] logWeights, double[] grid, CalibrationParameters parameters)
+        public static int SelectNextPresentationTime(double[] logWeights, int[] candidates, double[,] probabilityTable)
         {
             double[] weights = logWeights.Select(Math.Exp).ToArray();
-            double factor = ThresholdFactor(parameters.TargetAccuracy, parameters);
 
             int bestTime = 0;
             double bestEntropy = double.MaxValue;
-            foreach (int candidate in grid.Select(time => (int)Math.Round(time)).Distinct())
+            for (int candidate = 0; candidate < candidates.Length; candidate++)
             {
-                double entropy = ExpectedEntropy(weights, grid, candidate, factor, parameters);
+                double entropy = ExpectedEntropy(weights, probabilityTable, candidate);
                 if (entropy < bestEntropy - TieTolerance)
                 {
                     bestEntropy = entropy;
-                    bestTime = candidate;
+                    bestTime = candidates[candidate];
                 }
             }
 
@@ -195,13 +215,13 @@ namespace StroopApp.Services.Calibration
             return parameters.Gamma + range * (1 - Math.Exp(-Math.Pow(presentationTime / alpha, parameters.Beta)));
         }
 
-        private static double ExpectedEntropy(double[] weights, double[] grid, int presentationTime, double factor, CalibrationParameters parameters)
+        private static double ExpectedEntropy(double[] weights, double[,] probabilityTable, int candidate)
         {
             var afterCorrect = new double[weights.Length];
             var afterError = new double[weights.Length];
             for (int i = 0; i < weights.Length; i++)
             {
-                double probability = Weibull(presentationTime, grid[i] / factor, parameters);
+                double probability = probabilityTable[candidate, i];
                 afterCorrect[i] = weights[i] * probability;
                 afterError[i] = weights[i] * (1 - probability);
             }

@@ -29,6 +29,12 @@ For each sequence, the tests compare:
 - the presentation time chosen by QUEST+ at every trial, to the millisecond;
 - the final t5, t50, t95 and R, within 1e-9.
 
+## Verification record
+
+On 2026-11-01, the C# implementation reproduced the Python values on the three sequences: the chosen presentation times are identical to the millisecond, and t5, t50, t95 and R agree within 1e-9.
+
+This agreement shows that the C# code follows the formulas of the specification. It does not validate the formulas themselves, because both implementations derive from the same specification. The formulas are reviewed separately by the research team.
+
 ## Regenerating the values
 
 The C# tests do not run Python. Python is only needed after a change to the formulas:
