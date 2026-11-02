@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using StroopApp.Core;
 using StroopApp.Models;
+using StroopApp.Models.Calibration;
 using StroopApp.Services.Navigation;
 using StroopApp.ViewModels.State;
 using System.Diagnostics;
@@ -75,10 +76,10 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
         {
             try
             {
-                if (Settings.ExperimentContext.CurrentBlock is null)
-                    throw new InvalidOperationException("CurrentBlock is not initialized");
+                var block = Settings.ExperimentContext.CurrentBlock
+                    ?? throw new InvalidOperationException("CurrentBlock is not initialized");
 
-                foreach (StroopTrial trial in Settings.ExperimentContext.CurrentBlock.TrialRecords)
+                foreach (StroopTrial trial in block.TrialRecords)
                 {
                     if (Settings.ExperimentContext.IsTaskStopped || _cancellationTokenSource.Token.IsCancellationRequested)
                     {
@@ -86,6 +87,9 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                         return;
                     }
                     Settings.ExperimentContext.CurrentTrial = trial;
+                    int maxReactionTime = block.GetNextMaxReactionTime();
+                    trial.PresentationTime = maxReactionTime;
+                    trial.CalibrationPhase = (block as CalibrationBlock)?.CurrentPhase;
 
                     CurrentStepViewModel = new FixationCrossViewModel();
                     await Task.Delay(Settings.CurrentProfile.FixationDuration, _cancellationTokenSource.Token);
@@ -125,7 +129,7 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                         return;
                     }
 
-                    var delayTask = Task.Delay(Settings.CurrentProfile.MaxReactionTime, _cancellationTokenSource.Token);
+                    var delayTask = Task.Delay(maxReactionTime, _cancellationTokenSource.Token);
                     var completed = await Task.WhenAny(_inputTcs.Task, delayTask);
 
                     if (completed == _inputTcs.Task && !_inputTcs.Task.IsCanceled)
@@ -135,6 +139,7 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                         Settings.ExperimentContext.CurrentBlock.TrialTimes.Add(trial.ReactionTime);
                         Settings.ExperimentContext.ReactionPoints.Add(new ReactionTimePoint(trial.TrialNumber, trial.ReactionTime, trial.IsValidResponse));
                         CurrentStepViewModel = new FixationCrossViewModel();
+                        block.RecordTrial(trial);
                     }
                     else if (!delayTask.IsCanceled)
                     {
@@ -143,6 +148,7 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                         trial.IsValidResponse = false;
                         Settings.ExperimentContext.CurrentBlock.TrialTimes.Add(null);
                         Settings.ExperimentContext.ReactionPoints.Add(new ReactionTimePoint(trial.TrialNumber, double.NaN, trial.IsValidResponse));
+                        block.RecordTrial(trial);
                     }
 
                     if (Settings.ExperimentContext.IsTaskStopped || _cancellationTokenSource.Token.IsCancellationRequested)
@@ -151,11 +157,14 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                         return;
                     }
 
-                    double remaining = Settings.CurrentProfile.MaxReactionTime - _wordTimer.Elapsed.TotalMilliseconds;
+                    double remaining = maxReactionTime - _wordTimer.Elapsed.TotalMilliseconds;
                     if (remaining > 0)
                         await Task.Delay((int)remaining, _cancellationTokenSource.Token);
 
                     _wordTimer.Stop();
+
+                    if (block.IsFinished)
+                        break;
                 }
 
                 EndBlock();
@@ -186,6 +195,12 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
             _wordTimer.Stop();
             _inputTcs?.TrySetCanceled();
 
+            if (Settings.ExperimentContext.CurrentBlock is CalibrationBlock calibrationBlock)
+            {
+                calibrationBlock.StopByExperimenter();
+                TrimCalibrationBlock(calibrationBlock);
+            }
+
             if (Settings.ExperimentContext.CurrentBlock != null)
             {
                 Settings.ExperimentContext.CurrentBlock.CalculateValues();
@@ -198,6 +213,9 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
         {
             if (Settings.ExperimentContext.CurrentBlock is null)
                 return;
+
+            if (Settings.ExperimentContext.CurrentBlock is CalibrationBlock calibrationBlock)
+                TrimCalibrationBlock(calibrationBlock);
 
             Settings.ExperimentContext.CurrentBlock.CalculateValues();
             Settings.ExperimentContext.CurrentTrial = null;
@@ -229,6 +247,12 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                 trial.IsValidResponse = string.Equals(trial.ExpectedAnswer, answer, StringComparison.OrdinalIgnoreCase);
                 _inputTcs.TrySetResult(_responseTime.Elapsed.TotalMilliseconds);
             }
+        }
+
+        private void TrimCalibrationBlock(CalibrationBlock calibrationBlock)
+        {
+            calibrationBlock.RemoveUnplayedTrials();
+            Settings.ExperimentContext.TrimCurrentBlock(calibrationBlock.TrialRecords.Count);
         }
     }
 }

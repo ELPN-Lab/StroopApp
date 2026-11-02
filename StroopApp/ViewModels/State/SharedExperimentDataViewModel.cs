@@ -4,6 +4,7 @@ using LiveChartsCore.SkiaSharpView;
 using SkiaSharp;
 using StroopApp.Core;
 using StroopApp.Models;
+using StroopApp.Models.Calibration;
 using StroopApp.Services.Charts;
 using System.Collections.ObjectModel;
 
@@ -73,7 +74,10 @@ namespace StroopApp.ViewModels.State
         {
             if (settings == null) throw new ArgumentNullException(nameof(settings));
 
-            CurrentBlock = new Block(settings.CurrentProfile.CloneProfile(), settings.Block);
+            var profile = settings.CurrentProfile.CloneProfile();
+            CurrentBlock = profile is StroopProfile { IsCalibration: true } stroopProfile
+                ? new CalibrationBlock(stroopProfile, settings.Block, stroopProfile.CalibrationParameters)
+                : new Block(profile, settings.Block);
 
             Blocks.Add(CurrentBlock);
 
@@ -97,6 +101,19 @@ namespace StroopApp.ViewModels.State
             OnPropertyChanged(nameof(Blocks));
             OnPropertyChanged(nameof(BlockSeries));
             OnPropertyChanged(nameof(Sections));
+        }
+
+        /// <summary>
+        /// Shortens the current block's chart section to the trials actually played, after an early end.
+        /// </summary>
+        public void TrimCurrentBlock(int playedTrialCount)
+        {
+            var section = Sections[^1];
+            int end = (int)section.Xi! + playedTrialCount - 1;
+
+            section.Xj = end;
+            _model.CurrentBlockEnd = end;
+            _model.CurrentBlockStart = end + 1;
         }
 
         public void Reset()

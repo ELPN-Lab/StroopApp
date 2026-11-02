@@ -22,6 +22,16 @@
         public VisualCueType VisualCue { get; set; }
 
         /// <summary>
+        /// Presentation time applied to this trial, in ms.
+        /// </summary>
+        public int PresentationTime { get; set; }
+
+        /// <summary>
+        /// Calibration phase (1 or 2); null outside a calibration block.
+        /// </summary>
+        public int? CalibrationPhase { get; set; }
+
+        /// <summary>
         /// Calculates the expected answer based on trial type (VisualCue, Congruent, or Incongruent).
         /// </summary>
         public void DetermineExpectedAnswer()
