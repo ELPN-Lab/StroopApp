@@ -1036,4 +1036,190 @@
   <data name="Simon_PrimePage_Color" xml:space="preserve">
     <value>color</value>
   </data>
+  <data name="Header_PresentationTime" xml:space="preserve">
+    <value>Presentation time (ms)</value>
+  </data>
+  <data name="Header_CalibrationPhase" xml:space="preserve">
+    <value>Calibration phase</value>
+  </data>
+  <data name="Header_CalibrationStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Header_CalibrationStopReason" xml:space="preserve">
+    <value>Stop reason</value>
+  </data>
+  <data name="Header_CalibrationT50" xml:space="preserve">
+    <value>Presentation time t50 (ms)</value>
+  </data>
+  <data name="Header_CalibrationT5" xml:space="preserve">
+    <value>90 % interval lower bound t5 (ms)</value>
+  </data>
+  <data name="Header_CalibrationT95" xml:space="preserve">
+    <value>90 % interval upper bound t95 (ms)</value>
+  </data>
+  <data name="Header_CalibrationR" xml:space="preserve">
+    <value>Relative width R</value>
+  </data>
+  <data name="Header_CalibrationPhase1TrialCount" xml:space="preserve">
+    <value>Phase 1 trials</value>
+  </data>
+  <data name="Header_CalibrationPhase2TrialCount" xml:space="preserve">
+    <value>Phase 2 trials</value>
+  </data>
+  <data name="Header_CalibrationStartingPoint" xml:space="preserve">
+    <value>Phase 2 starting point (ms)</value>
+  </data>
+  <data name="Header_CalibrationSliderAccuracy" xml:space="preserve">
+    <value>Slider accuracy (%)</value>
+  </data>
+  <data name="Header_CalibrationSliderPresentationTime" xml:space="preserve">
+    <value>Presentation time at slider accuracy (ms)</value>
+  </data>
+  <data name="Header_CalibrationStartingTime" xml:space="preserve">
+    <value>Phase 1 presentation time (ms)</value>
+  </data>
+  <data name="Header_CalibrationLowerBound" xml:space="preserve">
+    <value>Lowest presentation time (ms)</value>
+  </data>
+  <data name="Header_CalibrationUpperBound" xml:space="preserve">
+    <value>Highest presentation time (ms)</value>
+  </data>
+  <data name="Header_CalibrationTargetAccuracy" xml:space="preserve">
+    <value>Target accuracy (%)</value>
+  </data>
+  <data name="Header_CalibrationGamma" xml:space="preserve">
+    <value>Guess rate γ</value>
+  </data>
+  <data name="Header_CalibrationDelta" xml:space="preserve">
+    <value>Lapse rate δ</value>
+  </data>
+  <data name="Header_CalibrationBeta" xml:space="preserve">
+    <value>Slope β</value>
+  </data>
+  <data name="Header_CalibrationPriorWidthFactor" xml:space="preserve">
+    <value>Prior width factor</value>
+  </data>
+  <data name="Header_CalibrationMinCorrectPhase1Trials" xml:space="preserve">
+    <value>Minimum correct phase 1 answers</value>
+  </data>
+  <data name="Header_CalibrationMinPhase2TrialCount" xml:space="preserve">
+    <value>Minimum phase 2 trials</value>
+  </data>
+  <data name="Header_CalibrationMaxPhase2TrialCount" xml:space="preserve">
+    <value>Maximum phase 2 trials</value>
+  </data>
+  <data name="Header_CalibrationConvergedThreshold" xml:space="preserve">
+    <value>Converged threshold (R)</value>
+  </data>
+  <data name="Header_CalibrationNearlyConvergedThreshold" xml:space="preserve">
+    <value>Nearly converged threshold (R)</value>
+  </data>
+  <data name="Header_CalibrationCurrentPhase" xml:space="preserve">
+    <value>Current phase</value>
+  </data>
+  <data name="Label_CalibrationStatus_Converged" xml:space="preserve">
+    <value>Converged</value>
+  </data>
+  <data name="Label_CalibrationStatus_NearlyConverged" xml:space="preserve">
+    <value>Nearly converged</value>
+  </data>
+  <data name="Label_CalibrationStatus_NotConverged" xml:space="preserve">
+    <value>Not converged</value>
+  </data>
+  <data name="Label_CalibrationStatus_EstimationImpossible" xml:space="preserve">
+    <value>Estimation impossible</value>
+  </data>
+  <data name="Label_CalibrationStopReason_Converged" xml:space="preserve">
+    <value>Convergence reached</value>
+  </data>
+  <data name="Label_CalibrationStopReason_MaxTrialsReached" xml:space="preserve">
+    <value>Maximum number of trials reached</value>
+  </data>
+  <data name="Label_CalibrationStopReason_StoppedByExperimenter" xml:space="preserve">
+    <value>Stopped by the experimenter</value>
+  </data>
+  <data name="Label_Calibration" xml:space="preserve">
+    <value>Calibration task</value>
+  </data>
+  <data name="Label_CalibrationNoEstimate" xml:space="preserve">
+    <value>No estimate: the calibration stopped during phase 1.</value>
+  </data>
+  <data name="Title_Calibration" xml:space="preserve">
+    <value>Calibration</value>
+  </data>
+  <data name="Title_CalibrationSettings" xml:space="preserve">
+    <value>Calibration settings</value>
+  </data>
+  <data name="Title_CalibrationAdvancedSettings" xml:space="preserve">
+    <value>Advanced settings</value>
+  </data>
+  <data name="Title_CalibrationResult" xml:space="preserve">
+    <value>Calibration result</value>
+  </data>
+  <data name="Error_Calibration_LowerBoundNotPositive" xml:space="preserve">
+    <value>The lowest presentation time must be above 0 ms.</value>
+  </data>
+  <data name="Error_Calibration_LowerBoundNotBelowUpperBound" xml:space="preserve">
+    <value>The lowest presentation time must be below the highest presentation time.</value>
+  </data>
+  <data name="Error_Calibration_StartingTimeOutOfBounds" xml:space="preserve">
+    <value>The phase 1 presentation time must lie between the lowest and the highest presentation times.</value>
+  </data>
+  <data name="Error_Calibration_TargetAccuracyOutOfRange" xml:space="preserve">
+    <value>The target accuracy must lie strictly between γ and 1 - δ.</value>
+  </data>
+  <data name="Error_Calibration_BetaNotPositive" xml:space="preserve">
+    <value>The slope β must be above 0.</value>
+  </data>
+  <data name="Error_Calibration_DeltaOutOfRange" xml:space="preserve">
+    <value>The lapse rate δ must lie strictly between 0 and 1 - γ.</value>
+  </data>
+  <data name="Error_Calibration_PriorWidthFactorNotAboveOne" xml:space="preserve">
+    <value>The prior width factor must be above 1.</value>
+  </data>
+  <data name="Error_Calibration_MinCorrectOutOfRange" xml:space="preserve">
+    <value>The minimum number of correct phase 1 answers must lie between 2 and the number of phase 1 trials.</value>
+  </data>
+  <data name="Error_Calibration_MaxPhase2NotPositive" xml:space="preserve">
+    <value>The maximum number of phase 2 trials must be above 0.</value>
+  </data>
+  <data name="Error_Calibration_MinPhase2AboveMax" xml:space="preserve">
+    <value>The minimum number of phase 2 trials must not exceed the maximum.</value>
+  </data>
+  <data name="Error_Calibration_ConvergedAboveNearlyConverged" xml:space="preserve">
+    <value>The converged threshold must not exceed the nearly converged threshold.</value>
+  </data>
+  <data name="Title_CalibrationCurveReading" xml:space="preserve">
+    <value>Reading the curve</value>
+  </data>
+  <data name="Button_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Button_CopyAll" xml:space="preserve">
+    <value>Copy all</value>
+  </data>
+  <data name="Button_Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Label_CalibrationPresentationTimeAt" xml:space="preserve">
+    <value>Presentation time at {0:F0} %</value>
+  </data>
+  <data name="Message_CalibrationDetailsInExport" xml:space="preserve">
+    <value>These values are also saved in the Excel export, on the second sheet of the workbook ("Calibration").</value>
+  </data>
+  <data name="Title_CalibrationDetails" xml:space="preserve">
+    <value>Calibration details</value>
+  </data>
+  <data name="Title_CalibrationTrials" xml:space="preserve">
+    <value>Trials</value>
+  </data>
+  <data name="Title_CalibrationPhase1" xml:space="preserve">
+    <value>Phase 1: fixed presentation time</value>
+  </data>
+  <data name="Title_CalibrationPhase2" xml:space="preserve">
+    <value>Phase 2: adaptive search</value>
+  </data>
+  <data name="Label_ChartCalibrationPhase" xml:space="preserve">
+    <value>Phase {0}</value>
+  </data>
 </root>
