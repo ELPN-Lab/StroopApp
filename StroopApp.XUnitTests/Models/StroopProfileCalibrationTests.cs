@@ -113,5 +113,28 @@ namespace StroopApp.XUnitTests.Models
             Assert.True(loaded.IsCalibration);
             Assert.Equivalent(original.CalibrationParameters, loaded.CalibrationParameters);
         }
+
+        /// <summary>
+        /// A calibration trial can last up to the upper bound, whatever the max reaction time.
+        /// </summary>
+        [Fact]
+        public void GetLongestReactionTime_Calibration_ReturnsUpperBound()
+        {
+            var profile = CreateCalibrationProfile();
+            profile.MaxReactionTime = 1000;
+
+            Assert.Equal(profile.CalibrationParameters.UpperBound, profile.GetLongestReactionTime());
+        }
+
+        /// <summary>
+        /// Outside calibration, the longest trial is the max reaction time.
+        /// </summary>
+        [Fact]
+        public void GetLongestReactionTime_Standard_ReturnsMaxReactionTime()
+        {
+            var profile = new StroopProfile { MaxReactionTime = 1000 };
+
+            Assert.Equal(1000, profile.GetLongestReactionTime());
+        }
     }
 }

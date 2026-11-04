@@ -73,7 +73,7 @@ namespace StroopApp.ViewModels.Experiment.Experimenter
                 new Axis
                 {
                     MinLimit = 0,
-                    MaxLimit = settings.CurrentProfile.MaxReactionTime * 1.1,
+                    MaxLimit = settings.CurrentProfile.GetLongestReactionTime() * 1.1,
                     Name = Strings.Header_ResponseTime,
                     NamePadding = new LiveChartsCore.Drawing.Padding(0),
                     NameTextSize = 14

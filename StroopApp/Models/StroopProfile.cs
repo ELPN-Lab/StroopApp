@@ -23,6 +23,11 @@ namespace StroopApp.Models
             }
         }
 
+        /// <summary>
+        /// A calibration trial can last up to the calibration upper bound.
+        /// </summary>
+        public override int GetLongestReactionTime() => IsCalibration ? CalibrationParameters.UpperBound : MaxReactionTime;
+
         public override StroopProfile CloneProfile()
         {
             return new StroopProfile()

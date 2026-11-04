@@ -97,6 +97,11 @@ namespace StroopApp.Models
             }
         }
 
+        /// <summary>
+        /// Longest time a trial of this profile can wait for an answer, in ms.
+        /// </summary>
+        public virtual int GetLongestReactionTime() => MaxReactionTime;
+
         public abstract ExperimentProfile CloneProfile();
     }
 }

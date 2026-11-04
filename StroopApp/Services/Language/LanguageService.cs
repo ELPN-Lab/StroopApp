@@ -48,6 +48,7 @@ namespace StroopApp.Services.Language
 			var culture = new CultureInfo(languageCode);
 			Thread.CurrentThread.CurrentCulture = culture;
 			Thread.CurrentThread.CurrentUICulture = culture;
+			Strings.Culture = culture;
 		}
 
 		private AppConfig LoadConfig()
@@ -82,7 +83,7 @@ namespace StroopApp.Services.Language
 
 			if (string.IsNullOrWhiteSpace(cultureCode))
 			{
-				targetCulture = Thread.CurrentThread.CurrentUICulture;
+				targetCulture = Strings.Culture ?? Thread.CurrentThread.CurrentUICulture;
 			}
 			else
 			{
