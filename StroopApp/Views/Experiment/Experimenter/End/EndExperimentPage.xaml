@@ -3,12 +3,76 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:ui="http://schemas.modernwpf.com/2019"
       xmlns:models="clr-namespace:StroopApp.Models"
-      xmlns:converters="clr-namespace:StroopApp.Converters">
+      xmlns:converters="clr-namespace:StroopApp.Converters"
+      xmlns:endVm="clr-namespace:StroopApp.ViewModels.Experiment.Experimenter.End">
     <Page.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter" />
         <converters:BoolToStringConverter x:Key="BoolToStringConverter" />
-        
+
+        <DataTemplate DataType="{x:Type endVm:CalibrationResultViewModel}">
+            <Border Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
+                    CornerRadius="8"
+                    Padding="16"
+                    Margin="0,0,0,12"
+                    BorderThickness="0.5"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationResult]}"
+                               Style="{DynamicResource TitleTextBlockStyle}"
+                               VerticalAlignment="Center" />
+                    <Border Grid.Column="1"
+                            Style="{StaticResource CalibrationStatusChipStyle}"
+                            Margin="16,0,0,0">
+                        <TextBlock Text="{Binding StatusLabel, Mode=OneTime}"
+                                   Style="{DynamicResource BodyTextBlockStyle}"
+                                   FontWeight="SemiBold"
+                                   Foreground="White" />
+                    </Border>
+                    <TextBlock Grid.Column="2"
+                               Grid.ColumnSpan="2"
+                               Text="{Binding Source={StaticResource Loc}, Path=[Label_CalibrationNoEstimate]}"
+                               Style="{DynamicResource BodyTextBlockStyle}"
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                               VerticalAlignment="Center"
+                               Margin="16,0"
+                               Visibility="{Binding HasEstimate, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
+                    <ui:SimpleStackPanel Grid.Column="3"
+                                         Orientation="Horizontal"
+                                         Spacing="8"
+                                         VerticalAlignment="Center"
+                                         Visibility="{Binding HasEstimate, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Text="{Binding SliderPresentationTimeLabel}"
+                                   Style="{DynamicResource BodyTextBlockStyle}"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding SliderPresentationTime, StringFormat={}{0:F0} ms}"
+                                   Style="{DynamicResource SubtitleTextBlockStyle}"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center" />
+                        <Button Style="{StaticResource IconButtonStyle}"
+                                Command="{Binding CopyPresentationTimeCommand}"
+                                ToolTip="{Binding Source={StaticResource Loc}, Path=[Button_Copy]}">
+                            <ui:FontIcon Glyph="&#xE8C8;"
+                                         FontSize="16" />
+                        </Button>
+                    </ui:SimpleStackPanel>
+                    <Button Grid.Column="4"
+                            Margin="16,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="{Binding Source={StaticResource Loc}, Path=[Button_Details]}"
+                            Command="{Binding DataContext.ShowCalibrationDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+
         <Style x:Key="CenteredCellStyle" TargetType="TextBlock"
        BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="TextAlignment"       Value="Center" />
@@ -34,6 +98,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="0.3*" />
             <RowDefinition Height="12" />
             <RowDefinition Height="0.4*" />
@@ -73,7 +138,7 @@
                 Padding="16"
                 BorderThickness="0.5"
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.Column="0">
             <Grid>
                 <Grid.RowDefinitions>
@@ -111,16 +176,19 @@
                 Padding="16"
                 BorderThickness="0.5"
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.Column="2">
             <ContentControl Content="{Binding LiveReactionTimeViewModel}" />
         </Border>
-        <ContentControl Grid.Row="4"
+        <ContentControl Grid.Row="2"
+                        Grid.ColumnSpan="3"
+                        Content="{Binding CalibrationResult}" />
+        <ContentControl Grid.Row="5"
                         Grid.ColumnSpan="3"
                         Content="{Binding GlobalGraphViewModel}" />
         <ui:SimpleStackPanel Orientation="Horizontal"
                              Spacing="16"
-                             Grid.Row="6"
+                             Grid.Row="7"
                              HorizontalAlignment="Center"
                              Grid.ColumnSpan="3"
                              >

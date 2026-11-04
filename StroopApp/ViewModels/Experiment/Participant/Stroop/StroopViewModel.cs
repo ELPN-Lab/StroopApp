@@ -86,10 +86,10 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                         HandleTaskStopped();
                         return;
                     }
-                    Settings.ExperimentContext.CurrentTrial = trial;
                     int maxReactionTime = block.GetNextMaxReactionTime();
                     trial.PresentationTime = maxReactionTime;
                     trial.CalibrationPhase = (block as CalibrationBlock)?.CurrentPhase;
+                    Settings.ExperimentContext.CurrentTrial = trial;
 
                     CurrentStepViewModel = new FixationCrossViewModel();
                     await Task.Delay(Settings.CurrentProfile.FixationDuration, _cancellationTokenSource.Token);
@@ -195,11 +195,7 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
             _wordTimer.Stop();
             _inputTcs?.TrySetCanceled();
 
-            if (Settings.ExperimentContext.CurrentBlock is CalibrationBlock calibrationBlock)
-            {
-                calibrationBlock.StopByExperimenter();
-                TrimCalibrationBlock(calibrationBlock);
-            }
+            Settings.ExperimentContext.StopCalibrationBlock();
 
             if (Settings.ExperimentContext.CurrentBlock != null)
             {
@@ -215,7 +211,7 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                 return;
 
             if (Settings.ExperimentContext.CurrentBlock is CalibrationBlock calibrationBlock)
-                TrimCalibrationBlock(calibrationBlock);
+                Settings.ExperimentContext.TrimCalibrationBlock(calibrationBlock);
 
             Settings.ExperimentContext.CurrentBlock.CalculateValues();
             Settings.ExperimentContext.CurrentTrial = null;
@@ -247,12 +243,6 @@ namespace StroopApp.ViewModels.Experiment.Participant.Stroop
                 trial.IsValidResponse = string.Equals(trial.ExpectedAnswer, answer, StringComparison.OrdinalIgnoreCase);
                 _inputTcs.TrySetResult(_responseTime.Elapsed.TotalMilliseconds);
             }
-        }
-
-        private void TrimCalibrationBlock(CalibrationBlock calibrationBlock)
-        {
-            calibrationBlock.RemoveUnplayedTrials();
-            Settings.ExperimentContext.TrimCurrentBlock(calibrationBlock.TrialRecords.Count);
         }
     }
 }

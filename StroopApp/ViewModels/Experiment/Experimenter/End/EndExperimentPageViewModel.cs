@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using StroopApp.Core;
 using StroopApp.Models;
+using StroopApp.Models.Calibration;
 using StroopApp.Resources;
 using StroopApp.Services.Charts;
 using StroopApp.Services.Exportation;
@@ -29,6 +30,11 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
         public ObservableCollection<Block> Blocks { get; }
         public GlobalGraphViewModel GlobalGraphViewModel { get; }
         public LiveReactionTimeViewModel LiveReactionTimeViewModel { get; }
+
+        /// <summary>
+        /// Result card of the block just played, or null when it is not a finished calibration.
+        /// </summary>
+        public CalibrationResultViewModel? CalibrationResult { get; }
 
         private readonly IExportationService _exportationService;
         private readonly INavigationService _experimenterNavigationService;
@@ -63,6 +69,8 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
             Blocks = Settings.ExperimentContext.Blocks;
             GlobalGraphViewModel = new GlobalGraphViewModel(settings);
             LiveReactionTimeViewModel = new LiveReactionTimeViewModel(settings);
+            if (Settings.ExperimentContext.CurrentBlock is CalibrationBlock { Result: not null } calibrationBlock)
+                CalibrationResult = new CalibrationResultViewModel(calibrationBlock.Result);
             CurrentParticipant = string.Format(Strings.Label_CurrentParticipant, Settings.Participant.Id);
             CurrentProfile = string.Format(Strings.Label_CurrentProfile, Settings.CurrentProfile.ProfileName);
 
@@ -133,6 +141,17 @@ namespace StroopApp.ViewModels.Experiment.Experimenter.End
             {
                 await ShowErrorDialogAsync($"{Strings.Error_Title}: {ex.Message}");
             }
+        }
+
+        [RelayCommand]
+        private async Task ShowCalibrationDetails()
+        {
+            if (CalibrationResult is null)
+                return;
+
+            var calibrationDetailsWindow = new CalibrationDetailsWindow(CalibrationResult);
+            if (calibrationDetailsWindow.ShowDialog() == true)
+                await Export();
         }
 
         [RelayCommand]
