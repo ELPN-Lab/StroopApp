@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using StroopApp.Models;
+using StroopApp.Models.Calibration;
 using StroopApp.Services.Language;
 using System.IO;
 using System.Runtime.Serialization;
@@ -143,11 +144,32 @@ namespace StroopApp.Services.Exportation
                     row++;
                 }
             }
-            
+
+            WriteCalibrationWorksheet(wb, p.Id);
 
             await Task.Run(() => wb.SaveAs(filePath));
             return await Task.FromResult(filePath);
         }
+        private void WriteCalibrationWorksheet(XLWorkbook workbook, string participantId)
+        {
+            var calibrationBlocks = _settings.ExperimentContext.Blocks
+                .OfType<CalibrationBlock>()
+                .Where(block => block.Result is not null)
+                .ToList();
+            if (calibrationBlocks.Count == 0)
+                return;
+
+            var formatter = new CalibrationExportFormatter(_languageService);
+            var ws = workbook.Worksheets.Add(CalibrationExportFormatter.WorksheetName);
+            var headers = formatter.GetColumnHeaders();
+            for (int col = 1; col <= headers.Count; col++)
+                ws.Cell(1, col).Value = headers[col - 1];
+
+            var row = 2;
+            foreach (var block in calibrationBlocks)
+                formatter.WriteRow(ws, row++, participantId, block);
+        }
+
         private TrialExportFormatter GetFormatter()
         {
             var taskType = _settings.CurrentProfile.TaskType;

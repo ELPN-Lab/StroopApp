@@ -18,6 +18,8 @@ namespace StroopApp.Services.Exportation
             headers.Add(LanguageService.GetLocalizedString("Header_Expected_Answer"));
             headers.Add(LanguageService.GetLocalizedString("Header_Given_Answer"));
             headers.AddRange(GetCommonSuffixHeaders());
+            headers.Add(LanguageService.GetLocalizedString("Header_PresentationTime"));
+            headers.Add(LanguageService.GetLocalizedString("Header_CalibrationPhase"));
             return headers;
         }
 
@@ -36,6 +38,9 @@ namespace StroopApp.Services.Exportation
             worksheet.Cell(row, col++).Value = stroopTrial.ExpectedAnswer;
             worksheet.Cell(row, col++).Value = stroopTrial.GivenAnswer;
             WriteCommonSuffix(worksheet, row, col, trial);
+            col += 2;
+            worksheet.Cell(row, col++).Value = stroopTrial.PresentationTime;
+            worksheet.Cell(row, col).Value = stroopTrial.CalibrationPhase;
         }
     }
 }
