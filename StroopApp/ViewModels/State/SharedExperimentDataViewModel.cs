@@ -16,6 +16,9 @@ namespace StroopApp.ViewModels.State
         private readonly SharedExperimentData _model;
         private readonly ExperimentChartFactory _chartFactory;
         private readonly SKColor[] _palette = { SKColors.CornflowerBlue, SKColors.OrangeRed, SKColors.MediumSeaGreen, SKColors.Goldenrod };
+        private RectangularSection? _currentBlockSection;
+        private RectangularSection? _phase2Section;
+        private RectangularSection? _phaseSeparator;
 
         public ObservableCollection<Block> Blocks => _model.Blocks;
         public ObservableCollection<ReactionTimePoint> ReactionPoints => _model.ReactionPoints;
@@ -96,7 +99,10 @@ namespace StroopApp.ViewModels.State
             else
             {
                 BlockSeries.Add(_chartFactory.CreateBlockLineSeries(CurrentBlock.TrialTimes, start));
-                Sections.Add(_chartFactory.CreateBlockSection(start, end, blockLabel, fillColor));
+                _currentBlockSection = _chartFactory.CreateBlockSection(start, end, blockLabel, fillColor);
+                _phase2Section = null;
+                _phaseSeparator = null;
+                Sections.Add(_currentBlockSection);
             }
 
             _model.ColorIndex++;
@@ -112,13 +118,11 @@ namespace StroopApp.ViewModels.State
         /// </summary>
         public void TrimCurrentBlock(int playedTrialCount)
         {
-            bool isCalibration = CurrentBlock is CalibrationBlock;
-            var blockSection = Sections[^(isCalibration ? 3 : 1)];
+            var blockSection = _currentBlockSection ?? throw new InvalidOperationException("No block section to trim.");
             int end = (int)blockSection.Xi! + playedTrialCount - 1;
 
             blockSection.Xj = end;
-            if (isCalibration)
-                TrimCalibrationPhases(end);
+            TrimCalibrationPhases(end);
 
             _model.CurrentBlockEnd = end;
             _model.CurrentBlockStart = end + 1;
@@ -152,27 +156,37 @@ namespace StroopApp.ViewModels.State
 
             BlockSeries.Add(_chartFactory.CreateBlockLineSeries(calibrationBlock.TrialTimes, start, lastIndex: phase1LastIndex));
             BlockSeries.Add(_chartFactory.CreateBlockLineSeries(calibrationBlock.TrialTimes, start, firstIndex: phase1LastIndex + 1));
-            Sections.Add(_chartFactory.CreateBlockSection(start, end, $"{blockLabel} · {string.Format(Strings.Label_ChartCalibrationPhase, 1)}", color.WithAlpha(50)));
-            Sections.Add(_chartFactory.CreateBlockSection(phaseChange, end, string.Format(Strings.Label_ChartCalibrationPhase, 2), color.WithAlpha(70)));
-            Sections.Add(_chartFactory.CreatePhaseSeparator(phaseChange));
+            _currentBlockSection = _chartFactory.CreateBlockSection(start, end, $"{blockLabel} · {string.Format(Strings.Label_ChartCalibrationPhase, 1)}", color.WithAlpha(50));
+            _phase2Section = _chartFactory.CreateBlockSection(phaseChange, end, string.Format(Strings.Label_ChartCalibrationPhase, 2), color.WithAlpha(70));
+            _phaseSeparator = _chartFactory.CreatePhaseSeparator(phaseChange);
+            Sections.Add(_currentBlockSection);
+            Sections.Add(_phase2Section);
+            Sections.Add(_phaseSeparator);
         }
 
         private void TrimCalibrationPhases(int end)
         {
-            var phase2Section = Sections[^2];
-            if (phase2Section.Xi < end)
+            if (_phase2Section is null || _phaseSeparator is null)
+                return;
+
+            if (_phase2Section.Xi < end)
             {
-                phase2Section.Xj = end;
+                _phase2Section.Xj = end;
                 return;
             }
 
-            Sections.RemoveAt(Sections.Count - 1);
-            Sections.RemoveAt(Sections.Count - 1);
+            Sections.Remove(_phase2Section);
+            Sections.Remove(_phaseSeparator);
+            _phase2Section = null;
+            _phaseSeparator = null;
         }
 
         public void Reset()
         {
             _model.Reset();
+            _currentBlockSection = null;
+            _phase2Section = null;
+            _phaseSeparator = null;
             NewColumnSerie();
             RefreshFromModel();
 

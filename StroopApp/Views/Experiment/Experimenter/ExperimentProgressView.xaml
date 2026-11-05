@@ -133,7 +133,8 @@
                              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                              Padding="4"
                              Margin="4"
-                             IsHitTestVisible="False" />
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
                     <TextBox Grid.Column="3"
                              Text="{Binding Settings.CurrentProfile.Minutes, Mode=OneTime}"
                              IsReadOnly="True"
@@ -143,7 +144,8 @@
                              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                              Padding="4"
                              Margin="4"
-                             IsHitTestVisible="False" />
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
                     <TextBox Grid.Column="4"
                              Text="{Binding Settings.CurrentProfile.Seconds, Mode=OneTime}"
                              IsReadOnly="True"
@@ -153,7 +155,8 @@
                              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                              Padding="4"
                              Margin="4"
-                             IsHitTestVisible="False" />
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
                     <TextBox Grid.Column="5"
                              Text="{Binding Settings.CurrentProfile.MaxReactionTime, Mode=OneTime}"
                              IsReadOnly="True"

@@ -96,6 +96,31 @@ namespace StroopApp.XUnitTests.ViewModels.State
         }
 
         /// <summary>
+        /// The dashboard and the trial loop both stop the block, so a second stop must leave the sections of the earlier blocks untouched.
+        /// </summary>
+        [Fact]
+        public void StopCalibrationBlock_CalledTwiceDuringPhase1_KeepsEarlierBlockSection()
+        {
+            var settings = CreateSettings(new StroopProfile { WordCount = 10 });
+            settings.ExperimentContext.AddNewSerie(settings);
+            settings.Block = 2;
+            settings.CurrentProfile = new StroopProfile { IsCalibration = true, WordCount = 120 };
+            settings.ExperimentContext.AddNewSerie(settings);
+            var block = Assert.IsType<CalibrationBlock>(settings.ExperimentContext.CurrentBlock);
+            for (int i = 1; i <= 120; i++)
+                block.TrialRecords.Add(new StroopTrial { TrialNumber = i });
+            for (int i = 0; i < 3; i++)
+                block.RecordTrial(block.TrialRecords[i]!);
+
+            settings.ExperimentContext.StopCalibrationBlock();
+            settings.ExperimentContext.StopCalibrationBlock();
+
+            Assert.Collection(settings.ExperimentContext.Sections,
+                first => { Assert.Equal(1, first.Xi); Assert.Equal(10, first.Xj); },
+                calibration => { Assert.Equal(11, calibration.Xi); Assert.Equal(13, calibration.Xj); });
+        }
+
+        /// <summary>
         /// Stopping a standard block leaves it untouched.
         /// </summary>
         [Fact]
