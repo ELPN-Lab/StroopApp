@@ -120,5 +120,40 @@
         <Setter Property="Background"
                 Value="#C4C4C4" />
     </Style>
+    <Style x:Key="CalibrationStatusChipStyle"
+           TargetType="Border">
+        <Setter Property="Background"
+                Value="#C42B1C" />
+        <Setter Property="CornerRadius"
+                Value="14" />
+        <Setter Property="Padding"
+                Value="12,3" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Result.Status, Mode=OneTime}"
+                         Value="Converged">
+                <Setter Property="Background"
+                        Value="#107C10" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Result.Status, Mode=OneTime}"
+                         Value="NearlyConverged">
+                <Setter Property="Background"
+                        Value="#CA5010" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="IconButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource DefaultButtonStyle}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="Padding"
+                Value="6" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+    </Style>
 </ResourceDictionary>
    

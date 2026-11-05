@@ -1,0 +1,193 @@
+﻿<Window x:Class="StroopApp.Views.Experiment.Experimenter.End.CalibrationDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:converters="clr-namespace:StroopApp.Converters"
+        Title="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationDetails]}"
+        Width="720"
+        Height="760"
+        WindowStartupLocation="CenterScreen"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+        <DataTemplate x:Key="FieldRowTemplate">
+            <Border BorderThickness="0,0,0,1"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    Padding="0,4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Label}"
+                               Style="{DynamicResource BodyTextBlockStyle}"
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding Value}"
+                               Style="{DynamicResource BodyTextBlockStyle}"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Margin="16,0,8,0" />
+                    <Button Grid.Column="2"
+                            Style="{StaticResource IconButtonStyle}"
+                            Command="{Binding DataContext.CopyFieldCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            CommandParameter="{Binding}"
+                            ToolTip="{Binding Source={StaticResource Loc}, Path=[Button_Copy]}">
+                        <ui:FontIcon Glyph="&#xE8C8;"
+                                     FontSize="14" />
+                    </Button>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <Style x:Key="SectionCardStyle"
+               TargetType="Border">
+            <Setter Property="Background"
+                    Value="{DynamicResource SystemControlBackgroundAltMediumBrush}" />
+            <Setter Property="CornerRadius"
+                    Value="8" />
+            <Setter Property="Padding"
+                    Value="16" />
+            <Setter Property="BorderThickness"
+                    Value="0.5" />
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ui:SimpleStackPanel Orientation="Horizontal"
+                             Spacing="12">
+            <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationDetails]}"
+                       Style="{DynamicResource TitleTextBlockStyle}"
+                       VerticalAlignment="Center" />
+            <Border Style="{StaticResource CalibrationStatusChipStyle}">
+                <TextBlock Text="{Binding StatusLabel, Mode=OneTime}"
+                           Style="{DynamicResource BodyTextBlockStyle}"
+                           FontWeight="SemiBold"
+                           Foreground="White" />
+            </Border>
+        </ui:SimpleStackPanel>
+
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto">
+            <ui:SimpleStackPanel Spacing="16"
+                                 Margin="0,0,12,0">
+                <Border Style="{StaticResource SectionCardStyle}"
+                        Visibility="{Binding HasEstimate, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <ui:SimpleStackPanel Spacing="12">
+                        <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationCurveReading]}"
+                                   Style="{DynamicResource SubtitleTextBlockStyle}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.7*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="0.3*" />
+                            </Grid.ColumnDefinitions>
+                            <ui:SimpleStackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationSliderAccuracy]}"
+                                           FontSize="14" />
+                                <Slider Minimum="{Binding MinSliderAccuracyPercent, Mode=OneTime}"
+                                        Maximum="{Binding MaxSliderAccuracyPercent, Mode=OneTime}"
+                                        LargeChange="5"
+                                        SmallChange="1"
+                                        TickFrequency="1"
+                                        IsSnapToTickEnabled="True"
+                                        Value="{Binding SliderAccuracyPercent, Mode=TwoWay}" />
+                            </ui:SimpleStackPanel>
+                            <ui:NumberBox Grid.Column="2"
+                                          Header=" "
+                                          Value="{Binding SliderAccuracyPercent, Mode=TwoWay}"
+                                          Minimum="{Binding MinSliderAccuracyPercent, Mode=OneTime}"
+                                          Maximum="{Binding MaxSliderAccuracyPercent, Mode=OneTime}"
+                                          SpinButtonPlacementMode="Inline" />
+                        </Grid>
+                        <ui:SimpleStackPanel Orientation="Horizontal"
+                                             Spacing="8">
+                            <TextBlock Text="{Binding SliderPresentationTimeLabel}"
+                                       Style="{DynamicResource BodyTextBlockStyle}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding SliderPresentationTime, StringFormat={}{0:F0} ms}"
+                                       Style="{DynamicResource SubtitleTextBlockStyle}"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center" />
+                            <Button Style="{StaticResource IconButtonStyle}"
+                                    Command="{Binding CopyPresentationTimeCommand}"
+                                    ToolTip="{Binding Source={StaticResource Loc}, Path=[Button_Copy]}">
+                                <ui:FontIcon Glyph="&#xE8C8;"
+                                             FontSize="14" />
+                            </Button>
+                        </ui:SimpleStackPanel>
+                    </ui:SimpleStackPanel>
+                </Border>
+
+                <Border Style="{StaticResource SectionCardStyle}">
+                    <ui:SimpleStackPanel Spacing="8">
+                        <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationResult]}"
+                                   Style="{DynamicResource SubtitleTextBlockStyle}" />
+                        <ItemsControl ItemsSource="{Binding ResultFields}"
+                                      ItemTemplate="{StaticResource FieldRowTemplate}" />
+                    </ui:SimpleStackPanel>
+                </Border>
+
+                <Border Style="{StaticResource SectionCardStyle}">
+                    <ui:SimpleStackPanel Spacing="8">
+                        <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationSettings]}"
+                                   Style="{DynamicResource SubtitleTextBlockStyle}" />
+                        <ItemsControl ItemsSource="{Binding ParameterFields, Mode=OneTime}"
+                                      ItemTemplate="{StaticResource FieldRowTemplate}" />
+                    </ui:SimpleStackPanel>
+                </Border>
+            </ui:SimpleStackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="4"
+                Style="{StaticResource SectionCardStyle}"
+                Padding="12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ui:FontIcon Glyph="&#xE946;"
+                             FontSize="16"
+                             VerticalAlignment="Center"
+                             Foreground="{DynamicResource SystemControlForegroundAccentBrush}" />
+                <TextBlock Grid.Column="1"
+                           Text="{Binding Source={StaticResource Loc}, Path=[Message_CalibrationDetailsInExport]}"
+                           Style="{DynamicResource BodyTextBlockStyle}"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"
+                           Margin="12,0" />
+                <Button Grid.Column="2"
+                        Content="{Binding Source={StaticResource Loc}, Path=[Button_Export]}"
+                        Click="Export_Click" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="6">
+            <Button Content="{Binding Source={StaticResource Loc}, Path=[Button_CopyAll]}"
+                    Command="{Binding CopyAllCommand}"
+                    HorizontalAlignment="Left" />
+            <Button Content="{Binding Source={StaticResource Loc}, Path=[Button_Close]}"
+                    IsCancel="True"
+                    Style="{DynamicResource AccentButtonStyle}"
+                    HorizontalAlignment="Right" />
+        </Grid>
+    </Grid>
+</Window>

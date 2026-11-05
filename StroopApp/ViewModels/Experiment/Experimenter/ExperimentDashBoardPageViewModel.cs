@@ -61,6 +61,7 @@ namespace StroopApp.ViewModels.Experiment.Experimenter
                     return;
 
                 _settings.ExperimentContext.IsTaskStopped = true;
+                _settings.ExperimentContext.StopCalibrationBlock();
 
                 if (_settings.ExperimentContext.CurrentBlock != null)
                 {

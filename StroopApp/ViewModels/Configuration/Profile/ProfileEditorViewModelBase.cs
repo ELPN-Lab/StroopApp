@@ -89,6 +89,11 @@ namespace StroopApp.ViewModels.Configuration.Profile
             InitializeFromProfile();
         }
         
+        /// <summary>
+        /// False when the trial duration is not fixed, which skips the duration, group size and max reaction time checks.
+        /// </summary>
+        protected virtual bool HasFixedTrialDuration => true;
+
         protected virtual int ComputeStimulusDuration() => MaxReactionTime + FixationDuration;
         protected virtual Task<bool> ValidateAsync() => Task.FromResult(true);
         protected virtual void InitializeTaskSpecificFromProfile() { }
@@ -182,14 +187,14 @@ namespace StroopApp.ViewModels.Configuration.Profile
                     return;
                 }
 
-                if (StimulusDuration > 0 && TaskDuration % StimulusDuration != 0)
+                if (HasFixedTrialDuration && StimulusDuration > 0 && TaskDuration % StimulusDuration != 0)
                 {
                     await ShowErrorDialogAsync(Strings.Error_TrialDurationNotDividingTaskDuration);
                     return;
                 }
 
                 int stimulusNumber = StimulusDuration > 0 ? TaskDuration / StimulusDuration : 0;
-                if (GroupSize <= 0 || (stimulusNumber > 0 && stimulusNumber % GroupSize != 0))
+                if (HasFixedTrialDuration && (GroupSize <= 0 || (stimulusNumber > 0 && stimulusNumber % GroupSize != 0)))
                 {
                     await ShowErrorDialogAsync(Strings.Error_GroupSizeInvalid);
                     return;
@@ -197,7 +202,7 @@ namespace StroopApp.ViewModels.Configuration.Profile
 
                 if (!await ValidateAsync()) return;
 
-                if (MaxReactionTime <= 0)
+                if (HasFixedTrialDuration && MaxReactionTime <= 0)
                 {
                     await ShowErrorDialogAsync(Strings.Error_MaxResponseTimeInvalid);
                     return;

@@ -114,6 +114,7 @@ namespace StroopApp.Services.Trial.UnitTests
             mockConfig.Setup(c => c.ParticipantId).Returns("P123");
             mockConfig.Setup(c => c.HasVisualCue).Returns(false);
             mockConfig.Setup(c => c.DominantPercent).Returns(60);
+            mockConfig.Setup(c => c.SwitchPercent).Returns(40);
             mockConfig.Setup(c => c.TaskLanguage).Returns("en");
 
             // Act
@@ -127,7 +128,8 @@ namespace StroopApp.Services.Trial.UnitTests
             Assert.Equal(2, trial.Block);
             Assert.Equal("P123", trial.ParticipantId);
             Assert.False(trial.HasVIsualCue);
-            Assert.Equal(60, trial.SwitchPercent);
+            Assert.Equal(40, trial.SwitchPercent);
+            Assert.Equal(60, trial.DominancePercent);
             Assert.Equal(100, trial.CongruencePercent);
             Assert.NotNull(trial.Stimulus);
         }
@@ -487,13 +489,14 @@ namespace StroopApp.Services.Trial.UnitTests
         }
 
         /// <summary>
-        /// Tests that GenerateTrials sets SwitchPercent from DominantPercent on all trials.
+        /// Tests that GenerateTrials sets SwitchPercent from the configuration on all trials.
         /// </summary>
         [Theory]
         [InlineData(30)]
         [InlineData(50)]
         [InlineData(70)]
-        public void GenerateTrials_SetsSwitchPercentFromDominantPercent(int dominantPercent)
+        [InlineData(null)]
+        public void GenerateTrials_SetsSwitchPercentFromConfig(int? switchPercent)
         {
             // Arrange
             var mockLanguageService = new Mock<ILanguageService>();
@@ -504,8 +507,9 @@ namespace StroopApp.Services.Trial.UnitTests
             mockConfig.Setup(c => c.CongruencePercent).Returns(50);
             mockConfig.Setup(c => c.Block).Returns(1);
             mockConfig.Setup(c => c.ParticipantId).Returns("P001");
-            mockConfig.Setup(c => c.HasVisualCue).Returns(false);
-            mockConfig.Setup(c => c.DominantPercent).Returns(dominantPercent);
+            mockConfig.Setup(c => c.HasVisualCue).Returns(true);
+            mockConfig.Setup(c => c.DominantPercent).Returns(50);
+            mockConfig.Setup(c => c.SwitchPercent).Returns(switchPercent);
             mockConfig.Setup(c => c.TaskLanguage).Returns("en");
 
             // Act
@@ -516,7 +520,7 @@ namespace StroopApp.Services.Trial.UnitTests
             Assert.All(result, itrial =>
             {
                 var trial = (StroopTrial)itrial;
-                Assert.Equal(dominantPercent, trial.SwitchPercent);
+                Assert.Equal(switchPercent, trial.SwitchPercent);
             });
         }
 
@@ -1002,10 +1006,10 @@ namespace StroopApp.Services.Trial.UnitTests
         }
 
         /// <summary>
-        /// Tests that GenerateTrials handles int.MinValue for DominantPercent.
+        /// Tests that GenerateTrials copies int.MinValue from DominantPercent into DominancePercent.
         /// </summary>
         [Fact]
-        public void GenerateTrials_DominantPercentIntMinValue_SetsSwitchPercentCorrectly()
+        public void GenerateTrials_DominantPercentIntMinValue_SetsDominancePercentCorrectly()
         {
             // Arrange
             var mockLanguageService = new Mock<ILanguageService>();
@@ -1028,15 +1032,15 @@ namespace StroopApp.Services.Trial.UnitTests
             Assert.All(result, itrial =>
             {
                 var trial = (StroopTrial)itrial;
-                Assert.Equal(int.MinValue, trial.SwitchPercent);
+                Assert.Equal(int.MinValue, trial.DominancePercent);
             });
         }
 
         /// <summary>
-        /// Tests that GenerateTrials handles int.MaxValue for DominantPercent.
+        /// Tests that GenerateTrials copies int.MaxValue from DominantPercent into DominancePercent.
         /// </summary>
         [Fact]
-        public void GenerateTrials_DominantPercentIntMaxValue_SetsSwitchPercentCorrectly()
+        public void GenerateTrials_DominantPercentIntMaxValue_SetsDominancePercentCorrectly()
         {
             // Arrange
             var mockLanguageService = new Mock<ILanguageService>();
@@ -1059,7 +1063,7 @@ namespace StroopApp.Services.Trial.UnitTests
             Assert.All(result, itrial =>
             {
                 var trial = (StroopTrial)itrial;
-                Assert.Equal(int.MaxValue, trial.SwitchPercent);
+                Assert.Equal(int.MaxValue, trial.DominancePercent);
             });
 
         }
@@ -1075,7 +1079,7 @@ namespace StroopApp.Services.Trial.UnitTests
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act & Assert
-            var exception = Assert.Throws<ArgumentException>(() => service.GenerateVisualCueSequence(0, 50));
+            var exception = Assert.Throws<ArgumentException>(() => service.GenerateVisualCueSequence(0, 50, 50));
             Assert.Equal("count", exception.ParamName);
             Assert.Contains("Count of visual cues must be positive", exception.Message);
         }
@@ -1094,7 +1098,7 @@ namespace StroopApp.Services.Trial.UnitTests
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act & Assert
-            var exception = Assert.Throws<ArgumentException>(() => service.GenerateVisualCueSequence(count, 50));
+            var exception = Assert.Throws<ArgumentException>(() => service.GenerateVisualCueSequence(count, 50, 50));
             Assert.Equal("count", exception.ParamName);
             Assert.Contains("Count of visual cues must be positive", exception.Message);
         }
@@ -1110,7 +1114,7 @@ namespace StroopApp.Services.Trial.UnitTests
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act
-            var result = service.GenerateVisualCueSequence(1, 50);
+            var result = service.GenerateVisualCueSequence(1, 50, 50);
 
             // Assert
             Assert.NotNull(result);
@@ -1135,7 +1139,7 @@ namespace StroopApp.Services.Trial.UnitTests
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act
-            var result = service.GenerateVisualCueSequence(count, 50);
+            var result = service.GenerateVisualCueSequence(count, 50, 50);
 
             // Assert
             Assert.NotNull(result);
@@ -1156,7 +1160,7 @@ namespace StroopApp.Services.Trial.UnitTests
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act
-            var result = service.GenerateVisualCueSequence(count, 0);
+            var result = service.GenerateVisualCueSequence(count, 0, 100);
 
             // Assert
             Assert.NotNull(result);
@@ -1179,7 +1183,7 @@ namespace StroopApp.Services.Trial.UnitTests
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act
-            var result = service.GenerateVisualCueSequence(count, 100);
+            var result = service.GenerateVisualCueSequence(count, 100, 50);
 
             // Assert
             Assert.NotNull(result);
@@ -1210,7 +1214,7 @@ namespace StroopApp.Services.Trial.UnitTests
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act
-            var result = service.GenerateVisualCueSequence(50, 50);
+            var result = service.GenerateVisualCueSequence(50, 50, 50);
 
             // Assert
             Assert.NotNull(result);
@@ -1221,19 +1225,19 @@ namespace StroopApp.Services.Trial.UnitTests
         /// Tests that GenerateVisualCueSequence with various switch percentages produces approximately correct switch counts.
         /// </summary>
         [Theory]
-        [InlineData(100, 0)]
-        [InlineData(100, 25)]
-        [InlineData(100, 50)]
-        [InlineData(100, 75)]
-        [InlineData(100, 100)]
-        public void GenerateVisualCueSequence_VariousSwitchPercentages_ProducesApproximateCorrectSwitchCount(int count, int switchPercentage)
+        [InlineData(100, 0, 100)]
+        [InlineData(100, 25, 50)]
+        [InlineData(100, 50, 50)]
+        [InlineData(100, 75, 50)]
+        [InlineData(100, 100, 50)]
+        public void GenerateVisualCueSequence_VariousSwitchPercentages_ProducesApproximateCorrectSwitchCount(int count, int switchPercentage, int dominantPercentage)
         {
             // Arrange
             var mockLanguageService = new Mock<ILanguageService>();
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act
-            var result = service.GenerateVisualCueSequence(count, switchPercentage);
+            var result = service.GenerateVisualCueSequence(count, switchPercentage, dominantPercentage);
 
             // Assert
             Assert.NotNull(result);
@@ -1265,7 +1269,7 @@ namespace StroopApp.Services.Trial.UnitTests
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act
-            var result = service.GenerateVisualCueSequence(10, -10);
+            var result = service.GenerateVisualCueSequence(10, -10, 50);
 
             // Assert
             Assert.NotNull(result);
@@ -1276,16 +1280,16 @@ namespace StroopApp.Services.Trial.UnitTests
         /// Tests that GenerateVisualCueSequence with count of 2 produces valid sequence.
         /// </summary>
         [Theory]
-        [InlineData(0)]
-        [InlineData(100)]
-        public void GenerateVisualCueSequence_CountIsTwo_ProducesValidSequence(int switchPercentage)
+        [InlineData(0, 100)]
+        [InlineData(100, 50)]
+        public void GenerateVisualCueSequence_CountIsTwo_ProducesValidSequence(int switchPercentage, int dominantPercentage)
         {
             // Arrange
             var mockLanguageService = new Mock<ILanguageService>();
             var service = new TrialGenerationService(mockLanguageService.Object);
 
             // Act
-            var result = service.GenerateVisualCueSequence(2, switchPercentage);
+            var result = service.GenerateVisualCueSequence(2, switchPercentage, dominantPercentage);
 
             // Assert
             Assert.NotNull(result);
@@ -1316,8 +1320,8 @@ namespace StroopApp.Services.Trial.UnitTests
             int switchPercentage = 60;
 
             // Act
-            var result1 = service.GenerateVisualCueSequence(count, switchPercentage);
-            var result2 = service.GenerateVisualCueSequence(count, switchPercentage);
+            var result1 = service.GenerateVisualCueSequence(count, switchPercentage, 50);
+            var result2 = service.GenerateVisualCueSequence(count, switchPercentage, 50);
 
             // Assert
             int switches1 = 0;
@@ -1366,6 +1370,191 @@ namespace StroopApp.Services.Trial.UnitTests
 
             // Assert
             Assert.NotNull(service);
+        }
+
+        /// <summary>
+        /// Verifies that the round cue count follows DominantPercent and the switch count follows SwitchPercent.
+        /// </summary>
+        [Theory]
+        [InlineData(20, 80, 25, 16, 4)]
+        [InlineData(20, 90, 50, 18, 4)]
+        [InlineData(40, 75, 10, 30, 3)]
+        public void GenerateTrials_VisualCueEnabled_MatchesDominantAndSwitchPercent(int wordCount, int dominantPercent, int switchPercent, int expectedRoundCount, int expectedSwitchCount)
+        {
+            // Arrange
+            var mockLanguageService = new Mock<ILanguageService>();
+            mockLanguageService.Setup(s => s.GetLocalizedString(It.IsAny<string>(), It.IsAny<string>())).Returns("MockWord");
+            var service = new TrialGenerationService(mockLanguageService.Object);
+            var mockConfig = new Mock<ITrialConfiguration>();
+            mockConfig.Setup(c => c.WordCount).Returns(wordCount);
+            mockConfig.Setup(c => c.CongruencePercent).Returns(50);
+            mockConfig.Setup(c => c.Block).Returns(1);
+            mockConfig.Setup(c => c.ParticipantId).Returns("P001");
+            mockConfig.Setup(c => c.HasVisualCue).Returns(true);
+            mockConfig.Setup(c => c.DominantPercent).Returns(dominantPercent);
+            mockConfig.Setup(c => c.SwitchPercent).Returns(switchPercent);
+            mockConfig.Setup(c => c.TaskLanguage).Returns("en");
+
+            // Act
+            var result = service.GenerateTrials(mockConfig.Object);
+
+            // Assert
+            var cues = result.Cast<StroopTrial>().Select(t => t.VisualCue).ToList();
+            Assert.Equal(expectedRoundCount, cues.Count(c => c == VisualCueType.Round));
+            Assert.Equal(expectedSwitchCount, CountSwitches(cues));
+        }
+
+        /// <summary>
+        /// Verifies that the profile values reach the trials through the settings overload.
+        /// </summary>
+        [Fact]
+        public void GenerateTrials_SettingsWithVisualCue_UsesProfileDominantAndSwitchPercent()
+        {
+            // Arrange
+            var mockLanguageService = new Mock<ILanguageService>();
+            mockLanguageService.Setup(s => s.GetLocalizedString(It.IsAny<string>(), It.IsAny<string>())).Returns("MockWord");
+            var service = new TrialGenerationService(mockLanguageService.Object);
+            var modelSettings = new ExperimentSettings
+            {
+                CurrentProfile = new StroopProfile { HasVisualCue = true, WordCount = 20, DominantPercent = 80, SwitchPercent = 25, TaskLanguage = "en" },
+                Participant = new Models.Participant { Id = "P001" },
+            };
+            var settings = new ExperimentSettingsViewModel(modelSettings);
+
+            // Act
+            var trials = service.GenerateTrials(settings).Cast<StroopTrial>().ToList();
+
+            // Assert
+            var cues = trials.Select(t => t.VisualCue).ToList();
+            Assert.Equal(16, cues.Count(c => c == VisualCueType.Round));
+            Assert.Equal(4, CountSwitches(cues));
+            Assert.All(trials, t => Assert.Equal(25, t.SwitchPercent));
+            Assert.All(trials, t => Assert.Equal(80, t.DominancePercent));
+        }
+
+        /// <summary>
+        /// Verifies that GenerateVisualCueSequence produces the exact round and switch counts on every call.
+        /// </summary>
+        [Theory]
+        [InlineData(20, 25, 80, 16, 4)]
+        [InlineData(20, 50, 50, 10, 9)]
+        [InlineData(20, 100, 50, 10, 19)]
+        [InlineData(21, 100, 50, 10, 20)]
+        [InlineData(100, 60, 30, 30, 59)]
+        [InlineData(10, 0, 0, 0, 0)]
+        public void GenerateVisualCueSequence_FeasibleParameters_MatchesRoundAndSwitchCounts(int count, int switchPercentage, int dominantPercentage, int expectedRoundCount, int expectedSwitchCount)
+        {
+            // Arrange
+            var mockLanguageService = new Mock<ILanguageService>();
+            var service = new TrialGenerationService(mockLanguageService.Object);
+
+            for (int attempt = 0; attempt < 200; attempt++)
+            {
+                // Act
+                var result = service.GenerateVisualCueSequence(count, switchPercentage, dominantPercentage);
+
+                // Assert
+                Assert.Equal(count, result.Count);
+                Assert.Equal(expectedRoundCount, result.Count(c => c == VisualCueType.Round));
+                Assert.Equal(expectedSwitchCount, CountSwitches(result));
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the round count wins and the switch count is clamped when both constraints cannot hold together.
+        /// </summary>
+        [Theory]
+        [InlineData(20, 50, 90, 18, 4)]
+        [InlineData(20, 0, 50, 10, 1)]
+        [InlineData(20, 100, 95, 19, 2)]
+        [InlineData(10, -10, 50, 5, 1)]
+        [InlineData(10, 150, 50, 5, 9)]
+        public void GenerateVisualCueSequence_InfeasibleSwitch_KeepsRoundCountAndClampsSwitches(int count, int switchPercentage, int dominantPercentage, int expectedRoundCount, int expectedSwitchCount)
+        {
+            // Arrange
+            var mockLanguageService = new Mock<ILanguageService>();
+            var service = new TrialGenerationService(mockLanguageService.Object);
+
+            for (int attempt = 0; attempt < 200; attempt++)
+            {
+                // Act
+                var result = service.GenerateVisualCueSequence(count, switchPercentage, dominantPercentage);
+
+                // Assert
+                Assert.Equal(expectedRoundCount, result.Count(c => c == VisualCueType.Round));
+                Assert.Equal(expectedSwitchCount, CountSwitches(result));
+            }
+        }
+
+        /// <summary>
+        /// Verifies that a null switch percentage only constrains the round count.
+        /// </summary>
+        [Fact]
+        public void GenerateVisualCueSequence_NullSwitchPercentage_MatchesRoundCountOnly()
+        {
+            // Arrange
+            var mockLanguageService = new Mock<ILanguageService>();
+            var service = new TrialGenerationService(mockLanguageService.Object);
+
+            // Act
+            var result = service.GenerateVisualCueSequence(20, null, 70);
+
+            // Assert
+            Assert.Equal(20, result.Count);
+            Assert.Equal(14, result.Count(c => c == VisualCueType.Round));
+        }
+
+        /// <summary>
+        /// Verifies that out of range dominant percentages are clamped to 0 and 100.
+        /// </summary>
+        [Theory]
+        [InlineData(int.MinValue, 0)]
+        [InlineData(-10, 0)]
+        [InlineData(150, 10)]
+        [InlineData(int.MaxValue, 10)]
+        public void GenerateVisualCueSequence_OutOfRangeDominantPercentage_ClampsRoundCount(int dominantPercentage, int expectedRoundCount)
+        {
+            // Arrange
+            var mockLanguageService = new Mock<ILanguageService>();
+            var service = new TrialGenerationService(mockLanguageService.Object);
+
+            // Act
+            var result = service.GenerateVisualCueSequence(10, 50, dominantPercentage);
+
+            // Assert
+            Assert.Equal(expectedRoundCount, result.Count(c => c == VisualCueType.Round));
+            Assert.Equal(0, CountSwitches(result));
+        }
+
+        /// <summary>
+        /// Verifies that GenerateTrials copies DominantPercent into DominancePercent on all trials.
+        /// </summary>
+        [Fact]
+        public void GenerateTrials_VisualCueEnabled_SetsDominancePercentOnAllTrials()
+        {
+            // Arrange
+            var mockLanguageService = new Mock<ILanguageService>();
+            mockLanguageService.Setup(s => s.GetLocalizedString(It.IsAny<string>(), It.IsAny<string>())).Returns("MockWord");
+            var service = new TrialGenerationService(mockLanguageService.Object);
+            var mockConfig = new Mock<ITrialConfiguration>();
+            mockConfig.Setup(c => c.WordCount).Returns(10);
+            mockConfig.Setup(c => c.CongruencePercent).Returns(50);
+            mockConfig.Setup(c => c.Block).Returns(1);
+            mockConfig.Setup(c => c.ParticipantId).Returns("P001");
+            mockConfig.Setup(c => c.HasVisualCue).Returns(true);
+            mockConfig.Setup(c => c.DominantPercent).Returns(70);
+            mockConfig.Setup(c => c.TaskLanguage).Returns("en");
+
+            // Act
+            var result = service.GenerateTrials(mockConfig.Object);
+
+            // Assert
+            Assert.All(result, itrial => Assert.Equal(70, ((StroopTrial)itrial).DominancePercent));
+        }
+
+        private static int CountSwitches(IReadOnlyList<VisualCueType> cues)
+        {
+            return Enumerable.Range(1, Math.Max(0, cues.Count - 1)).Count(i => cues[i] != cues[i - 1]);
         }
     }
 }

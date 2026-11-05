@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- **Calibration task (QUEST+)**: a Stroop profile can run as a calibration task. The task estimates the presentation time at which the participant reaches a target accuracy (85 % by default).
+  - Phase 1 presents a fixed number of trials at a fixed presentation time (20 trials at 2000 ms by default).
+  - Phase 2 is adaptive. QUEST+ chooses each presentation time between a lower and an upper bound (140 to 5000 ms by default). The phase stops when the estimate converges or when the maximum number of trials is reached (40 to 100 trials by default).
+  - The profile editor has a "Calibration task" checkbox. When it is checked, the editor shows the calibration settings grouped by phase.
+  - The experimenter dashboard shows the current calibration phase and presentation time.
+  - The end page shows a result card with the convergence status, the estimated time (t50) and its 90 % interval (t5 to t95). A details window adds a slider that reads the presentation time at another accuracy.
+  - The Excel export adds a "Calibration" worksheet. It holds one row per calibration block, with the result, the slider reading and all the parameters.
+  - The experimenter can stop a calibration block at any time. The result is computed from the trials played so far.
+  - The calibration math is checked against an independent Python implementation, described in `StroopApp.XUnitTests/Services/Calibration/Reference/README.md`.
+
 ### Planned Features
 
 #### Serial Port Communication for MRI/EEG Synchronization

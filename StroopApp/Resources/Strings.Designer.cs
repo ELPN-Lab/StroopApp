@@ -2814,5 +2814,563 @@ namespace StroopApp.Resources {
                 return ResourceManager.GetString("Word_YELLOW", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Presentation time (ms).
+        /// </summary>
+        public static string Header_PresentationTime {
+            get {
+                return ResourceManager.GetString("Header_PresentationTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Calibration phase.
+        /// </summary>
+        public static string Header_CalibrationPhase {
+            get {
+                return ResourceManager.GetString("Header_CalibrationPhase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Status.
+        /// </summary>
+        public static string Header_CalibrationStatus {
+            get {
+                return ResourceManager.GetString("Header_CalibrationStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Stop reason.
+        /// </summary>
+        public static string Header_CalibrationStopReason {
+            get {
+                return ResourceManager.GetString("Header_CalibrationStopReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Presentation time t50 (ms).
+        /// </summary>
+        public static string Header_CalibrationT50 {
+            get {
+                return ResourceManager.GetString("Header_CalibrationT50", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 90 % interval lower bound t5 (ms).
+        /// </summary>
+        public static string Header_CalibrationT5 {
+            get {
+                return ResourceManager.GetString("Header_CalibrationT5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 90 % interval upper bound t95 (ms).
+        /// </summary>
+        public static string Header_CalibrationT95 {
+            get {
+                return ResourceManager.GetString("Header_CalibrationT95", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Relative width R.
+        /// </summary>
+        public static string Header_CalibrationR {
+            get {
+                return ResourceManager.GetString("Header_CalibrationR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Phase 1 trials.
+        /// </summary>
+        public static string Header_CalibrationPhase1TrialCount {
+            get {
+                return ResourceManager.GetString("Header_CalibrationPhase1TrialCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Phase 2 trials.
+        /// </summary>
+        public static string Header_CalibrationPhase2TrialCount {
+            get {
+                return ResourceManager.GetString("Header_CalibrationPhase2TrialCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Phase 2 starting point (ms).
+        /// </summary>
+        public static string Header_CalibrationStartingPoint {
+            get {
+                return ResourceManager.GetString("Header_CalibrationStartingPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Slider accuracy (%).
+        /// </summary>
+        public static string Header_CalibrationSliderAccuracy {
+            get {
+                return ResourceManager.GetString("Header_CalibrationSliderAccuracy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Presentation time at slider accuracy (ms).
+        /// </summary>
+        public static string Header_CalibrationSliderPresentationTime {
+            get {
+                return ResourceManager.GetString("Header_CalibrationSliderPresentationTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Phase 1 presentation time (ms).
+        /// </summary>
+        public static string Header_CalibrationStartingTime {
+            get {
+                return ResourceManager.GetString("Header_CalibrationStartingTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Lowest presentation time (ms).
+        /// </summary>
+        public static string Header_CalibrationLowerBound {
+            get {
+                return ResourceManager.GetString("Header_CalibrationLowerBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Highest presentation time (ms).
+        /// </summary>
+        public static string Header_CalibrationUpperBound {
+            get {
+                return ResourceManager.GetString("Header_CalibrationUpperBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Target accuracy (%).
+        /// </summary>
+        public static string Header_CalibrationTargetAccuracy {
+            get {
+                return ResourceManager.GetString("Header_CalibrationTargetAccuracy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Guess rate γ.
+        /// </summary>
+        public static string Header_CalibrationGamma {
+            get {
+                return ResourceManager.GetString("Header_CalibrationGamma", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Lapse rate δ.
+        /// </summary>
+        public static string Header_CalibrationDelta {
+            get {
+                return ResourceManager.GetString("Header_CalibrationDelta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Slope β.
+        /// </summary>
+        public static string Header_CalibrationBeta {
+            get {
+                return ResourceManager.GetString("Header_CalibrationBeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Prior width factor.
+        /// </summary>
+        public static string Header_CalibrationPriorWidthFactor {
+            get {
+                return ResourceManager.GetString("Header_CalibrationPriorWidthFactor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Minimum correct phase 1 answers.
+        /// </summary>
+        public static string Header_CalibrationMinCorrectPhase1Trials {
+            get {
+                return ResourceManager.GetString("Header_CalibrationMinCorrectPhase1Trials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Minimum phase 2 trials.
+        /// </summary>
+        public static string Header_CalibrationMinPhase2TrialCount {
+            get {
+                return ResourceManager.GetString("Header_CalibrationMinPhase2TrialCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Maximum phase 2 trials.
+        /// </summary>
+        public static string Header_CalibrationMaxPhase2TrialCount {
+            get {
+                return ResourceManager.GetString("Header_CalibrationMaxPhase2TrialCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Converged threshold (R).
+        /// </summary>
+        public static string Header_CalibrationConvergedThreshold {
+            get {
+                return ResourceManager.GetString("Header_CalibrationConvergedThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Nearly converged threshold (R).
+        /// </summary>
+        public static string Header_CalibrationNearlyConvergedThreshold {
+            get {
+                return ResourceManager.GetString("Header_CalibrationNearlyConvergedThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Current phase.
+        /// </summary>
+        public static string Header_CalibrationCurrentPhase {
+            get {
+                return ResourceManager.GetString("Header_CalibrationCurrentPhase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Converged.
+        /// </summary>
+        public static string Label_CalibrationStatus_Converged {
+            get {
+                return ResourceManager.GetString("Label_CalibrationStatus_Converged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Nearly converged.
+        /// </summary>
+        public static string Label_CalibrationStatus_NearlyConverged {
+            get {
+                return ResourceManager.GetString("Label_CalibrationStatus_NearlyConverged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Not converged.
+        /// </summary>
+        public static string Label_CalibrationStatus_NotConverged {
+            get {
+                return ResourceManager.GetString("Label_CalibrationStatus_NotConverged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Estimation impossible.
+        /// </summary>
+        public static string Label_CalibrationStatus_EstimationImpossible {
+            get {
+                return ResourceManager.GetString("Label_CalibrationStatus_EstimationImpossible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Convergence reached.
+        /// </summary>
+        public static string Label_CalibrationStopReason_Converged {
+            get {
+                return ResourceManager.GetString("Label_CalibrationStopReason_Converged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Maximum number of trials reached.
+        /// </summary>
+        public static string Label_CalibrationStopReason_MaxTrialsReached {
+            get {
+                return ResourceManager.GetString("Label_CalibrationStopReason_MaxTrialsReached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Stopped by the experimenter.
+        /// </summary>
+        public static string Label_CalibrationStopReason_StoppedByExperimenter {
+            get {
+                return ResourceManager.GetString("Label_CalibrationStopReason_StoppedByExperimenter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Calibration task.
+        /// </summary>
+        public static string Label_Calibration {
+            get {
+                return ResourceManager.GetString("Label_Calibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No estimate: the calibration stopped during phase 1..
+        /// </summary>
+        public static string Label_CalibrationNoEstimate {
+            get {
+                return ResourceManager.GetString("Label_CalibrationNoEstimate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Calibration.
+        /// </summary>
+        public static string Title_Calibration {
+            get {
+                return ResourceManager.GetString("Title_Calibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Calibration settings.
+        /// </summary>
+        public static string Title_CalibrationSettings {
+            get {
+                return ResourceManager.GetString("Title_CalibrationSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Advanced settings.
+        /// </summary>
+        public static string Title_CalibrationAdvancedSettings {
+            get {
+                return ResourceManager.GetString("Title_CalibrationAdvancedSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Calibration result.
+        /// </summary>
+        public static string Title_CalibrationResult {
+            get {
+                return ResourceManager.GetString("Title_CalibrationResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The lowest presentation time must be above 0 ms..
+        /// </summary>
+        public static string Error_Calibration_LowerBoundNotPositive {
+            get {
+                return ResourceManager.GetString("Error_Calibration_LowerBoundNotPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The lowest presentation time must be below the highest presentation time..
+        /// </summary>
+        public static string Error_Calibration_LowerBoundNotBelowUpperBound {
+            get {
+                return ResourceManager.GetString("Error_Calibration_LowerBoundNotBelowUpperBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The phase 1 presentation time must lie between the lowest and the highest presentation times..
+        /// </summary>
+        public static string Error_Calibration_StartingTimeOutOfBounds {
+            get {
+                return ResourceManager.GetString("Error_Calibration_StartingTimeOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The target accuracy must lie strictly between γ and 1 - δ..
+        /// </summary>
+        public static string Error_Calibration_TargetAccuracyOutOfRange {
+            get {
+                return ResourceManager.GetString("Error_Calibration_TargetAccuracyOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The slope β must be above 0..
+        /// </summary>
+        public static string Error_Calibration_BetaNotPositive {
+            get {
+                return ResourceManager.GetString("Error_Calibration_BetaNotPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The lapse rate δ must lie strictly between 0 and 1 - γ..
+        /// </summary>
+        public static string Error_Calibration_DeltaOutOfRange {
+            get {
+                return ResourceManager.GetString("Error_Calibration_DeltaOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The prior width factor must be above 1..
+        /// </summary>
+        public static string Error_Calibration_PriorWidthFactorNotAboveOne {
+            get {
+                return ResourceManager.GetString("Error_Calibration_PriorWidthFactorNotAboveOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The minimum number of correct phase 1 answers must lie between 2 and the number of phase 1 trials..
+        /// </summary>
+        public static string Error_Calibration_MinCorrectOutOfRange {
+            get {
+                return ResourceManager.GetString("Error_Calibration_MinCorrectOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The maximum number of phase 2 trials must be above 0..
+        /// </summary>
+        public static string Error_Calibration_MaxPhase2NotPositive {
+            get {
+                return ResourceManager.GetString("Error_Calibration_MaxPhase2NotPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The minimum number of phase 2 trials must not exceed the maximum..
+        /// </summary>
+        public static string Error_Calibration_MinPhase2AboveMax {
+            get {
+                return ResourceManager.GetString("Error_Calibration_MinPhase2AboveMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The converged threshold must not exceed the nearly converged threshold..
+        /// </summary>
+        public static string Error_Calibration_ConvergedAboveNearlyConverged {
+            get {
+                return ResourceManager.GetString("Error_Calibration_ConvergedAboveNearlyConverged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reading the curve.
+        /// </summary>
+        public static string Title_CalibrationCurveReading {
+            get {
+                return ResourceManager.GetString("Title_CalibrationCurveReading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Close.
+        /// </summary>
+        public static string Button_Close {
+            get {
+                return ResourceManager.GetString("Button_Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Phase {0}.
+        /// </summary>
+        public static string Label_ChartCalibrationPhase {
+            get {
+                return ResourceManager.GetString("Label_ChartCalibrationPhase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy all.
+        /// </summary>
+        public static string Button_CopyAll {
+            get {
+                return ResourceManager.GetString("Button_CopyAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Details.
+        /// </summary>
+        public static string Button_Details {
+            get {
+                return ResourceManager.GetString("Button_Details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Presentation time at {0:F0} %.
+        /// </summary>
+        public static string Label_CalibrationPresentationTimeAt {
+            get {
+                return ResourceManager.GetString("Label_CalibrationPresentationTimeAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à These values are also saved in the Excel export, on the second sheet of the workbook ("Calibration").
+        /// </summary>
+        public static string Message_CalibrationDetailsInExport {
+            get {
+                return ResourceManager.GetString("Message_CalibrationDetailsInExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Calibration details.
+        /// </summary>
+        public static string Title_CalibrationDetails {
+            get {
+                return ResourceManager.GetString("Title_CalibrationDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Trials.
+        /// </summary>
+        public static string Title_CalibrationTrials {
+            get {
+                return ResourceManager.GetString("Title_CalibrationTrials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Phase 1: fixed presentation time.
+        /// </summary>
+        public static string Title_CalibrationPhase1 {
+            get {
+                return ResourceManager.GetString("Title_CalibrationPhase1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Phase 2: adaptive search.
+        /// </summary>
+        public static string Title_CalibrationPhase2 {
+            get {
+                return ResourceManager.GetString("Title_CalibrationPhase2", resourceCulture);
+            }
+        }
     }
 }

@@ -26,9 +26,14 @@ namespace StroopApp.Services.Trial
 		int CongruencePercent { get; }
 
 		/// <summary>
-		/// Percentage for dominant visual cue type (used as SwitchPercent).
+		/// Percentage of trials with a round visual cue (0-100).
 		/// </summary>
 		int DominantPercent { get; }
+
+		/// <summary>
+		/// Percentage of transitions where the visual cue changes (0-100), null for no constraint.
+		/// </summary>
+		int? SwitchPercent { get; }
 
 		/// <summary>
 		/// Whether visual cue is enabled.

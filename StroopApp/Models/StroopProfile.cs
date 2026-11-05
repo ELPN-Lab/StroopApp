@@ -1,4 +1,6 @@
-﻿namespace StroopApp.Models
+﻿using StroopApp.Models.Calibration;
+
+namespace StroopApp.Models
 {
     public class StroopProfile : ExperimentProfile
     {
@@ -6,6 +8,25 @@
         {
             TaskType = TaskType.Stroop;
         }
+
+        public bool IsCalibration { get; set; }
+
+        public CalibrationParameters CalibrationParameters { get; set; } = new();
+
+        public override void UpdateFrom(ExperimentProfile profile)
+        {
+            base.UpdateFrom(profile);
+            if (profile is StroopProfile stroopProfile)
+            {
+                IsCalibration = stroopProfile.IsCalibration;
+                CalibrationParameters = stroopProfile.CalibrationParameters.Clone();
+            }
+        }
+
+        /// <summary>
+        /// A calibration trial can last up to the calibration upper bound.
+        /// </summary>
+        public override int GetLongestReactionTime() => IsCalibration ? CalibrationParameters.UpperBound : MaxReactionTime;
 
         public override StroopProfile CloneProfile()
         {
@@ -29,7 +50,9 @@
                 DominantPercent = this.DominantPercent,
                 CongruencePercent = this.CongruencePercent,
                 SwitchPercent = this.SwitchPercent,
-                TaskLanguage = this.TaskLanguage
+                TaskLanguage = this.TaskLanguage,
+                IsCalibration = this.IsCalibration,
+                CalibrationParameters = this.CalibrationParameters.Clone()
             };
         }
     }

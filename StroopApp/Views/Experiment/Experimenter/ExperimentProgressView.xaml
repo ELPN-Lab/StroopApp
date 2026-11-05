@@ -14,6 +14,7 @@
         <converters:MillisecondsToMinutesConverter x:Key="MillisecondsToMinutesConverter" />
         <converters:MillisecondsToSecondsConverter x:Key="MillisecondsToSecondsConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -132,7 +133,8 @@
                              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                              Padding="4"
                              Margin="4"
-                             IsHitTestVisible="False" />
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
                     <TextBox Grid.Column="3"
                              Text="{Binding Settings.CurrentProfile.Minutes, Mode=OneTime}"
                              IsReadOnly="True"
@@ -142,7 +144,8 @@
                              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                              Padding="4"
                              Margin="4"
-                             IsHitTestVisible="False" />
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
                     <TextBox Grid.Column="4"
                              Text="{Binding Settings.CurrentProfile.Seconds, Mode=OneTime}"
                              IsReadOnly="True"
@@ -152,7 +155,8 @@
                              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                              Padding="4"
                              Margin="4"
-                             IsHitTestVisible="False" />
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
                     <TextBox Grid.Column="5"
                              Text="{Binding Settings.CurrentProfile.MaxReactionTime, Mode=OneTime}"
                              IsReadOnly="True"
@@ -162,7 +166,8 @@
                              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                              Padding="4"
                              Margin="4"
-                             IsHitTestVisible="False" />
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
                     <TextBox Grid.Column="6"
                              Text="{Binding Settings.CurrentProfile.WordDuration, Mode=OneTime}"
                              IsReadOnly="True"
@@ -172,7 +177,30 @@
                              BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                              Padding="4"
                              Margin="4"
-                             IsHitTestVisible="False" />
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
+                    <TextBox Grid.Column="5"
+                             Text="{Binding CurrentCalibrationPhase, Mode=OneWay}"
+                             IsReadOnly="True"
+                             HorizontalAlignment="Stretch"
+                             ui:ControlHelper.Header="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationCurrentPhase]}"
+                             Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                             Padding="4"
+                             Margin="4"
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    <TextBox Grid.Column="6"
+                             Text="{Binding CurrentPresentationTime, Mode=OneWay}"
+                             IsReadOnly="True"
+                             HorizontalAlignment="Stretch"
+                             ui:ControlHelper.Header="{Binding Source={StaticResource Loc}, Path=[Header_PresentationTime]}"
+                             Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                             Padding="4"
+                             Margin="4"
+                             IsHitTestVisible="False"
+                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityConverter}}" />
                 </Grid>
             </ui:SimpleStackPanel>
         </Border>

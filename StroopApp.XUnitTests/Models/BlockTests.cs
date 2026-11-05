@@ -288,5 +288,49 @@ namespace StroopApp.Models.UnitTests
             Assert.Equal(60.0, block.Accuracy);
             Assert.Equal(233.33333333333334, block.ResponseTimeMean);
         }
+
+        /// <summary>
+        /// A standard block gives the trial loop the profile's max reaction time.
+        /// </summary>
+        [Theory]
+        [InlineData(400)]
+        [InlineData(1500)]
+        public void GetNextMaxReactionTime_StandardBlock_ReturnsProfileMaxReactionTime(int maxReactionTime)
+        {
+            var block = new Block(new StroopProfile { MaxReactionTime = maxReactionTime }, blockNumber: 1);
+
+            Assert.Equal(maxReactionTime, block.GetNextMaxReactionTime());
+        }
+
+        /// <summary>
+        /// A standard block never ends early, even after recorded trials.
+        /// </summary>
+        [Fact]
+        public void IsFinished_StandardBlockAfterRecordedTrials_StaysFalse()
+        {
+            var block = CreateBlock();
+            Assert.False(block.IsFinished);
+
+            for (int i = 1; i <= 50; i++)
+                block.RecordTrial(new StroopTrial { TrialNumber = i, IsValidResponse = i % 2 == 0 });
+
+            Assert.False(block.IsFinished);
+        }
+
+        /// <summary>
+        /// Recording a trial leaves the block's trial records and times unchanged.
+        /// </summary>
+        [Fact]
+        public void RecordTrial_StandardBlock_LeavesBlockUnchanged()
+        {
+            var block = CreateBlock();
+            block.TrialRecords.Add(new StroopTrial { TrialNumber = 1 });
+
+            block.RecordTrial(new StroopTrial { TrialNumber = 2, IsValidResponse = true, ReactionTime = 300 });
+
+            Assert.Single(block.TrialRecords);
+            Assert.Empty(block.TrialTimes);
+            Assert.Equal(400, block.GetNextMaxReactionTime());
+        }
     }
 }

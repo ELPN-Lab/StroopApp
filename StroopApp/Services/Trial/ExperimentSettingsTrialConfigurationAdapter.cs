@@ -1,3 +1,4 @@
+using StroopApp.Models;
 using StroopApp.ViewModels.State;
 
 namespace StroopApp.Services.Trial
@@ -26,11 +27,15 @@ namespace StroopApp.Services.Trial
 
         public string ParticipantId => _settings.Participant.Id;
 
-        public int WordCount => _settings.CurrentProfile.WordCount;
+        public int WordCount => _settings.CurrentProfile is StroopProfile { IsCalibration: true } stroopProfile
+            ? stroopProfile.CalibrationParameters.Phase1TrialCount + stroopProfile.CalibrationParameters.MaxPhase2TrialCount
+            : _settings.CurrentProfile.WordCount;
 
         public int CongruencePercent => _settings.CurrentProfile.CongruencePercent;
 
         public int DominantPercent => _settings.CurrentProfile.DominantPercent;
+
+        public int? SwitchPercent => _settings.CurrentProfile.SwitchPercent;
 
         public bool HasVisualCue => _settings.CurrentProfile.HasVisualCue;
 

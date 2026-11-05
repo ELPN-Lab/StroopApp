@@ -19,6 +19,12 @@ namespace StroopApp.ViewModels.Experiment.Experimenter
             ? (int)(((double)Settings.ExperimentContext.ReactionPoints.Count / Settings.CurrentProfile.WordCount) * 100)
             : 0;
 
+        public bool IsCalibration => Settings.CurrentProfile is StroopProfile { IsCalibration: true };
+
+        public int? CurrentCalibrationPhase => (Settings.ExperimentContext.CurrentTrial as StroopTrial)?.CalibrationPhase;
+
+        public int? CurrentPresentationTime => (Settings.ExperimentContext.CurrentTrial as StroopTrial)?.PresentationTime;
+
         public ObservableCollection<ITrial?> TrialRecords =>
             Settings.ExperimentContext.Blocks.Count > Settings.Block
                 ? Settings.ExperimentContext.Blocks[Settings.Block].TrialRecords
@@ -31,6 +37,7 @@ namespace StroopApp.ViewModels.Experiment.Experimenter
             Settings = settings;
 
             Settings.PropertyChanged += Settings_PropertyChanged;
+            Settings.ExperimentContext.PropertyChanged += ExperimentContext_PropertyChanged;
             Settings.ExperimentContext.ReactionPoints.CollectionChanged += ReactionPoints_CollectionChanged;
             Settings.ExperimentContext.Blocks.CollectionChanged += Blocks_CollectionChanged;
             HookCurrentBlockTrialRecords();
@@ -43,6 +50,16 @@ namespace StroopApp.ViewModels.Experiment.Experimenter
                 HookCurrentBlockTrialRecords();
                 OnPropertyChanged(nameof(Progress));
                 OnPropertyChanged(nameof(TrialRecords));
+                OnPropertyChanged(nameof(IsCalibration));
+            }
+        }
+
+        private void ExperimentContext_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SharedExperimentDataViewModel.CurrentTrial))
+            {
+                OnPropertyChanged(nameof(CurrentCalibrationPhase));
+                OnPropertyChanged(nameof(CurrentPresentationTime));
             }
         }
 
@@ -77,6 +94,7 @@ namespace StroopApp.ViewModels.Experiment.Experimenter
         public void Dispose()
         {
             Settings.PropertyChanged -= Settings_PropertyChanged;
+            Settings.ExperimentContext.PropertyChanged -= ExperimentContext_PropertyChanged;
             Settings.ExperimentContext.ReactionPoints.CollectionChanged -= ReactionPoints_CollectionChanged;
             Settings.ExperimentContext.Blocks.CollectionChanged -= Blocks_CollectionChanged;
 

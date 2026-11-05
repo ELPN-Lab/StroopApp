@@ -19,6 +19,7 @@
         <converters:MillisecondsToSecondsConverter x:Key="MillisecondsToSecondsConverter" />
         <converters:BoolToStringConverter x:Key="BoolToStringConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter" />
         <SolidColorBrush x:Key="OpaqueDefaultButtonBackground"
                          Color="#c4c4c4"
                          Opacity="1" />
@@ -44,7 +45,9 @@
                         BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
                     <ui:SimpleStackPanel Spacing="12">
                         <viewsProfile:ProfileEditorHeaderView/>
-                        <Grid>
+                        <CheckBox Content="{Binding Source={StaticResource Loc}, Path=[Label_Calibration]}"
+                                  IsChecked="{Binding IsCalibration, Mode=TwoWay}" />
+                        <Grid Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="4" />
@@ -74,7 +77,7 @@
                             <ui:NumberBox Grid.Row="2"
                                      Grid.Column="0"
                                      Text="{Binding StimulusDuration}"
-                                          Style="{StaticResource ModernReadOnlyNumberBoxStyle}"/>
+                                          Style="{StaticResource ModernReadOnlyNumberBoxStyle}" />
                             <TextBlock Grid.Row="2"
                                        Grid.Column="1"
                                        VerticalAlignment="Center"
@@ -111,6 +114,203 @@
                                           Minimum="1"
                                           SpinButtonPlacementMode="Inline" />
                         </Grid>
+                        <ui:SimpleStackPanel Spacing="16"
+                                             Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <ui:SimpleStackPanel Spacing="8">
+                                <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationTrials]}"
+                                           Style="{StaticResource BaseTextBlockStyle}" />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="4" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_FixationDuration]}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="0"
+                                                  Value="{Binding FixationDuration, Mode=TwoWay}"
+                                                  Minimum="1"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_VisualCueDuration]}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="2"
+                                                  Value="{Binding VisualCueDuration, Mode=TwoWay}"
+                                                  Minimum="0"
+                                                  IsEnabled="{Binding HasVisualCue}"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <TextBlock Grid.Row="0" Grid.Column="6" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Field_WordCount]}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="6"
+                                                  Text="{Binding StimulusCount}"
+                                                  Style="{StaticResource ModernReadOnlyNumberBoxStyle}" />
+                                </Grid>
+                            </ui:SimpleStackPanel>
+                            <Rectangle Height="1"
+                                       Fill="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+                            <ui:SimpleStackPanel Spacing="8">
+                                <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationPhase1]}"
+                                           Style="{StaticResource BaseTextBlockStyle}" />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="4" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationStartingTime]}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="0"
+                                                  Value="{Binding CalibrationParameters.StartingTime, Mode=TwoWay}"
+                                                  Minimum="1"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationPhase1TrialCount]}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="2"
+                                                  Value="{Binding Phase1TrialCount, Mode=TwoWay}"
+                                                  Minimum="1"
+                                                  SpinButtonPlacementMode="Inline" />
+                                </Grid>
+                            </ui:SimpleStackPanel>
+                            <Rectangle Height="1"
+                                       Fill="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+                            <ui:SimpleStackPanel Spacing="8">
+                                <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationPhase2]}"
+                                           Style="{StaticResource BaseTextBlockStyle}" />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="4" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="4" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationLowerBound]}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="0"
+                                                  Value="{Binding CalibrationParameters.LowerBound, Mode=TwoWay}"
+                                                  Minimum="1"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationUpperBound]}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="2"
+                                                  Value="{Binding CalibrationParameters.UpperBound, Mode=TwoWay}"
+                                                  Minimum="1"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationTargetAccuracy]}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="4"
+                                                  Value="{Binding TargetAccuracyPercent, Mode=TwoWay}"
+                                                  Minimum="1"
+                                                  Maximum="99"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationMinPhase2TrialCount]}" />
+                                    <ui:NumberBox Grid.Row="6" Grid.Column="0"
+                                                  Value="{Binding CalibrationParameters.MinPhase2TrialCount, Mode=TwoWay}"
+                                                  Minimum="0"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <TextBlock Grid.Row="4" Grid.Column="2" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationMaxPhase2TrialCount]}" />
+                                    <ui:NumberBox Grid.Row="6" Grid.Column="2"
+                                                  Value="{Binding MaxPhase2TrialCount, Mode=TwoWay}"
+                                                  Minimum="1"
+                                                  SpinButtonPlacementMode="Inline" />
+                                </Grid>
+                            </ui:SimpleStackPanel>
+                            <Rectangle Height="1"
+                                       Fill="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+                            <Expander Header="{Binding Source={StaticResource Loc}, Path=[Title_CalibrationAdvancedSettings]}">
+                                <Grid Margin="0,12,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="4" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="4" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="0.25*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationGamma]}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationDelta]}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationBeta]}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="6" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationPriorWidthFactor]}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="0"
+                                                  Text="{Binding CalibrationParameters.Gamma, Mode=OneWay}"
+                                                  Style="{StaticResource ModernReadOnlyNumberBoxStyle}" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="2"
+                                                  Value="{Binding CalibrationParameters.Delta, Mode=TwoWay}"
+                                                  SmallChange="0.01"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="4"
+                                                  Value="{Binding CalibrationParameters.Beta, Mode=TwoWay}"
+                                                  SmallChange="0.1"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <ui:NumberBox Grid.Row="2" Grid.Column="6"
+                                                  Value="{Binding CalibrationParameters.PriorWidthFactor, Mode=TwoWay}"
+                                                  SmallChange="0.1"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationMinCorrectPhase1Trials]}" />
+                                    <TextBlock Grid.Row="4" Grid.Column="2" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationConvergedThreshold]}" />
+                                    <TextBlock Grid.Row="4" Grid.Column="4" TextWrapping="Wrap"
+                                               Text="{Binding Source={StaticResource Loc}, Path=[Header_CalibrationNearlyConvergedThreshold]}" />
+                                    <ui:NumberBox Grid.Row="6" Grid.Column="0"
+                                                  Value="{Binding CalibrationParameters.MinCorrectPhase1Trials, Mode=TwoWay}"
+                                                  Minimum="0"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <ui:NumberBox Grid.Row="6" Grid.Column="2"
+                                                  Value="{Binding CalibrationParameters.ConvergedThreshold, Mode=TwoWay}"
+                                                  SmallChange="0.05"
+                                                  SpinButtonPlacementMode="Inline" />
+                                    <ui:NumberBox Grid.Row="6" Grid.Column="4"
+                                                  Value="{Binding CalibrationParameters.NearlyConvergedThreshold, Mode=TwoWay}"
+                                                  SmallChange="0.05"
+                                                  SpinButtonPlacementMode="Inline" />
+                                </Grid>
+                            </Expander>
+                        </ui:SimpleStackPanel>
                     </ui:SimpleStackPanel>
                 </Border>
                 <ui:SimpleStackPanel Spacing="0">
@@ -150,7 +350,7 @@
                     <viewsProfile:SwitchSettingsView DataContext="{Binding SwitchSettingsViewModel}"
                                                      Visibility="{Binding DataContext.HasVisualCue, ElementName=RootPanel, Converter={StaticResource BoolToVisibilityConverter}}" />
                 </ui:SimpleStackPanel>
-                <viewsProfile:ProfileEditorCalculationModeView/>
+                <viewsProfile:ProfileEditorCalculationModeView Visibility="{Binding IsCalibration, Converter={StaticResource BoolToVisibilityInvertedConverter}}" />
             </ui:SimpleStackPanel>
         </ScrollViewer>
         <DockPanel Grid.Row="1"

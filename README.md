@@ -32,6 +32,7 @@ The application is designed to be **no-code**, allowing researchers to configure
 
 - Flexible experimental configuration (congruency ratio, number of trials, task-switching rate)
 - Visual cues paradigm using shapes (circle = name color, square = read word)
+- Calibration task (QUEST+) that estimates the presentation time at which each participant reaches a target accuracy
 - Millisecond-level reaction time measurement
 - Automatic export of detailed results (Excel, trial-by-trial)
 - Multilingual interface (English and French)
