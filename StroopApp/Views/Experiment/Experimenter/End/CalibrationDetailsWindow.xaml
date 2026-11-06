@@ -77,15 +77,7 @@
                        VerticalAlignment="Center" />
             <Border Style="{StaticResource CalibrationStatusChipStyle}">
                 <TextBlock Text="{Binding StatusLabel, Mode=OneTime}"
-                           Style="{DynamicResource BodyTextBlockStyle}"
-                           FontWeight="SemiBold"
-                           Foreground="White"
-                           Margin="0"
-                           LineHeight="NaN"
-                           TextAlignment="Center"
-                           TextWrapping="NoWrap"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                           Style="{StaticResource CalibrationStatusChipTextStyle}" />
             </Border>
         </ui:SimpleStackPanel>
 
