@@ -143,6 +143,19 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <!-- BodyTextBlockStyle imposes LineHeight=20 with LineStackingStrategy=MaxHeight, which
+         pushes the glyphs off-center inside the chip. LineHeight=NaN restores the natural
+         line height so the symmetric chip Padding centers the label. -->
+    <Style x:Key="CalibrationStatusChipTextStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource BodyTextBlockStyle}">
+        <Setter Property="FontWeight"
+                Value="SemiBold" />
+        <Setter Property="Foreground"
+                Value="White" />
+        <Setter Property="LineHeight"
+                Value="NaN" />
+    </Style>
     <Style x:Key="IconButtonStyle"
            TargetType="Button"
            BasedOn="{StaticResource DefaultButtonStyle}">
