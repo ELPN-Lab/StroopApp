@@ -34,7 +34,13 @@
                         <TextBlock Text="{Binding StatusLabel, Mode=OneTime}"
                                    Style="{DynamicResource BodyTextBlockStyle}"
                                    FontWeight="SemiBold"
-                                   Foreground="White" />
+                                   Foreground="White"
+                                   Margin="0"
+                                   LineHeight="NaN"
+                                   TextAlignment="Center"
+                                   TextWrapping="NoWrap"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
                     </Border>
                     <TextBlock Grid.Column="2"
                                Grid.ColumnSpan="2"
