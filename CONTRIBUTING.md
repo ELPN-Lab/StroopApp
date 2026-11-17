@@ -7,7 +7,7 @@ Thank you for considering contributing to **StroopApp**. Your contributions help
 ## **How Can I Contribute?**
 
 ### **1. Reporting Bugs**
-- Use the [GitHub Issues](https://github.com/MylanBeghin/StroopApp/issues) page to report bugs.
+- Use the [GitHub Issues](https://github.com/ELPN-Lab/StroopApp/issues) page to report bugs.
 - Provide the following details:
   - A clear and concise description of the issue.
   - Steps to reproduce the bug.
@@ -20,7 +20,7 @@ Thank you for considering contributing to **StroopApp**. Your contributions help
 - Explain the use case and why it would benefit the community.
 
 ### **3. Submitting Code Changes**
-1. **Fork the Repository**: Create a fork of the [StroopApp repository](https://github.com/MylanBeghin/StroopApp).
+1. **Fork the Repository**: Create a fork of the [StroopApp repository](https://github.com/ELPN-Lab/StroopApp).
 2. **Create a Branch**: Use a descriptive name for your branch (e.g., `feature/add-multilingual-support` or `fix/timing-validation`).
 3. **Make Your Changes**: Follow the coding guidelines below.
 4. **Commit Your Changes**: Write clear and concise commit messages.
@@ -50,7 +50,7 @@ Thank you for considering contributing to **StroopApp**. Your contributions help
 ### **Building the Project**
 1. Clone the repository:
    ```bash
-   git clone https://github.com/MylanBeghin/StroopApp.git
+   git clone https://github.com/ELPN-Lab/StroopApp.git
    ```
 2. Navigate to the project directory:
    ```bash
@@ -94,7 +94,7 @@ Execute the test suite to ensure your changes do not break existing functionalit
 ## **Community and Support**
 
 ### **Discussions**
-- Use [GitHub Discussions](https://github.com/MylanBeghin/StroopApp/discussions) for questions, ideas, or general feedback.
+- Use [GitHub Discussions](https://github.com/ELPN-Lab/StroopApp/discussions) for questions, ideas, or general feedback.
 
 ### **Contact**
 - For private inquiries, contact [mylan.bghn@gmail.com](mailto:mylan.bghn@gmail.com).

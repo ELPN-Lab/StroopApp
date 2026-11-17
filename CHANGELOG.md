@@ -9,17 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Added
-- **Calibration task (QUEST+)**: a Stroop profile can run as a calibration task. The task estimates the presentation time at which the participant reaches a target accuracy (85 % by default).
-  - Phase 1 presents a fixed number of trials at a fixed presentation time (20 trials at 2000 ms by default).
-  - Phase 2 is adaptive. QUEST+ chooses each presentation time between a lower and an upper bound (140 to 5000 ms by default). The phase stops when the estimate converges or when the maximum number of trials is reached (40 to 100 trials by default).
-  - The profile editor has a "Calibration task" checkbox. When it is checked, the editor shows the calibration settings grouped by phase.
-  - The experimenter dashboard shows the current calibration phase and presentation time.
-  - The end page shows a result card with the convergence status, the estimated time (t50) and its 90 % interval (t5 to t95). A details window adds a slider that reads the presentation time at another accuracy.
-  - The Excel export adds a "Calibration" worksheet. It holds one row per calibration block, with the result, the slider reading and all the parameters.
-  - The experimenter can stop a calibration block at any time. The result is computed from the trials played so far.
-  - The calibration math is checked against an independent Python implementation, described in `StroopApp.XUnitTests/Services/Calibration/Reference/README.md`.
-
 ### Planned Features
 
 #### Serial Port Communication for MRI/EEG Synchronization
@@ -88,6 +77,33 @@ Not included due to insufficient needs analysis and lack of testing infrastructu
 
 ---
 
+## [1.2.0] - 2026-11-17
+
+### Added
+- **Simon task**: a home screen lets the experimenter pick the Stroop or the Simon task. Simon has its own profile, configuration page, instructions, trial generation and export.
+  - Shape or arrow stimuli, shown left/right or at the center of the screen.
+  - One-key or two-key answers, with an optional reversal cue (before, around or integrated with the stimulus).
+  - Profiles are split into Stroop and Simon profiles. Existing profiles are migrated to Stroop.
+  - A back-to-home navigation resets the experiment state.
+- **Calibration task (QUEST+)**: a Stroop profile can run as a calibration task. The task estimates the presentation time at which the participant reaches a target accuracy (85 % by default).
+  - Phase 1 presents a fixed number of trials at a fixed presentation time (20 trials at 2000 ms by default).
+  - Phase 2 is adaptive. QUEST+ chooses each presentation time between a lower and an upper bound (140 to 5000 ms by default). The phase stops when the estimate converges or when the maximum number of trials is reached (40 to 100 trials by default).
+  - The profile editor has a "Calibration task" checkbox. When it is checked, the editor shows the calibration settings grouped by phase.
+  - The experimenter dashboard shows the current calibration phase and presentation time.
+  - The end page shows a result card with the convergence status, the estimated time (t50) and its 90 % interval (t5 to t95). A details window adds a slider that reads the presentation time at another accuracy.
+  - The Excel export adds a "Calibration" worksheet. It holds one row per calibration block, with the result, the slider reading and all the parameters.
+  - The experimenter can stop a calibration block at any time. The result is computed from the trials played so far.
+  - The calibration math is checked against an independent Python implementation, described in `StroopApp.XUnitTests/Services/Calibration/Reference/README.md`.
+
+### Changed
+- Target framework moved to .NET 10. CI and release workflows install .NET 10.
+
+### Fixed
+- Stroop visual cues are generated from `DominantPercent` and `SwitchPercent`.
+- A missing response counts as an error, and the Stroop export has a congruence column.
+
+---
+
 ## [1.1.0] - 2026-04-06
 
 ### Changed
@@ -143,5 +159,6 @@ Not included due to insufficient needs analysis and lack of testing infrastructu
 
 ---
 
-[1.1.0]: https://github.com/MylanBeghin/StroopApp/releases/tag/v1.1.0
-[1.0.0]: https://github.com/MylanBeghin/StroopApp/releases/tag/v1.0.0
+[1.2.0]: https://github.com/ELPN-Lab/StroopApp/releases/tag/v1.2.0
+[1.1.0]: https://github.com/ELPN-Lab/StroopApp/releases/tag/v1.1.0
+[1.0.0]: https://github.com/ELPN-Lab/StroopApp/releases/tag/v1.0.0

@@ -15,6 +15,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read version from tag
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}'.TrimStart('v')
+          "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Check release metadata
+        shell: pwsh
+        run: ./.github/scripts/Test-ReleaseMetadata.ps1 -Version $env:VERSION -NotesPath release-notes.md
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -34,6 +44,7 @@ jobs:
           --self-contained true
           -p:PublishSingleFile=true
           -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:Version=${{ env.VERSION }}
           --output ./publish
 
       - name: Zip artifact
@@ -43,4 +54,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: StroopApp-${{ github.ref_name }}-win-x64.zip
+          body_path: release-notes.md
           generate_release_notes: true

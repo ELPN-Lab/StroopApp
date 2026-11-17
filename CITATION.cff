@@ -2,11 +2,11 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 title: "StroopApp: an open-source Stroop application for researchers and clinicians"
-version: 1.1.0-joss
-date-released: 2026-04-05
+version: 1.2.0
+date-released: 2026-11-17
 doi: 10.5281/zenodo.19663197
 url: "https://doi.org/10.5281/zenodo.19663197"
-repository-code: "https://github.com/MylanBeghin/StroopApp"
+repository-code: "https://github.com/ELPN-Lab/StroopApp"
 license: MIT
 authors:
   - family-names: Beghin
