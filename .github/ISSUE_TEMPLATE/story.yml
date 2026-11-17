@@ -1,0 +1,19 @@
+name: User story
+description: A change or a new behavior, ready for a Harness run
+title: ""
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should change and why, in a few lines.
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      description: One criterion per line, each starting with "- ". Each one must be checkable by looking at the app.
+      value: "- "
+    validations:
+      required: true

@@ -1,0 +1,20 @@
+name: Bug
+description: Something is broken, ready for a Harness run
+title: ""
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happens, what you expected, and how to reproduce it.
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      description: One criterion per line, each starting with "- ". Describe the fixed behavior, checkable by looking at the app.
+      value: "- "
+    validations:
+      required: true
