@@ -5,16 +5,16 @@
 # **StroopApp**
 ### *A Modern Desktop Application for Administering Stroop Tasks in Experimental Research*
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/MylanBeghin/StroopApp/releases/tag/v1.1.0)
-[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/MylanBeghin/StroopApp/blob/master/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0-purple)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![Version](https://img.shields.io/github/v/release/ELPN-Lab/StroopApp)](https://github.com/ELPN-Lab/StroopApp/releases/latest)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/ELPN-Lab/StroopApp/blob/master/LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/download/dotnet/10.0)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19663197.svg)](https://doi.org/10.5281/zenodo.19663197)
 [![status](https://joss.theoj.org/papers/152b0be825c017b87c039ffce9c95b76/status.svg)](https://joss.theoj.org/papers/152b0be825c017b87c039ffce9c95b76)
 
 [Quick Start](#-quick-start) ·
-[Documentation](https://github.com/MylanBeghin/StroopApp/wiki) ·
-[Download](https://github.com/MylanBeghin/StroopApp/releases) ·
-[Report Bug](https://github.com/MylanBeghin/StroopApp/issues) ·
+[Documentation](https://github.com/ELPN-Lab/StroopApp/wiki) ·
+[Download](https://github.com/ELPN-Lab/StroopApp/releases) ·
+[Report Bug](https://github.com/ELPN-Lab/StroopApp/issues) ·
 [How to Cite](#how-to-cite)
 
 </div>
@@ -71,7 +71,7 @@ This window provides real-time monitoring of the running experiment, including c
 
 ### Installation
 
-1. Download the latest **StroopApp.exe** from the [Releases](https://github.com/MylanBeghin/StroopApp/releases) page
+1. Download the latest **StroopApp.exe** from the [Releases](https://github.com/ELPN-Lab/StroopApp/releases) page
 2. Launch the executable
 
 StroopApp is distributed as a **self-contained Windows executable**.  
@@ -102,7 +102,7 @@ Two methods are available:
 * Windows keyboard shortcuts
 
 Detailed instructions are available in the documentation:
-[Participant window setup](https://github.com/MylanBeghin/StroopApp/wiki/Usage#7-participant-window-setup)
+[Participant window setup](https://github.com/ELPN-Lab/StroopApp/wiki/Usage#7-participant-window-setup)
 
 ### System requirements
 
@@ -115,7 +115,7 @@ Detailed instructions are available in the documentation:
 
 ## 📚 Documentation
 
-Check documentation on the [Wiki tab](https://github.com/MylanBeghin/StroopApp/wiki)!
+Check documentation on the [Wiki tab](https://github.com/ELPN-Lab/StroopApp/wiki)!
 
 ---
 
@@ -163,7 +163,7 @@ A `CITATION.cff` file is provided at the root of the repository for automated ci
 
 Contributions are welcome! :blush:
 
-- [Issues](https://github.com/MylanBeghin/StroopApp/issues) are open for bug reports, documentation issues, or feature requests.
+- [Issues](https://github.com/ELPN-Lab/StroopApp/issues) are open for bug reports, documentation issues, or feature requests.
 - Feel free to open an issue if you encounter a problem or would like to suggest an improvement.
 - If you are interested in contributing code or extending the software, please get in touch first.
 

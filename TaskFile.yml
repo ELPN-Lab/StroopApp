@@ -39,3 +39,10 @@ tasks:
       - task: restore
       - task: build
       - task: test
+
+  release-check:
+    desc: "Check CITATION.cff and CHANGELOG.md before tagging, e.g. task release-check VERSION=1.2.0"
+    requires:
+      vars: [VERSION]
+    cmds:
+      - pwsh -NoProfile -File .github/scripts/Test-ReleaseMetadata.ps1 -Version {{.VERSION}}

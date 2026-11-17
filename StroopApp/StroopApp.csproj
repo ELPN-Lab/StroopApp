@@ -7,16 +7,13 @@
 		<UseWPF>true</UseWPF>
 		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 
-		<Version>1.1.0</Version>
-		<AssemblyVersion>1.1.0.0</AssemblyVersion>
-		<FileVersion>1.1.0.0</FileVersion>
 		<Company>Mylan Beghin</Company>
 		<Authors>Mylan Beghin</Authors>
 		<Product>StroopApp</Product>
 		<Description>Open-source WPF application for administering Stroop tasks in experimental research</Description>
 		<Copyright>Copyright © 2025 Mylan Beghin</Copyright>
-		<PackageProjectUrl>https://github.com/MylanBeghin/StroopApp</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/MylanBeghin/StroopApp</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/ELPN-Lab/StroopApp</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/ELPN-Lab/StroopApp</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
