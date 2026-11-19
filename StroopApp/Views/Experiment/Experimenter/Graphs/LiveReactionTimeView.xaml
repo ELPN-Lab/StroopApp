@@ -53,7 +53,7 @@
                         <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Label_TrialRange]}"
                                             Binding="{Binding Range}"
                                             Width="*" />
-                        <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Label_Mean]}"
+                        <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Label_MeanCorrect]}"
                                             Binding="{Binding AverageDisplay}"
                                             Width="*" />
                         <DataGridTextColumn Header="{Binding Source={StaticResource Loc}, Path=[Label_CorrectPercentage]}"

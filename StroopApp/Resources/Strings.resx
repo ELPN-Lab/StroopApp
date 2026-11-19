@@ -530,7 +530,10 @@
     <value>Max response time (ms)</value>
   </data>
   <data name="Header_MeanResponseTime" xml:space="preserve">
-    <value>Average response time</value>
+    <value>Mean response time (all answers)</value>
+  </data>
+  <data name="Header_MeanCorrectResponseTime" xml:space="preserve">
+    <value>Mean response time (correct answers)</value>
   </data>
   <data name="Placeholder_Search" xml:space="preserve">
     <value>Search</value>
@@ -706,8 +709,8 @@
   <data name="Title_MeanByInterval" xml:space="preserve">
     <value>Average times by interval</value>
   </data>
-  <data name="Label_Mean" xml:space="preserve">
-    <value>Mean</value>
+  <data name="Label_MeanCorrect" xml:space="preserve">
+    <value>Mean (correct)</value>
   </data>
   <data name="Label_CorrectPercentage" xml:space="preserve">
     <value>Correct (%)</value>

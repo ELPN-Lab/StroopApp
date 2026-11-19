@@ -5,6 +5,7 @@ namespace StroopApp.Services.Summary
 {
     public abstract class BlockSummaryFormatter
     {
+        protected const string NoValueDisplay = "NA";
         protected readonly ILanguageService LanguageService;
         protected BlockSummaryFormatter(ILanguageService languageService)
             => LanguageService = languageService;
@@ -25,7 +26,9 @@ namespace StroopApp.Services.Summary
                 new BlockSummaryColumn(GetString("Header_Accuracy"), nameof(Block.Accuracy))
                     { StringFormat = "{0:F2}%" },
                 new BlockSummaryColumn(GetString("Header_MeanResponseTime"), nameof(Block.ResponseTimeMean))
-                    { StringFormat = "{0:F2} ms" },
+                    { StringFormat = "{0:F2} ms", NullDisplay = NoValueDisplay },
+                new BlockSummaryColumn(GetString("Header_MeanCorrectResponseTime"), nameof(Block.CorrectResponseTimeMean))
+                    { StringFormat = "{0:F2} ms", NullDisplay = NoValueDisplay },
             ];
 
 

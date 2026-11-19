@@ -48,7 +48,7 @@ namespace StroopApp.Views.Experiment.Experimenter
                 var binding = new Binding(col.BindingPath)
                 {
                     Mode = BindingMode.OneWay,
-                    TargetNullValue = string.Empty
+                    TargetNullValue = col.NullDisplay ?? string.Empty
                 };
                 if (!string.IsNullOrEmpty(col.StringFormat))
                     binding.StringFormat = col.StringFormat;

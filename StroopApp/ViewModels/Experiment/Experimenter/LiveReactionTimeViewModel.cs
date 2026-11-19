@@ -81,12 +81,8 @@ namespace StroopApp.ViewModels.Experiment.Experimenter
                 .Take(groupSize)
                 .ToList();
 
-            var validTimes = slice
-                .Where(p => p.ReactionTime.HasValue && !double.IsNaN(p.ReactionTime.Value))
-                .Select(p => p.ReactionTime!.Value)
-                .ToList();
-
-            double? average = validTimes.Count > 0 ? validTimes.Average() : (double?)null;
+            double? average = ResponseTimeStatistics.MeanOfCorrectAnswers(
+                slice.Select(p => (p.IsValidResponse, p.ReactionTime)));
             int correct = slice.Count(p => p.IsValidResponse == true);
 
             GroupAverages.Add(new ReactionGroup(startTrial, endTrial, average, correct, groupSize));
