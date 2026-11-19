@@ -11,6 +11,7 @@ namespace StroopApp.Models
         public int TrialsPerBlock { get; set; }
         public double Accuracy { get; set; }
         public double? ResponseTimeMean { get; set; }
+        public double? CorrectResponseTimeMean { get; set; }
         public ExperimentProfile Profile { get; } = profile;
         public ObservableCollection<ITrial?> TrialRecords { get; } = new();
         public ObservableCollection<double?> TrialTimes { get; } = new();
@@ -43,6 +44,11 @@ namespace StroopApp.Models
                                         .Where(trial => trial.ReactionTime.HasValue && trial.Block == BlockNumber)
                                         .Select(trial => trial.ReactionTime)
                                         .Average();
+            CorrectResponseTimeMean = ResponseTimeStatistics.MeanOfCorrectAnswers(
+                TrialRecords
+                    .OfType<ITrial>()
+                    .Where(trial => trial.Block == BlockNumber)
+                    .Select(trial => (trial.IsValidResponse, trial.ReactionTime)));
         }
     }
 }

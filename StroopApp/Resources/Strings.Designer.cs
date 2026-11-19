@@ -1078,7 +1078,16 @@ namespace StroopApp.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Average response time.
+        ///   Recherche une chaîne localisée semblable à Mean response time (correct answers).
+        /// </summary>
+        public static string Header_MeanCorrectResponseTime {
+            get {
+                return ResourceManager.GetString("Header_MeanCorrectResponseTime", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mean response time (all answers).
         /// </summary>
         public static string Header_MeanResponseTime {
             get {
@@ -1573,11 +1582,11 @@ namespace StroopApp.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Mean.
+        ///   Recherche une chaîne localisée semblable à Mean (correct).
         /// </summary>
-        public static string Label_Mean {
+        public static string Label_MeanCorrect {
             get {
-                return ResourceManager.GetString("Label_Mean", resourceCulture);
+                return ResourceManager.GetString("Label_MeanCorrect", resourceCulture);
             }
         }
         

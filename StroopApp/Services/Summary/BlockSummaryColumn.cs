@@ -10,6 +10,10 @@
         public string Header { get; }
         public string BindingPath { get; }
         public string? StringFormat { get; set; }
+        /// <summary>
+        /// Text displayed when the bound value is null. The cell stays empty when not set.
+        /// </summary>
+        public string? NullDisplay { get; set; }
         public BlockSummaryCellType Type { get; set; }
         public BlockSummaryColumn(string header, string bindingPath)
         {
